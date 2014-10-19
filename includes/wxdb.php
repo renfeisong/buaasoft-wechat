@@ -1,4 +1,12 @@
 <?php
+/**
+ * Weixin DB Class
+ *
+ * Original code from {@link http://php.justinvincent.com Justin Vincent (justin@visunet.ie)}
+ *
+ * @author Renfei Song
+ * @since 1.0
+ */
 
 class wxdb {
     var $num_queries = 0;

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Starting point.
+ *
+ * @author Renfei Song
+ * @since 1.0
+ */
 
 require_once "wxdb.php";
 require_once "module.php";

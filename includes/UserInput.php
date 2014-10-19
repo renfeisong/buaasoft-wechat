@@ -1,4 +1,10 @@
 <?php
+/**
+ * UserInput Class
+ *
+ * @author Renfei Song
+ * @since 1.0
+ */
 
 require_once "InputType.php";
 

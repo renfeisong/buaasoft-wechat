@@ -1,4 +1,10 @@
 <?php
+/**
+ * InputType Class
+ *
+ * @author Renfei Song
+ * @since 1.0
+ */
 
 abstract class InputType {
     const Text = 0;

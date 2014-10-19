@@ -3,6 +3,9 @@
  * The module API is located in this file, which allows for creating custom modules.
  * Also see the {@link https://github.com/renfeisong/buaasoft-wechat/wiki/Module-API}
  * for more information and examples on how to create a module.
+ *
+ * @author Renfei Song
+ * @since 1.0
  */
 
 require_once "BaseModule.php";
@@ -28,7 +31,6 @@ function load_modules() {
     usort($modules, "cmp");
 }
 
-// descending
 function cmp(BaseModule $a, BaseModule $b) {
     if ($a->priority() == $b->priority())
         return 0;
