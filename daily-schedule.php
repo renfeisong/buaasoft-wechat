@@ -154,9 +154,7 @@ class DailySchedule {
 		}
 
 		// clean old data
-		if (!$this->delete()) {
-			return false;
-		}
+		!$this->delete() or return false;
 
 		// prepare new data
 		$insertSql = "insert into ".$tableName." (type, start, end, sid) values ";
