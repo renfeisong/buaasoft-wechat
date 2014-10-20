@@ -14,7 +14,10 @@ require_once ABSPATH . 'includes/MessageReceiver.php';
 require_once ABSPATH . 'includes/load.php';
 
 // Constants
-
+define('OBJECT', 'OBJECT');
+define('OBJECT_K', 'OBJECT_K');
+define('ARRAY_A', 'ARRAY_A');
+define('ARRAY_N', 'ARRAY_N');
 
 // Globals
 

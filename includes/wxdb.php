@@ -25,6 +25,7 @@ class wxdb {
 
     public $last_error = '';
     public $charset;
+    public $debug = false;
 
     protected $result;
     protected $reconnect_retries = 5;
@@ -70,7 +71,7 @@ class wxdb {
             $dbh = $this->dbh;
         $success = @mysqli_select_db($dbh, $db);
         if (!$success) {
-            echo 'Cannot select database '.$db;
+            $this->print_error('Cannot select database `' . $db . '`');
         }
     }
 
@@ -99,11 +100,10 @@ class wxdb {
 
         if ($this->dbh->connect_errno) {
             $this->dbh = null;
-            echo 'Cannot connect to database.';
+            $this->print_error('Cannot connect to database.');
         } else if ($this->dbh) {
             $this->set_charset($this->dbh);
             $this->select($this->dbname, $this->dbh);
-            // echo 'Database connected.';
             return true;
         }
 
@@ -163,6 +163,7 @@ class wxdb {
             if ($this->check_connection()) {
                 $this->_do_query($query);
             } else {
+                $this->print_error('Failed to execute query: ' . $query);
                 return false;
             }
         }
@@ -172,6 +173,7 @@ class wxdb {
 
         // If execution failed, return FALSE.
         if ($this->last_error != 0) {
+            $this->print_error('Failed to execute query: ' . $query);
             return false;
         }
 
@@ -294,7 +296,6 @@ class wxdb {
     }
 
     public function get_results($query = null, $output = OBJECT) {
-
         if ($query)
             $this->query($query);
         else
@@ -314,15 +315,75 @@ class wxdb {
                     $new_array[$key] = $row;
             }
             return $new_array;
-        } elseif ($output == ARRAY_A) {
-            // Return an integer-keyed array of column name-keyed row arrays
+        } elseif ($output == ARRAY_A || $output == ARRAY_N) {
+            // Return an integer-keyed array of...
             if ($this->last_result) {
                 foreach((array)$this->last_result as $row) {
-                    $new_array[] = get_object_vars($row);
+                    if ($output == ARRAY_N) {
+                        // ...integer-keyed row arrays
+                        $new_array[] = array_values(get_object_vars($row));
+                    } else {
+                        // ...column name-keyed row arrays
+                        $new_array[] = get_object_vars($row);
+                    }
                 }
             }
             return $new_array;
+        } else {
+            $this->print_error("\$db->get_results(string query, output type) -- Output type must be one of: OBJECT, OBJECT_K, ARRAY_A, ARRAY_N");
+            return null;
         }
-        return null;
+    }
+
+    public function get_var($query = null, $x = 0, $y = 0) {
+        if ($query)
+            $this->query( $query );
+
+        // Extract var out of cached results based x,y vals
+        if (!empty($this->last_result[$y])) {
+            $values = array_values(get_object_vars($this->last_result[$y]));
+        }
+
+        // If there is a value return it else return null
+        return (isset($values[$x]) && $values[$x] !== '') ? $values[$x] : null;
+    }
+
+    public function get_row($query = null, $output = OBJECT, $y = 0) {
+        if ($query)
+            $this->query($query);
+        else
+            return null;
+
+        if (!isset($this->last_result[$y]))
+            return null;
+
+        if ($output == OBJECT) {
+            return $this->last_result[$y] ? $this->last_result[$y] : null;
+        } elseif ($output == ARRAY_A) {
+            return $this->last_result[$y] ? get_object_vars($this->last_result[$y]) : null;
+        } elseif ($output == ARRAY_N) {
+            return $this->last_result[$y] ? array_values(get_object_vars($this->last_result[$y])) : null;
+        } else {
+            $this->print_error("\$db->get_row(string query, output type, int offset) -- Output type must be one of: OBJECT, ARRAY_A, ARRAY_N");
+            return null;
+        }
+    }
+
+    public function get_col($query = null , $x = 0) {
+        if ($query)
+            $this->query( $query );
+
+        $new_array = array();
+        // Extract the column values
+        for ($i = 0, $j = count($this->last_result); $i < $j; $i++) {
+            $new_array[$i] = $this->get_var(null, $x, $i);
+        }
+        return $new_array;
+    }
+
+    public function print_error($error) {
+        if ($this->debug) {
+            echo $error . "\n";
+        }
     }
 }
