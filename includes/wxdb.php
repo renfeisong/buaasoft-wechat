@@ -19,7 +19,6 @@ class wxdb {
     var $last_result;
 
     public $last_error = '';
-    public $field_types = array();
     public $charset;
 
     protected $result;
@@ -186,12 +185,12 @@ class wxdb {
         return $this->_insert_replace_helper($table, $data, $format, 'REPLACE');
     }
 
-    public function escape_by_ref( &$string ) {
+    public function escape_by_ref(&$string) {
         if (!is_float($string))
             $string = $this->_real_escape($string);
     }
 
-    public function prepare( $query, $args ) {
+    public function prepare($query, $args) {
         if (is_null($query))
             return "";
 
@@ -217,8 +216,6 @@ class wxdb {
         foreach ($fields as $field) {
             if (!empty($format))
                 $form = ($form = array_shift($formats)) ? $form : $format[0];
-            elseif (isset($this->field_types[$field]))
-                $form = $this->field_types[$field];
             else
                 $form = '%s';
             $formatted_fields[] = $form;
@@ -236,8 +233,6 @@ class wxdb {
         foreach ((array)array_keys($data) as $field) {
             if (!empty($format))
                 $form = ($form = array_shift( $formats)) ? $form : $format[0];
-            elseif ( isset($this->field_types[$field]))
-                $form = $this->field_types[$field];
             else
                 $form = '%s';
             $bits[] = "`$field` = {$form}";
@@ -247,8 +242,6 @@ class wxdb {
         foreach ((array) array_keys($where) as $field) {
             if (!empty($where_format))
                 $form = ($form = array_shift($where_formats)) ? $form : $where_format[0];
-            elseif (isset($this->field_types[$field]))
-                $form = $this->field_types[$field];
             else
                 $form = '%s';
             $wheres[] = "`$field` = {$form}";
@@ -269,8 +262,6 @@ class wxdb {
         foreach (array_keys($where) as $field) {
             if (!empty($where_format)) {
                 $form = ($form = array_shift($where_formats)) ? $form : $where_format[0];
-            } elseif (isset($this->field_types[$field])) {
-                $form = $this->field_types[$field];
             } else {
                 $form = '%s';
             }
