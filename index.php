@@ -3,7 +3,7 @@
  * Starting point.
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 require_once "config.php";

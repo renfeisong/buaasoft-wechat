@@ -7,7 +7,7 @@
  * @see https://github.com/renfeisong/buaasoft-wechat/wiki/WXDB-Class-Reference
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 /**

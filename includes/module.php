@@ -5,5 +5,5 @@
  * for more information and examples on how to create a module.
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */

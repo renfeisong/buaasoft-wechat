@@ -3,7 +3,7 @@
  * The base configurations of the system.
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 /** The name of the database */

@@ -2,8 +2,8 @@
 /**
  * Used to set up common variables and include the procedural and class library.
  *
- * @since 1.0.0
  * @author Renfei Song
+ * @since 2.0.0
  */
 
 require_once ABSPATH . 'includes/InputType.php';
