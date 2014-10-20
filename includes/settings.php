@@ -13,6 +13,9 @@ require_once ABSPATH . 'includes/OutputFormatter.php';
 require_once ABSPATH . 'includes/MessageReceiver.php';
 require_once ABSPATH . 'includes/load.php';
 
+// Constants
+
+
 // Globals
 
 $modules = array();

@@ -10,6 +10,11 @@
  * @since 1.0.0
  */
 
+/**
+ * Class wxdb
+ *
+ * Weixin Database Access Abstraction Object
+ */
 class wxdb {
     var $num_queries = 0;
     var $num_rows = 0;
@@ -140,7 +145,7 @@ class wxdb {
         }
     }
 
-    public function query($query) {
+	public function query($query) {
         $this->flush();
         $this->last_query = $query;
         $this->_do_query($query);
@@ -180,11 +185,11 @@ class wxdb {
         return $return_val;
     }
 
-    public function insert($table, $data, $format = null) {
+	public function insert($table, $data, $format = null) {
         return $this->_insert_replace_helper($table, $data, $format, 'INSERT');
     }
 
-    public function replace($table, $data, $format = null) {
+	public function replace($table, $data, $format = null) {
         return $this->_insert_replace_helper($table, $data, $format, 'REPLACE');
     }
 
@@ -224,10 +229,10 @@ class wxdb {
             $formatted_fields[] = $form;
         }
         $sql = "{$type} INTO `$table` (`" . implode( '`,`', $fields ) . "`) VALUES (" . implode( ",", $formatted_fields ) . ")";
-        return $this->query($this->prepare($sql, $data));
+	    return $this->query($this->prepare($sql, $data));
     }
 
-    public function update($table, $data, $where, $format = null, $where_format = null) {
+	public function update($table, $data, $where, $format = null, $where_format = null) {
         if (!is_array($data) || !is_array($where))
             return false;
 
@@ -254,7 +259,7 @@ class wxdb {
         return $this->query($this->prepare($sql, array_merge(array_values( $data ), array_values($where))));
     }
 
-    public function delete($table, $where, $where_format = null) {
+	public function delete($table, $where, $where_format = null) {
         if (!is_array($where))
             return false;
 
@@ -272,7 +277,43 @@ class wxdb {
             $wheres[] = "$field = $form";
         }
 
-        $sql = "DELETE FROM $table WHERE " . implode(' AND ', $wheres);
-        return $this->query($this->prepare( $sql, $where));
+        $sql = "DELETE FROM `$table` WHERE " . implode(' AND ', $wheres);
+
+        return $this->query($this->prepare($sql, $where));
     }
+
+	public function get_results( $query = null, $output = OBJECT ) {
+
+		if ( $query )
+			$this->query( $query );
+		else
+			return null;
+
+		$new_array = array();
+		if ( $output == OBJECT ) {
+			// Return an integer-keyed array of row objects
+			return $this->last_result;
+		} elseif ( $output == OBJECT_K ) {
+			// Return an array of row objects with keys from column 1
+			// (Duplicates are discarded)
+			foreach ( $this->last_result as $row ) {
+				$var_by_ref = get_object_vars( $row );
+				$key = array_shift( $var_by_ref );
+				if ( ! isset( $new_array[ $key ] ) )
+					$new_array[ $key ] = $row;
+			}
+			return $new_array;
+		} elseif ( $output == ARRAY_A) {
+			// Return an integer-keyed array of...
+			if ( $this->last_result ) {
+				foreach( (array) $this->last_result as $row ) {
+
+						// ...column name-keyed row arrays
+						$new_array[] = get_object_vars( $row );
+				}
+			}
+			return $new_array;
+		}
+		return null;
+	}
 }
