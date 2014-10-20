@@ -3,7 +3,7 @@
  * OutputFormatter Class
  *
  * @author Renfei Song
- * @since 1.0
+ * @since 1.0.0
  */
 
 /**
@@ -11,6 +11,8 @@
  *
  * Instances of OutputFormatter format the XML-representation of messages of certain kinds. The representation
  * encompasses all the data needed as per the documentation.
+ *
+ * @link https://github.com/renfeisong/buaasoft-wechat/wiki/OutputFormatter-Class-Reference
  */
 class OutputFormatter {
 

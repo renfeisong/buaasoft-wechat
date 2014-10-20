@@ -3,10 +3,8 @@
  * UserInput Class
  *
  * @author Renfei Song
- * @since 1.0
+ * @since 1.0.0
  */
-
-require_once "InputType.php";
 
 class UserInput {
 

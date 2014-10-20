@@ -3,10 +3,8 @@
  * BaseModule Class
  *
  * @author Renfei Song
- * @since 1.0
+ * @since 1.0.0
  */
-
-require_once "UserInput.php";
 
 /**
  * Class BaseModule
@@ -16,6 +14,8 @@ require_once "UserInput.php";
  * user.
  * For example, a phone book service might take a valid name in the database and returns the phone number associated
  * to that name.
+ * Also see the {@link https://github.com/renfeisong/buaasoft-wechat/wiki/Module-Programming-Guide}
+ * for more information and examples on how to create a module.
  */
 class BaseModule {
 

@@ -3,7 +3,7 @@
  * InputType Class
  *
  * @author Renfei Song
- * @since 1.0
+ * @since 1.0.0
  */
 
 abstract class InputType {

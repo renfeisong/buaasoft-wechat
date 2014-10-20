@@ -4,8 +4,10 @@
  *
  * Original code from {@link http://php.justinvincent.com Justin Vincent (justin@visunet.ie)}
  *
+ * @see https://github.com/renfeisong/buaasoft-wechat/wiki/WXDB-Class-Reference
+ *
  * @author Renfei Song
- * @since 1.0
+ * @since 1.0.0
  */
 
 class wxdb {

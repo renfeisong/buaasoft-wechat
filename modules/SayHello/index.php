@@ -21,5 +21,4 @@ class SayHello extends BaseModule {
         $formatter = new OutputFormatter($input->openid, $input->accountId);
         return $formatter->textOutput("你好");
     }
-
 }
