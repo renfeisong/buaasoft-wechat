@@ -1,11 +1,11 @@
-buaasoft-wechat
+BUAAWeChat
 ===============
 
-(W.I.P)
+W.I.P
 
 ### 简介
 
-2.0 版本相对之前的版本是一个自底向上的完全重写。从 2.0 开始，正式引入 Module 模式，即公众账号的功能和内核完全脱离，每个功能都以一个单独的 Module 的形式存在并加载，不同功能模块之间完全解耦，极大地增强了系统的稳定性和可维护性。
+2.0 版本相对之前的版本是一个自底向上的完全重写。从 2.0 开始，正式引入 Module 模式，即公众账号的功能和内核完全脱离，每个功能都以一个单独的 Module 的形式存在并独立加载，不同功能模块之间完全解耦，极大地增强了系统的稳定性和可维护性。
 
 2.0 版本的数据库也经过整合与重新设计，目前处于草稿阶段，详细说明：[Database Scheme Design](https://github.com/renfeisong/buaasoft-wechat/wiki/Database-Scheme-Design---Draft-1)
 
