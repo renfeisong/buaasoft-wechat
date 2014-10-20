@@ -12,3 +12,15 @@ W.I.P
 关于如何开发一个 Module，请参考 [Module PG](https://github.com/renfeisong/buaasoft-wechat/wiki/Module-Programming-Guide)
 
 此外，2.0 还新增了许多方便的辅助工具，以便开发者可以快速开发 Module。目前包括 [WXDB] (https://github.com/renfeisong/buaasoft-wechat/wiki/WXDB-Class-Reference) 和 [OutputFormatter](https://github.com/renfeisong/buaasoft-wechat/wiki/OutputFormatter-Class-Reference)
+
+### 参与开发
+
+#### 分支
+
+这个 repository 现在包含 master 和 develop 两个分支，日常提交一律提交到 develop 分支。
+
+#### 代码风格
+
+参考目前已有代码的代码风格即可。
+
+简而言之：函数、变量均按照 PHP 的风格（以下划线分隔单词），缩进采用一个 TAB 字符。关于换行、空格的使用和 K&R C 风格保持一致。
