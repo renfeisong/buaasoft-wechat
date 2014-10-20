@@ -113,8 +113,10 @@ class wxdb {
     public function flush() {
         $this->last_result = array();
         $this->last_query = null;
-        $this->rows_affected = $this->num_rows = 0;
+        $this->rows_affected = 0;
+	    $this->num_rows = 0;
         $this->last_error = '';
+	    $this->insert_id = 0;
 
         if (is_resource($this->result)) {
             mysqli_free_result($this->result);
@@ -150,19 +152,28 @@ class wxdb {
         $this->last_query = $query;
         $this->_do_query($query);
         $mysql_errno = 0;
+
+		// Log errno
         if (!empty($this->dbh)) {
             $mysql_errno = mysqli_errno($this->dbh);
         }
+
+		// If it's a connection error, try re-connect.
         if (empty($this->dbh) || 2006 == $mysql_errno) {
             if ($this->check_connection()) {
                 $this->_do_query($query);
             } else {
-                $this->insert_id = 0;
                 return false;
             }
         }
 
+		// Log errno.
         $this->last_error = mysqli_errno($this->dbh);
+
+		// If execution failed, return FALSE.
+		if ($this->last_error != 0) {
+			return false;
+		}
 
         if (preg_match('/^\s*(create|alter|truncate|drop)\s/i', $query)) {
             $return_val = $this->result;
@@ -282,34 +293,32 @@ class wxdb {
         return $this->query($this->prepare($sql, $where));
     }
 
-	public function get_results( $query = null, $output = OBJECT ) {
+	public function get_results($query = null, $output = OBJECT) {
 
-		if ( $query )
-			$this->query( $query );
+		if ($query)
+			$this->query($query);
 		else
 			return null;
 
 		$new_array = array();
-		if ( $output == OBJECT ) {
+		if ($output == OBJECT) {
 			// Return an integer-keyed array of row objects
 			return $this->last_result;
-		} elseif ( $output == OBJECT_K ) {
+		} elseif ($output == OBJECT_K) {
 			// Return an array of row objects with keys from column 1
 			// (Duplicates are discarded)
-			foreach ( $this->last_result as $row ) {
-				$var_by_ref = get_object_vars( $row );
-				$key = array_shift( $var_by_ref );
-				if ( ! isset( $new_array[ $key ] ) )
-					$new_array[ $key ] = $row;
+			foreach ($this->last_result as $row) {
+				$var_by_ref = get_object_vars($row);
+				$key = array_shift($var_by_ref);
+				if (!isset($new_array[$key]))
+					$new_array[$key] = $row;
 			}
 			return $new_array;
-		} elseif ( $output == ARRAY_A) {
-			// Return an integer-keyed array of...
-			if ( $this->last_result ) {
-				foreach( (array) $this->last_result as $row ) {
-
-						// ...column name-keyed row arrays
-						$new_array[] = get_object_vars( $row );
+		} elseif ($output == ARRAY_A) {
+			// Return an integer-keyed array of column name-keyed row arrays
+			if ($this->last_result) {
+				foreach((array)$this->last_result as $row) {
+					$new_array[] = get_object_vars($row);
 				}
 			}
 			return $new_array;
