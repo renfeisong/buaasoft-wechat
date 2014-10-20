@@ -13,8 +13,8 @@
  * @see timer_stop()
  */
 function timer_start() {
-	global $time_start;
-	$time_start = microtime(true);
+    global $time_start;
+    $time_start = microtime(true);
 }
 
 /**
@@ -29,11 +29,11 @@ function timer_start() {
  * both localized and rounded.
  */
 function timer_stop($precision = 3) {
-	global $time_start, $time_end;
-	$time_end = microtime(true);
-	$time_total = $time_end - $time_start;
-	$r = (function_exists( 'number_format_i18n')) ? number_format_i18n($time_total, $precision) : number_format($time_total, $precision);
-	return $r;
+    global $time_start, $time_end;
+    $time_end = microtime(true);
+    $time_total = $time_end - $time_start;
+    $r = (function_exists( 'number_format_i18n')) ? number_format_i18n($time_total, $precision) : number_format($time_total, $precision);
+    return $r;
 }
 
 /**
@@ -42,9 +42,9 @@ function timer_stop($precision = 3) {
  * @global wxdb $wxdb The database class.
  */
 function require_db() {
-	global $wxdb;
-	require_once('wxdb.php');
-	$wxdb = new wxdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
+    global $wxdb;
+    require_once('wxdb.php');
+    $wxdb = new wxdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 }
 
 /**
@@ -53,22 +53,22 @@ function require_db() {
  * @return array Array of exist modules.
  */
 function get_modules() {
-	$module_list = array();
-	$path = ABSPATH . "/modules";
-	$idx = 0;
-	foreach (new DirectoryIterator($path) as $fileInfo) {
-		if ($fileInfo->isDot() == false && $fileInfo->isDir()) {
-			$module_name = $fileInfo->getFilename();
-			$module_path = ABSPATH . "/modules/" . $module_name . "/index.php";
-			if (file_exists($module_path)) {
-				$module_list[$idx]["path"] = $module_path;
-				$module_list[$idx]["name"] = $module_name;
-				$idx++;
-			}
-		}
-	}
+    $module_list = array();
+    $path = ABSPATH . "/modules";
+    $idx = 0;
+    foreach (new DirectoryIterator($path) as $fileInfo) {
+        if ($fileInfo->isDot() == false && $fileInfo->isDir()) {
+            $module_name = $fileInfo->getFilename();
+            $module_path = ABSPATH . "/modules/" . $module_name . "/index.php";
+            if (file_exists($module_path)) {
+                $module_list[$idx]["path"] = $module_path;
+                $module_list[$idx]["name"] = $module_name;
+                $idx++;
+            }
+        }
+    }
 
-	return $module_list;
+    return $module_list;
 }
 
 /**
@@ -78,15 +78,15 @@ function get_modules() {
  * @param $module_list Array of module paths and names.
  */
 function load_modules($module_list) {
-	global $modules;
-	usort($modules, 'cmp');
-	foreach ($module_list as $module) {
-		require_once $module['path'];
-		$m = new $module['name'];
-		if (is_subclass_of($m, 'BaseModule')) {
-			$modules[] = $m;
-		}
-	}
+    global $modules;
+    usort($modules, 'cmp');
+    foreach ($module_list as $module) {
+        require_once $module['path'];
+        $m = new $module['name'];
+        if (is_subclass_of($m, 'BaseModule')) {
+            $modules[] = $m;
+        }
+    }
 }
 
 /**
@@ -98,7 +98,7 @@ function load_modules($module_list) {
  * @return int Comparison result.
  */
 function cmp(BaseModule $a, BaseModule $b) {
-	if ($a->priority() == $b->priority())
-		return 0;
-	return ($a->priority() < $b->priority()) ? 1 : -1;
+    if ($a->priority() == $b->priority())
+        return 0;
+    return ($a->priority() < $b->priority()) ? 1 : -1;
 }
