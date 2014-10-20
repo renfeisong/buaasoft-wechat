@@ -32,7 +32,7 @@ class wxdb {
     public function __construct($dbuser, $dbpassword, $dbname, $dbhost) {
         register_shutdown_function(array($this, '__destruct'));
 
-        $this->init_charset('utf8');
+        $this->init_charset();
 
         $this->dbuser = $dbuser;
         $this->dbpassword = $dbpassword;
@@ -46,8 +46,11 @@ class wxdb {
         return true;
     }
 
-    public function init_charset($charset) {
-        $this->charset = $charset;
+    public function init_charset() {
+        $this->charset = 'utf8';
+
+	    if (defined('DB_CHARSET'))
+		    $this->charset = DB_CHARSET;
     }
 
     public function set_charset($dbh, $charset = null) {

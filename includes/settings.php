@@ -6,12 +6,12 @@
  * @author Renfei Song
  */
 
-require_once 'InputType.php';
-require_once 'UserInput.php';
-require_once 'BaseModule.php';
-require_once 'OutputFormatter.php';
-require_once 'MessageReceiver.php';
-require_once 'load.php';
+require_once ABSPATH . 'includes/InputType.php';
+require_once ABSPATH . 'includes/UserInput.php';
+require_once ABSPATH . 'includes/BaseModule.php';
+require_once ABSPATH . 'includes/OutputFormatter.php';
+require_once ABSPATH . 'includes/MessageReceiver.php';
+require_once ABSPATH . 'includes/load.php';
 
 // Globals
 

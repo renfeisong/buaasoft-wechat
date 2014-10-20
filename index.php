@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-require_once "includes/settings.php";
+require_once "config.php";
 
 $receiver = new MessageReceiver();
 

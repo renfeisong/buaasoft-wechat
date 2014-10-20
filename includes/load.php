@@ -44,7 +44,7 @@ function timer_stop($precision = 3) {
 function require_db() {
 	global $wxdb;
 	require_once('wxdb.php');
-	$wxdb = new wxdb('root','root','weixin','localhost');
+	$wxdb = new wxdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 }
 
 /**
@@ -54,12 +54,12 @@ function require_db() {
  */
 function get_modules() {
 	$module_list = array();
-	$path = "modules";
+	$path = ABSPATH . "/modules";
 	$idx = 0;
 	foreach (new DirectoryIterator($path) as $fileInfo) {
 		if ($fileInfo->isDot() == false && $fileInfo->isDir()) {
 			$module_name = $fileInfo->getFilename();
-			$module_path = "modules/" . $module_name . "/index.php";
+			$module_path = ABSPATH . "/modules/" . $module_name . "/index.php";
 			if (file_exists($module_path)) {
 				$module_list[$idx]["path"] = $module_path;
 				$module_list[$idx]["name"] = $module_name;
