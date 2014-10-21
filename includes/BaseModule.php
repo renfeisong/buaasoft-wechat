@@ -89,16 +89,4 @@ class BaseModule {
     public function display_name() {
         return get_class($this);
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //// You should not override or call the methods below.
-    //// For internal use only.
-
-    public function has_settings_page() {
-        return file_exists(ABSPATH . 'modules/' . get_class($this) . '/settings.php');
-    }
-
-    public function settings_page_url() {
-        return ROOT_URL . 'modules/' . get_class($this) . '/settings.php';
-    }
 }
