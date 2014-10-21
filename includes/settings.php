@@ -23,7 +23,7 @@ define('ARRAY_N', 'ARRAY_N');
 // Globals
 
 $modules = array();
-$filters = array();
+$actions = array();
 $wxdb = null;
 $time_start = 0.0;
 $time_end = 0.0;

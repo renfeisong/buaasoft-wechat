@@ -79,7 +79,7 @@ function get_modules() {
  */
 function load_modules($module_list) {
     global $modules;
-    usort($modules, 'cmp');
+    usort($modules, 'cmp_modules');
     foreach ($module_list as $module) {
         require_once $module['path'];
         $m = new $module['name'];
@@ -98,7 +98,7 @@ function load_modules($module_list) {
  *
  * @return int Comparison result.
  */
-function cmp(BaseModule $a, BaseModule $b) {
+function cmp_modules(BaseModule $a, BaseModule $b) {
     if ($a->priority() == $b->priority())
         return 0;
     return ($a->priority() < $b->priority()) ? 1 : -1;

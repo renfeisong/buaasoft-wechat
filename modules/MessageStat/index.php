@@ -7,7 +7,7 @@
 
 class MessageStat extends BaseModule {
     public function prepare() {
-        add_filter('message_received', $this, 'log_message');
+        add_action('message_received', $this, 'log_message');
     }
 
     public function log_message($input) {
