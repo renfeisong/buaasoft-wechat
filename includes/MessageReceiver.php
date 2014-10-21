@@ -76,5 +76,7 @@ class MessageReceiver {
                     break;
             }
         }
+
+        apply_filters('message_received', array($this->input));
     }
 }

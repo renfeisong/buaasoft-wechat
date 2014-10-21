@@ -20,6 +20,17 @@
 class BaseModule {
 
     /**
+     * Prepares your module.
+     *
+     * The default implementation of this method does nothing. This method is called right after the module is loaded,
+     * which is prior to receiving user messages. If your service requires background execution, you can use this
+     * method to register hooks.
+     */
+    public function prepare() {
+        ;
+    }
+
+    /**
      * Returns a boolean indicating whether the service can act on the input data.
      *
      * The default implementation of this method returns false. Subclasses must override it and return true if the

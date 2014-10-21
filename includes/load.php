@@ -85,6 +85,7 @@ function load_modules($module_list) {
         $m = new $module['name'];
         if (is_subclass_of($m, 'BaseModule')) {
             $modules[] = $m;
+            $m->prepare();
         }
     }
 }

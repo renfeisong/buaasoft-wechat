@@ -11,6 +11,7 @@ require_once ABSPATH . 'includes/UserInput.php';
 require_once ABSPATH . 'includes/BaseModule.php';
 require_once ABSPATH . 'includes/OutputFormatter.php';
 require_once ABSPATH . 'includes/MessageReceiver.php';
+require_once ABSPATH . 'includes/module.php';
 require_once ABSPATH . 'includes/load.php';
 
 // Constants
@@ -22,6 +23,7 @@ define('ARRAY_N', 'ARRAY_N');
 // Globals
 
 $modules = array();
+$filters = array();
 $wxdb = null;
 $time_start = 0.0;
 $time_end = 0.0;
