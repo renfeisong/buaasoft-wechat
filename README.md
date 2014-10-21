@@ -9,7 +9,7 @@ W.I.P
 
 2.0 版本的数据库也经过整合与重新设计，目前处于草稿阶段，详细说明：[Database Scheme Design](https://github.com/renfeisong/buaasoft-wechat/wiki/Database-Scheme-Design---Draft-1)
 
-关于如何开发一个 Module，请参考 [Module PG](https://github.com/renfeisong/buaasoft-wechat/wiki/Module-Programming-Guide)
+关于如何开发一个 Module，请参考 [Module PG](https://github.com/renfeisong/buaasoft-wechat/wiki/Module-Programming-Guide)。该指南介绍了 Module 编写的基本机制、BaseModule 类、Action Hook API 以及 Configuration API 的使用方法。
 
 此外，2.0 还新增了许多方便的辅助工具，以便开发者可以快速开发 Module。目前包括 [WXDB] (https://github.com/renfeisong/buaasoft-wechat/wiki/WXDB-Class-Reference) 和 [OutputFormatter](https://github.com/renfeisong/buaasoft-wechat/wiki/OutputFormatter-Class-Reference)
 
