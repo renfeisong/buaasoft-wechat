@@ -8,6 +8,16 @@
  * @since 2.0.0
  */
 
+/**
+ * Add an action hook to the event.
+ *
+ * @param string $tag Event name.
+ * @param BaseModule $object Current module object, typically use `$this`
+ * @param callable $function_to_add Function name.
+ * @param int $priority Priority of this action. Higher priority results in earlier invocation.
+ *
+ * @return bool Success or not.
+ */
 function add_action($tag, $object, $function_to_add, $priority = 10) {
     global $actions;
 
@@ -26,6 +36,8 @@ function add_action($tag, $object, $function_to_add, $priority = 10) {
 
     // sort
     usort($actions[$tag], 'cmp_actions');
+
+    return true;
 }
 
 function cmp_actions($a, $b) {
@@ -73,4 +85,28 @@ function do_actions($tag, $args) {
     foreach ($actions[$tag] as $action) {
         call_user_func_array(array($action['module'], $action['function']), $args);
     }
+}
+
+function set_value($object, $key, $value) {
+    if ($object == null) {
+        return false;
+    }
+    global $wxdb; /* @var $wxdb wxdb */
+    $wxdb->replace('configuration', array(
+        'scope' => get_class($object),
+        'key' => $key,
+        'value' => serialize($value)
+    ));
+
+    return $wxdb->last_error == 0;
+}
+
+function get_value($object, $key) {
+    global $wxdb; /* @var $wxdb wxdb */
+    $row = $wxdb->get_row($wxdb->prepare("SELECT * FROM `configuration` WHERE `scope` = '%s' AND `key` = '%s'", get_class($object), $key), ARRAY_A);
+
+    if ($row)
+        return unserialize($row['value']);
+    else
+        return null;
 }
