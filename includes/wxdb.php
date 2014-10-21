@@ -145,6 +145,7 @@ class wxdb {
         if ($this->dbh) {
             return mysqli_real_escape_string($this->dbh, $string);
         }
+        return null;
     }
 
     public function query($query) {
@@ -231,7 +232,7 @@ class wxdb {
         if (!in_array(strtoupper($type), array('REPLACE', 'INSERT')))
             return false;
         $this->insert_id = 0;
-        $formats = $format = (array) $format;
+        $formats = $format = (array)$format;
         $fields = array_keys($data);
         $formatted_fields = array();
         foreach ($fields as $field) {

@@ -84,7 +84,7 @@ function load_modules($module_list) {
         require_once $module['path'];
         $m = new $module['name'];
         if (is_subclass_of($m, 'BaseModule')) {
-            $modules[] = $m;
+            $modules[] = $m; /* @var $m BaseModule */
             $m->prepare();
         }
     }
