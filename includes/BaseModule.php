@@ -24,7 +24,7 @@ class BaseModule {
      *
      * The default implementation of this method does nothing. This method is called right after the module is loaded,
      * which is prior to receiving user messages. If your service requires background execution, you can use this
-     * method to register hooks.
+     * method to register action hooks.
      */
     public function prepare() {
         ;

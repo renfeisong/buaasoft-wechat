@@ -10,6 +10,11 @@
 
 function add_action($tag, $object, $function_to_add, $priority = 10) {
     global $actions;
+
+    if (has_action($tag, $object, $function_to_add)) {
+        return false;
+    }
+
     if (!is_array($actions[$tag])) {
         $actions[$tag] = array();
     }
