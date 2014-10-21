@@ -90,16 +90,13 @@ function load_modules($module_list) {
     }
 }
 
-/**
- * Compare function to sort BaseModules to descending order of priorities.
- *
- * @param BaseModule $a First operator.
- * @param BaseModule $b Second operator.
- *
- * @return int Comparison result.
- */
 function cmp_modules(BaseModule $a, BaseModule $b) {
-    if ($a->priority() == $b->priority())
+    if (get_module_priority($a) == get_module_priority($b))
         return 0;
-    return ($a->priority() < $b->priority()) ? 1 : -1;
+    return (get_module_priority($a) < get_module_priority($b)) ? 1 : -1;
+}
+
+function get_module_priority(BaseModule $module) {
+    $priority = get_value(null, get_class($module) . '_priority');
+    return $priority == null ? $module->priority() : $priority;
 }

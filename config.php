@@ -25,5 +25,8 @@ define('DB_CHARSET', 'utf8');
 if (!defined('ABSPATH'))
     define('ABSPATH', dirname(__FILE__) . '/');
 
+/* Website Root URL */
+define('ROOT_URL', '/');
+
 /* Sets up vars and included files. */
 require_once(ABSPATH . 'includes/settings.php');

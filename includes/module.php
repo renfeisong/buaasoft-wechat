@@ -93,7 +93,7 @@ function set_value($object, $key, $value) {
     }
     global $wxdb; /* @var $wxdb wxdb */
     $wxdb->replace('configuration', array(
-        'scope' => get_class($object),
+        'scope' => $object == null ? 'global' : get_class($object),
         'key' => $key,
         'value' => serialize($value)
     ));
@@ -103,7 +103,8 @@ function set_value($object, $key, $value) {
 
 function get_value($object, $key) {
     global $wxdb; /* @var $wxdb wxdb */
-    $row = $wxdb->get_row($wxdb->prepare("SELECT * FROM `configuration` WHERE `scope` = '%s' AND `key` = '%s'", get_class($object), $key), ARRAY_A);
+    $scope = $object == null ? 'global' : get_class($object);
+    $row = $wxdb->get_row($wxdb->prepare("SELECT * FROM `configuration` WHERE `scope` = '%s' AND `key` = '%s'", $scope, $key), ARRAY_A);
 
     if ($row)
         return unserialize($row['value']);

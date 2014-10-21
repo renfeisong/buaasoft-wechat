@@ -52,6 +52,8 @@ class BaseModule {
      * This method returns 10 by default. Subclasses may override this method and return a valid integer. The integer
      * is used to determine which service to apply when multiple services can act on the same user input data.
      *
+     * Note that this priority may be overwritten by global settings.
+     *
      * @return int The priority of this service.
      */
     public function priority() {
@@ -76,4 +78,27 @@ class BaseModule {
         return "";
     }
 
+    /**
+     * Returns the display name of your module.
+     *
+     * This method returns the class name by default. Subclasses may override this method and returns a more
+     * human-readable name if the module has a settings page.
+     *
+     * @return string
+     */
+    public function display_name() {
+        return get_class($this);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //// You should not override or call the methods below.
+    //// For internal use only.
+
+    public function has_settings_page() {
+        return file_exists(ABSPATH . 'modules/' . get_class($this) . '/settings.php');
+    }
+
+    public function settings_page_url() {
+        return ROOT_URL . 'modules/' . get_class($this) . '/settings.php';
+    }
 }
