@@ -1,7 +1,12 @@
 <?php
+/**
+ * This page is shown to user if his/her account is disabled.
+ *
+ * @author Renfei Song
+ * @since 2.0.0
+ */
 
-require_once '../config.php';
-require_once "includes/admin.php";
+require_once dirname(__FILE__) . '/includes/admin.php';
 
 if (is_disabled() == false) {
     redirect('index.php');

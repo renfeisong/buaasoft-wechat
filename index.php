@@ -13,6 +13,7 @@ $receiver = new MessageReceiver();
 $receiver->receive();
 
 foreach ($modules as $module) {
+    /* @var $module BaseModule */
     if ($module->can_handle_input($receiver->input)) {
         echo $module->raw_output($receiver->input);
         break;
