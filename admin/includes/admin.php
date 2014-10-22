@@ -114,7 +114,7 @@ function list_module_navigation_items() {
 
 ///// Public Admin Panel API
 
-function submit_button($text = 'Submit', $class = '') {
-    $template = '<input type="submit" name="submit" value="%s" class="%s">';
-    echo sprintf($template, $text, $class);
+function submit_button($text = 'Submit', $class = '', $id = '') {
+    $template = '<input type="submit" name="submit" value="%s" id="%s" class="%s">';
+    echo sprintf($template, $text, $id, $class);
 }
