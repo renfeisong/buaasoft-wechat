@@ -87,13 +87,13 @@ function do_actions($tag, $args) {
     }
 }
 
-function set_value($object, $key, $value) {
-    if ($object == null) {
+function _set_value($scope, $key, $value) {
+    if ($scope == null || $scope == '') {
         return false;
     }
     global $wxdb; /* @var $wxdb wxdb */
     $wxdb->replace('configuration', array(
-        'scope' => $object == null ? 'global' : get_class($object),
+        'scope' => $scope,
         'key' => $key,
         'value' => serialize($value)
     ));
@@ -101,13 +101,32 @@ function set_value($object, $key, $value) {
     return $wxdb->last_error == 0;
 }
 
-function get_value($object, $key) {
+function set_value($object, $key, $value) {
+    return _set_value(get_class($object), $key, $value);
+}
+
+function set_global_value($key, $value) {
+    return _set_value('global', $key, $value);
+}
+
+function _get_value($scope, $key) {
     global $wxdb; /* @var $wxdb wxdb */
-    $scope = $object == null ? 'global' : get_class($object);
     $row = $wxdb->get_row($wxdb->prepare("SELECT * FROM `configuration` WHERE `scope` = '%s' AND `key` = '%s'", $scope, $key), ARRAY_A);
 
     if ($row)
         return unserialize($row['value']);
     else
         return null;
+}
+
+function get_value($object, $key) {
+    return _get_value(get_class($object), $key);
+}
+
+function get_option($key) {
+    return _get_value($_GET['module'], $key);
+}
+
+function get_global_value($key) {
+    return _get_value('global', $key);
 }

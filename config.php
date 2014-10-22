@@ -21,6 +21,9 @@ define('DB_HOST', 'localhost');
 /* Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
 
+/* Authentication unique salts. */
+define('LOGIN_SALT', 'unique string here');
+
 /* Absolute path to the directory. */
 if (!defined('ABSPATH'))
     define('ABSPATH', dirname(__FILE__) . '/');

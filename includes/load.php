@@ -100,11 +100,3 @@ function get_module_priority(BaseModule $module) {
     $priority = get_value(null, get_class($module) . '_priority');
     return $priority == null ? $module->priority() : $priority;
 }
-
-function has_settings_page(BaseModule $module) {
-    return file_exists(ABSPATH . 'modules/' . get_class($module) . '/settings.php');
-}
-
-function settings_page_url(BaseModule $module) {
-    return ROOT_URL . 'modules/' . get_class($module) . '/settings.php';
-}

@@ -11,6 +11,11 @@ class MessageStat extends BaseModule {
     }
 
     public function log_message($input) {
-        print_r($input);
+        if (get_value($this, 'print') == true)
+            print_r($input);
+    }
+
+    public function display_name() {
+        return "Message Statistics";
     }
 }
