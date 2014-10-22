@@ -6,7 +6,7 @@
  * @since 2.0.0
  */
 
-require_once "config.php";
+require_once dirname(__FILE__) . "/config.php";
 
 $receiver = new MessageReceiver();
 

@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
+
 ///// Internal API
 
 function current_user() {

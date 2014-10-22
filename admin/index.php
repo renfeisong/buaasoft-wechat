@@ -1,7 +1,6 @@
 <?php
 
-require_once '../config.php';
-require_once 'includes/admin.php';
+require_once dirname(__FILE__) . '/includes/admin.php';
 
 if (is_logged_in() == false) {
     redirect('login.php');
