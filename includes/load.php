@@ -1,104 +1,33 @@
 <?php
 /**
- * These functions are needed to load the system.
+ * Used to set up common variables and include the procedural and class library.
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */
 
-/**
- * Start the micro-timer.
- *
- * @global float $time_start Unix timestamp set at the beginning of the page load.
- * @see timer_stop()
- */
-function timer_start() {
-	global $time_start;
-	$time_start = microtime(true);
-}
+require_once ABSPATH . 'includes/InputType.php';
+require_once ABSPATH . 'includes/UserInput.php';
+require_once ABSPATH . 'includes/BaseModule.php';
+require_once ABSPATH . 'includes/OutputFormatter.php';
+require_once ABSPATH . 'includes/MessageReceiver.php';
+require_once ABSPATH . 'includes/module.php';
+require_once ABSPATH . 'includes/functions.php';
 
-/**
- * Retrieve the time from the page start to when function is called.
- *
- * @global float $timestart Seconds from when timer_start() is called.
- * @global float $timeend   Seconds from when function is called.
- *
- * @param int $precision The number of digits from the right of the decimal to retrieve. Default 3.
- *
- * @return string The "second.microsecond" finished time calculation. The number is formatted or human consumption,
- * both localized and rounded.
- */
-function timer_stop($precision = 3) {
-	global $time_start, $time_end;
-	$time_end = microtime(true);
-	$time_total = $time_end - $time_start;
-	$r = (function_exists( 'number_format_i18n')) ? number_format_i18n($time_total, $precision) : number_format($time_total, $precision);
-	return $r;
-}
+// Constants
+define('OBJECT', 'OBJECT');
+define('OBJECT_K', 'OBJECT_K');
+define('ARRAY_A', 'ARRAY_A');
+define('ARRAY_N', 'ARRAY_N');
 
-/**
- * Load the database class file and instantiate the `$wxdb` global.
- *
- * @global wxdb $wxdb The database class.
- */
-function require_db() {
-	global $wxdb;
-	require_once('wxdb.php');
-	$wxdb = new wxdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
-}
+// Globals
 
-/**
- * Retrieve an array of module paths and names.
- *
- * @return array Array of exist modules.
- */
-function get_modules() {
-	$module_list = array();
-	$path = ABSPATH . "/modules";
-	$idx = 0;
-	foreach (new DirectoryIterator($path) as $fileInfo) {
-		if ($fileInfo->isDot() == false && $fileInfo->isDir()) {
-			$module_name = $fileInfo->getFilename();
-			$module_path = ABSPATH . "/modules/" . $module_name . "/index.php";
-			if (file_exists($module_path)) {
-				$module_list[$idx]["path"] = $module_path;
-				$module_list[$idx]["name"] = $module_name;
-				$idx++;
-			}
-		}
-	}
+$modules = array();
+$actions = array();
+$wxdb = null;
+$time_start = 0.0;
+$time_end = 0.0;
 
-	return $module_list;
-}
+require_db();
 
-/**
- * Load all valid modules from given list.
- *
- * @see get_modules()
- * @param $module_list Array of module paths and names.
- */
-function load_modules($module_list) {
-	global $modules;
-	usort($modules, 'cmp');
-	foreach ($module_list as $module) {
-		require_once $module['path'];
-		$m = new $module['name'];
-		if (is_subclass_of($m, 'BaseModule')) {
-			$modules[] = $m;
-		}
-	}
-}
-
-/**
- * Compare function to sort BaseModules to descending order of priorities.
- *
- * @param BaseModule $a First operator.
- * @param BaseModule $b Second operator.
- *
- * @return int Comparison result.
- */
-function cmp(BaseModule $a, BaseModule $b) {
-	if ($a->priority() == $b->priority())
-		return 0;
-	return ($a->priority() < $b->priority()) ? 1 : -1;
-}
+load_modules(get_modules());

@@ -3,7 +3,7 @@
  * BaseModule Class
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 /**
@@ -18,6 +18,17 @@
  * for more information and examples on how to create a module.
  */
 class BaseModule {
+
+    /**
+     * Prepares your module.
+     *
+     * The default implementation of this method does nothing. This method is called right after the module is loaded,
+     * which is prior to receiving user messages. If your service requires background execution, you can use this
+     * method to register action hooks.
+     */
+    public function prepare() {
+        ;
+    }
 
     /**
      * Returns a boolean indicating whether the service can act on the input data.
@@ -40,6 +51,8 @@ class BaseModule {
      *
      * This method returns 10 by default. Subclasses may override this method and return a valid integer. The integer
      * is used to determine which service to apply when multiple services can act on the same user input data.
+     *
+     * Note that this priority may be overwritten by global settings.
      *
      * @return int The priority of this service.
      */
@@ -65,4 +78,15 @@ class BaseModule {
         return "";
     }
 
-} 
+    /**
+     * Returns the display name of your module.
+     *
+     * This method returns the class name by default. Subclasses may override this method and returns a more
+     * human-readable name if the module has a settings page.
+     *
+     * @return string
+     */
+    public function display_name() {
+        return get_class($this);
+    }
+}

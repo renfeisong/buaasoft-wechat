@@ -7,9 +7,14 @@
  * @see https://github.com/renfeisong/buaasoft-wechat/wiki/WXDB-Class-Reference
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */
 
+/**
+ * Class wxdb
+ *
+ * Weixin Database Access Abstraction Object
+ */
 class wxdb {
     var $num_queries = 0;
     var $num_rows = 0;
@@ -20,6 +25,7 @@ class wxdb {
 
     public $last_error = '';
     public $charset;
+    public $debug = false;
 
     protected $result;
     protected $reconnect_retries = 5;
@@ -49,8 +55,8 @@ class wxdb {
     public function init_charset() {
         $this->charset = 'utf8';
 
-	    if (defined('DB_CHARSET'))
-		    $this->charset = DB_CHARSET;
+        if (defined('DB_CHARSET'))
+            $this->charset = DB_CHARSET;
     }
 
     public function set_charset($dbh, $charset = null) {
@@ -65,7 +71,7 @@ class wxdb {
             $dbh = $this->dbh;
         $success = @mysqli_select_db($dbh, $db);
         if (!$success) {
-            echo 'Cannot select database '.$db;
+            $this->print_error('Cannot select database `' . $db . '`');
         }
     }
 
@@ -94,11 +100,10 @@ class wxdb {
 
         if ($this->dbh->connect_errno) {
             $this->dbh = null;
-            echo 'Cannot connect to database.';
+            $this->print_error('Cannot connect to database.');
         } else if ($this->dbh) {
             $this->set_charset($this->dbh);
             $this->select($this->dbname, $this->dbh);
-            // echo 'Database connected.';
             return true;
         }
 
@@ -108,8 +113,10 @@ class wxdb {
     public function flush() {
         $this->last_result = array();
         $this->last_query = null;
-        $this->rows_affected = $this->num_rows = 0;
+        $this->rows_affected = 0;
+        $this->num_rows = 0;
         $this->last_error = '';
+        $this->insert_id = 0;
 
         if (is_resource($this->result)) {
             mysqli_free_result($this->result);
@@ -138,6 +145,7 @@ class wxdb {
         if ($this->dbh) {
             return mysqli_real_escape_string($this->dbh, $string);
         }
+        return null;
     }
 
     public function query($query) {
@@ -145,19 +153,30 @@ class wxdb {
         $this->last_query = $query;
         $this->_do_query($query);
         $mysql_errno = 0;
+
+        // Log errno
         if (!empty($this->dbh)) {
             $mysql_errno = mysqli_errno($this->dbh);
         }
+
+        // If it's a connection error, try re-connect.
         if (empty($this->dbh) || 2006 == $mysql_errno) {
             if ($this->check_connection()) {
                 $this->_do_query($query);
             } else {
-                $this->insert_id = 0;
+                $this->print_error('Failed to execute query: ' . $query);
                 return false;
             }
         }
 
+        // Log errno.
         $this->last_error = mysqli_errno($this->dbh);
+
+        // If execution failed, return FALSE.
+        if ($this->last_error != 0) {
+            $this->print_error('Failed to execute query: ' . $query);
+            return false;
+        }
 
         if (preg_match('/^\s*(create|alter|truncate|drop)\s/i', $query)) {
             $return_val = $this->result;
@@ -213,7 +232,7 @@ class wxdb {
         if (!in_array(strtoupper($type), array('REPLACE', 'INSERT')))
             return false;
         $this->insert_id = 0;
-        $formats = $format = (array) $format;
+        $formats = $format = (array)$format;
         $fields = array_keys($data);
         $formatted_fields = array();
         foreach ($fields as $field) {
@@ -223,7 +242,7 @@ class wxdb {
                 $form = '%s';
             $formatted_fields[] = $form;
         }
-        $sql = "{$type} INTO `$table` (`" . implode( '`,`', $fields ) . "`) VALUES (" . implode( ",", $formatted_fields ) . ")";
+        $sql = "{$type} INTO `$table` (`" . implode('`,`', $fields) . "`) VALUES (" . implode(",", $formatted_fields) . ")";
         return $this->query($this->prepare($sql, $data));
     }
 
@@ -235,13 +254,13 @@ class wxdb {
         $bits = $wheres = array();
         foreach ((array)array_keys($data) as $field) {
             if (!empty($format))
-                $form = ($form = array_shift( $formats)) ? $form : $format[0];
+                $form = ($form = array_shift($formats)) ? $form : $format[0];
             else
                 $form = '%s';
             $bits[] = "`$field` = {$form}";
         }
 
-        $where_formats = $where_format = (array) $where_format;
+        $where_formats = $where_format = (array)$where_format;
         foreach ((array) array_keys($where) as $field) {
             if (!empty($where_format))
                 $form = ($form = array_shift($where_formats)) ? $form : $where_format[0];
@@ -250,8 +269,8 @@ class wxdb {
             $wheres[] = "`$field` = {$form}";
         }
 
-        $sql = "UPDATE `$table` SET " . implode( ', ', $bits ) . ' WHERE ' . implode( ' AND ', $wheres);
-        return $this->query($this->prepare($sql, array_merge(array_values( $data ), array_values($where))));
+        $sql = "UPDATE `$table` SET " . implode(', ', $bits) . ' WHERE ' . implode(' AND ', $wheres);
+        return $this->query($this->prepare($sql, array_merge(array_values($data), array_values($where))));
     }
 
     public function delete($table, $where, $where_format = null) {
@@ -272,7 +291,100 @@ class wxdb {
             $wheres[] = "$field = $form";
         }
 
-        $sql = "DELETE FROM $table WHERE " . implode(' AND ', $wheres);
-        return $this->query($this->prepare( $sql, $where));
+        $sql = "DELETE FROM `$table` WHERE " . implode(' AND ', $wheres);
+
+        return $this->query($this->prepare($sql, $where));
+    }
+
+    public function get_results($query = null, $output = OBJECT) {
+        if ($query)
+            $this->query($query);
+        else
+            return null;
+
+        $new_array = array();
+        if ($output == OBJECT) {
+            // Return an integer-keyed array of row objects
+            return $this->last_result;
+        } elseif ($output == OBJECT_K) {
+            // Return an array of row objects with keys from column 1
+            // (Duplicates are discarded)
+            foreach ($this->last_result as $row) {
+                $var_by_ref = get_object_vars($row);
+                $key = array_shift($var_by_ref);
+                if (!isset($new_array[$key]))
+                    $new_array[$key] = $row;
+            }
+            return $new_array;
+        } elseif ($output == ARRAY_A || $output == ARRAY_N) {
+            // Return an integer-keyed array of...
+            if ($this->last_result) {
+                foreach((array)$this->last_result as $row) {
+                    if ($output == ARRAY_N) {
+                        // ...integer-keyed row arrays
+                        $new_array[] = array_values(get_object_vars($row));
+                    } else {
+                        // ...column name-keyed row arrays
+                        $new_array[] = get_object_vars($row);
+                    }
+                }
+            }
+            return $new_array;
+        } else {
+            $this->print_error("\$db->get_results(string query, output type) -- Output type must be one of: OBJECT, OBJECT_K, ARRAY_A, ARRAY_N");
+            return null;
+        }
+    }
+
+    public function get_var($query = null, $x = 0, $y = 0) {
+        if ($query)
+            $this->query( $query );
+
+        // Extract var out of cached results based x,y vals
+        if (!empty($this->last_result[$y])) {
+            $values = array_values(get_object_vars($this->last_result[$y]));
+        }
+
+        // If there is a value return it else return null
+        return (isset($values[$x]) && $values[$x] !== '') ? $values[$x] : null;
+    }
+
+    public function get_row($query = null, $output = OBJECT, $y = 0) {
+        if ($query)
+            $this->query($query);
+        else
+            return null;
+
+        if (!isset($this->last_result[$y]))
+            return null;
+
+        if ($output == OBJECT) {
+            return $this->last_result[$y] ? $this->last_result[$y] : null;
+        } elseif ($output == ARRAY_A) {
+            return $this->last_result[$y] ? get_object_vars($this->last_result[$y]) : null;
+        } elseif ($output == ARRAY_N) {
+            return $this->last_result[$y] ? array_values(get_object_vars($this->last_result[$y])) : null;
+        } else {
+            $this->print_error("\$db->get_row(string query, output type, int offset) -- Output type must be one of: OBJECT, ARRAY_A, ARRAY_N");
+            return null;
+        }
+    }
+
+    public function get_col($query = null , $x = 0) {
+        if ($query)
+            $this->query( $query );
+
+        $new_array = array();
+        // Extract the column values
+        for ($i = 0, $j = count($this->last_result); $i < $j; $i++) {
+            $new_array[$i] = $this->get_var(null, $x, $i);
+        }
+        return $new_array;
+    }
+
+    public function print_error($error) {
+        if ($this->debug) {
+            echo $error . "\n";
+        }
     }
 }

@@ -3,7 +3,7 @@
  * OutputFormatter Class
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 /**
@@ -31,7 +31,34 @@ class OutputFormatter {
      * @return string A string that responds a text message to the user.
      */
     public function textOutput($text) {
-        $template = "<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[%s]]></Content></xml>";
+        $template =
+            "<xml>
+                <ToUserName><![CDATA[%s]]></ToUserName>
+                <FromUserName><![CDATA[%s]]></FromUserName>
+                <CreateTime>%s</CreateTime>
+                <MsgType><![CDATA[text]]></MsgType>
+                <Content><![CDATA[%s]]></Content>
+            </xml>";
         return sprintf($template, $this->openid, $this->accountId, time(), $text);
     }
-} 
+
+    public function singleNewsOutput($title, $description, $pic_url, $redirect_url) {
+        $template =
+            "<xml>
+                <ToUserName><![CDATA[%s]]></ToUserName>
+                <FromUserName><![CDATA[%s]]></FromUserName>
+                <CreateTime>%s</CreateTime>
+                <MsgType><![CDATA[news]]></MsgType>
+                <ArticleCount>1</ArticleCount>
+                <Articles>
+                    <item>
+                        <Title><![CDATA[%s]]></Title>
+                        <Description><![CDATA[%s]]></Description>
+                        <PicUrl><![CDATA[%s]]></PicUrl>
+                        <Url><![CDATA[%s]]></Url>
+                    </item>
+                </Articles>
+            </xml>";
+        return sprintf($template, $this->openid, $this->accountId, time(), $title, $description, $pic_url, $redirect_url);
+    }
+}

@@ -3,7 +3,7 @@
  * InputType Class
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 abstract class InputType {
@@ -19,4 +19,4 @@ abstract class InputType {
     const Scan = 9;
     const LocationReport = 10;
     const View = 11;
-} 
+}

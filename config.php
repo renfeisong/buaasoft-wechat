@@ -3,27 +3,35 @@
  * The base configurations of the system.
  *
  * @author Renfei Song
- * @since 1.0.0
+ * @since 2.0.0
  */
 
-/** The name of the database */
+// MySQL database name
 define('DB_NAME', 'weixin');
 
-/** MySQL database username */
+// MySQL database username
 define('DB_USER', 'root');
 
-/** MySQL database password */
+// MySQL database password
 define('DB_PASSWORD', 'root');
 
-/** MySQL hostname */
+// MySQL hostname
 define('DB_HOST', 'localhost');
 
-/** Database Charset to use in creating database tables. */
+// MySQL database handle charset
 define('DB_CHARSET', 'utf8');
 
-/** Absolute path to the directory. */
-if (!defined('ABSPATH'))
-	define('ABSPATH', dirname(__FILE__) . '/');
+// Authentication unique salts
+define('LOGIN_SALT', 'unique string here');
 
-/** Sets up vars and included files. */
-require_once(ABSPATH . 'includes/settings.php');
+// Website root URL
+define('ROOT_URL', '/');
+
+// Define ABSPATH as this file's directory
+define('ABSPATH', dirname(__FILE__) . '/');
+
+// Sets which PHP errors are reported
+error_reporting(E_ALL);
+
+// Sets up vars and included files
+require_once ABSPATH . 'includes/load.php';
