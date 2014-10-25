@@ -101,9 +101,12 @@ function include_settings($page_or_module_name) {
 
 function list_global_setting_items() {
     global $global_options;
+    global $global_option_icons;
     foreach ($global_options as $slug_name => $display_name) {
-        $template = '<li class="module-navigation-item"><a href="%s">%s</a></li>';
-        echo sprintf($template, ROOT_URL . 'admin/index.php?page=' . $slug_name, $display_name);
+        $icon_name = $global_option_icons[$slug_name];
+        $class = $_GET['page'] == $slug_name ? 'current' : '';
+        $template = '<li class="module-navigation-item %s"><a href="%s"><i class="fa fa-lg fa-fw fa-%s"></i>&nbsp; %s</a></li>';
+        echo sprintf($template, $class, ROOT_URL . 'admin/index.php?page=' . $slug_name, $icon_name, $display_name);
     }
 }
 
@@ -112,8 +115,9 @@ function list_module_setting_items() {
     foreach ($modules as $module) {
         if (has_settings_page($module)) {
             /* @var $module BaseModule */
-            $template = '<li class="module-navigation-item"><a href="%s">%s</a></li>';
-            echo sprintf($template, ROOT_URL . 'admin/index.php?page=' . get_class($module), $module->display_name());
+            $class = $_GET['page'] == get_class($module) ? 'current' : '';
+            $template = '<li class="module-navigation-item %s"><a href="%s">%s</a></li>';
+            echo sprintf($template, $class, ROOT_URL . 'admin/index.php?page=' . get_class($module), $module->display_name());
         }
     }
 }
@@ -126,7 +130,12 @@ function redirect($location, $status = 302) {
 
 ///// Public Admin Panel API
 
-function submit_button($text = 'Submit', $class = '', $id = '') {
-    $template = '<input type="submit" name="submit" value="%s" id="%s" class="%s">';
-    echo sprintf($template, $text, $id, $class);
+function submit_button($text = 'Submit', $class = '') {
+    $template = '<button type="submit" name="submit" class="button submit-button %s"><i class="fa fa-check"></i> %s</button>';
+    echo sprintf($template, $class, $text);
+}
+
+function reset_button($callback = '', $text = 'Reset', $class = '') {
+    $template = '<button class="button reset-button %s" onclick="%s">%s</button>';
+    echo sprintf($template, $class, $callback, $text);
 }

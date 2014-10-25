@@ -30,6 +30,12 @@ $global_options = array(
     'modules' => '模块管理',
     'install_module' => '安装模块'
 );
+$global_option_icons = array(
+    'general' => 'dashboard',
+    'users' => 'user',
+    'modules' => 'plug',
+    'install_module' => 'plus'
+);
 $wxdb = null;
 $time_start = 0.0;
 $time_end = 0.0;
