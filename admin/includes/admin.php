@@ -10,6 +10,10 @@ require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
 
 ///// Internal API
 
+// Get strings
+
+// User Mgmt.
+
 function current_user() {
     $user = $_COOKIE['user'];
     $token = $_COOKIE['token'];
@@ -77,9 +81,7 @@ function register($username, $password) {
     return $success != false;
 }
 
-function redirect($location, $status = 302) {
-    header("Location: " . $location, true, $status);
-}
+// Pages and Items
 
 function has_settings_page(BaseModule $module) {
     return file_exists(ABSPATH . 'modules/' . get_class($module) . '/settings.php');
@@ -98,17 +100,14 @@ function include_settings($page_or_module_name) {
 }
 
 function list_global_setting_items() {
-    echo '<ul>';
     global $global_options;
     foreach ($global_options as $slug_name => $display_name) {
         $template = '<li class="module-navigation-item"><a href="%s">%s</a></li>';
         echo sprintf($template, ROOT_URL . 'admin/index.php?page=' . $slug_name, $display_name);
     }
-    echo '</ul>';
 }
 
 function list_module_setting_items() {
-    echo '<ul>';
     global $modules;
     foreach ($modules as $module) {
         if (has_settings_page($module)) {
@@ -117,7 +116,12 @@ function list_module_setting_items() {
             echo sprintf($template, ROOT_URL . 'admin/index.php?page=' . get_class($module), $module->display_name());
         }
     }
-    echo '</ul>';
+}
+
+// Misc.
+
+function redirect($location, $status = 302) {
+    header("Location: " . $location, true, $status);
 }
 
 ///// Public Admin Panel API

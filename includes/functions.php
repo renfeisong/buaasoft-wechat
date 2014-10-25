@@ -81,6 +81,8 @@ function load_modules($module_list) {
     global $modules;
     usort($modules, 'cmp_modules');
     foreach ($module_list as $module) {
+        if ($module['name'] == 'ClassScheduleQuery')
+            continue;
         require_once $module['path'];
         $m = new $module['name'];
         if (is_subclass_of($m, 'BaseModule')) {

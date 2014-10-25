@@ -124,7 +124,7 @@ function get_value($object, $key) {
 }
 
 function get_option($key) {
-    return _get_value($_GET['module'], $key);
+    return _get_value($_GET['page'], $key);
 }
 
 function get_global_value($key) {

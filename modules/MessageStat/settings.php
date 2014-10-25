@@ -17,8 +17,8 @@
     <p>
         <?php $in3 = get_option('in3') ?>
         <input type="radio" name="in3" value="v3-1" <?php if ($in3 == 'v3-1') echo 'checked' ?>> Offer A
-        <input type="radio" name="in3" value="v3-2"> Offer B
-        <input type="radio" name="in3" value="v3-3"> Offer C
+        <input type="radio" name="in3" value="v3-2" <?php if ($in3 == 'v3-2') echo 'checked' ?>> Offer B
+        <input type="radio" name="in3" value="v3-3" <?php if ($in3 == 'v3-3') echo 'checked' ?>> Offer C
     </p>
     <p>
         <?php $in4 = get_option('in4') ?>
@@ -39,6 +39,7 @@
     </p>
     <p>
         <?php $in7 = get_option('in7') ?>
+        <input type="hidden" name="in7[]">
         <select name="in7[]" multiple>
             <option value="v7-1" <?php if (in_array('v7-1', $in7)) echo 'selected' ?>>Option 1</option>
             <option value="v7-2" <?php if (in_array('v7-2', $in7)) echo 'selected' ?>>Option 2</option>
