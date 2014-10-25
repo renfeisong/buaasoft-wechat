@@ -89,26 +89,34 @@ function settings_page_url(BaseModule $module) {
     return ROOT_URL . 'modules/' . get_class($module) . '/settings.php';
 }
 
-function include_settings_page($module_name) {
-    if ($module_name == 'global')
-        require_once ABSPATH . 'admin/includes/global-options.php';
+function include_settings($page_or_module_name) {
+    global $global_options;
+    if (array_key_exists($page_or_module_name, $global_options))
+        require_once ABSPATH . 'admin/includes/global-options-' . $page_or_module_name . '.php';
     else
-        require_once ABSPATH . 'modules/' . $module_name . '/settings.php';
+        require_once ABSPATH . 'modules/' . $page_or_module_name . '/settings.php';
 }
 
-function list_module_navigation_items() {
+function list_global_setting_items() {
     echo '<ul>';
+    global $global_options;
+    foreach ($global_options as $slug_name => $display_name) {
+        $template = '<li class="module-navigation-item"><a href="%s">%s</a></li>';
+        echo sprintf($template, ROOT_URL . 'admin/index.php?page=' . $slug_name, $display_name);
+    }
+    echo '</ul>';
+}
 
+function list_module_setting_items() {
+    echo '<ul>';
     global $modules;
-
     foreach ($modules as $module) {
         if (has_settings_page($module)) {
             /* @var $module BaseModule */
             $template = '<li class="module-navigation-item"><a href="%s">%s</a></li>';
-            echo sprintf($template, ROOT_URL . 'admin/index.php?module=' . get_class($module), $module->display_name());
+            echo sprintf($template, ROOT_URL . 'admin/index.php?page=' . get_class($module), $module->display_name());
         }
     }
-
     echo '</ul>';
 }
 

@@ -24,6 +24,12 @@ define('ARRAY_N', 'ARRAY_N');
 
 $modules = array();
 $actions = array();
+$global_options = array(
+    'general' => '通用设置',
+    'users' => '用户管理',
+    'modules' => '模块管理',
+    'install_module' => '安装模块'
+);
 $wxdb = null;
 $time_start = 0.0;
 $time_end = 0.0;

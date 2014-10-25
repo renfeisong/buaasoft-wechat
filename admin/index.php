@@ -21,7 +21,7 @@ if (is_disabled()) {
 if (isset($_POST['submit'])) {
     $data = $_POST;
     foreach ($data as $key => $value) {
-        set_value(new $_GET['module'], $key, $value);
+        set_value(new $_GET['page'], $key, $value);
     }
 }
 
@@ -41,16 +41,14 @@ if (isset($_POST['submit'])) {
     <div id="main">
         <div id="navigation">
             <nav class="global">
-                <ul>
-                    <li><a href="index.php?module=global">Global</a></li>
-                </ul>
+                <?php list_global_setting_items() ?>
             </nav>
             <nav class="modules">
-                <?php list_module_navigation_items() ?>
+                <?php list_module_setting_items() ?>
             </nav>
         </div>
         <div id="content">
-            <?php include_settings_page($_GET['module']) ?>
+            <?php include_settings($_GET['page']) ?>
         </div>
     </div>
 </div>

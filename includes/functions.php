@@ -54,12 +54,12 @@ function require_db() {
  */
 function get_modules() {
     $module_list = array();
-    $path = ABSPATH . "/modules";
+    $path = ABSPATH . "modules";
     $idx = 0;
     foreach (new DirectoryIterator($path) as $fileInfo) {
         if ($fileInfo->isDot() == false && $fileInfo->isDir()) {
             $module_name = $fileInfo->getFilename();
-            $module_path = ABSPATH . "/modules/" . $module_name . "/index.php";
+            $module_path = ABSPATH . "modules/" . $module_name . "/index.php";
             if (file_exists($module_path)) {
                 $module_list[$idx]["path"] = $module_path;
                 $module_list[$idx]["name"] = $module_name;
