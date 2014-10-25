@@ -71,7 +71,7 @@
             <label for="in5">设置5</label>
         </div>
         <div class="control">
-            <textarea class="form-control"  name="in5"><?php echo get_option('in5') ?></textarea>
+            <textarea class="form-control"  name="in5" rows="4"><?php echo get_option('in5') ?></textarea>
         </div>
     </div>
 

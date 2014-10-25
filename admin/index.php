@@ -18,6 +18,11 @@ if (is_disabled()) {
     exit;
 }
 
+if (!isset($_GET['page'])) {
+    redirect('index.php?page=general');
+    exit;
+}
+
 if (isset($_POST['submit'])) {
     $data = $_POST;
     foreach ($data as $key => $value) {
@@ -42,6 +47,7 @@ if (isset($_POST['submit'])) {
     <header id="masthead" class="site-header">
         <div class="inner">
             <h1 class="site-title">Admin<span>Center</span></h1>
+            <a href="logout.php" class="log-out" title="Log Out"><i class="fa fa-sign-out"></i> 登出</a>
         </div>
     </header>
     <div id="main" class="site-main">

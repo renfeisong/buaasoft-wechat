@@ -1,3 +1,12 @@
+a {
+    color: #428bca;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 .site-content h1,
 .site-content h2 {
     font-size: 28px;
@@ -64,12 +73,13 @@
 }
 
 input[type='text'].form-control,
+input[type='password'].form-control,
 textarea.form-control {
     font-size: 14px;
     font-weight: normal;
     color: #333333;
     height: 34px;
-    padding: 6px 12px;
+    padding: 2px 12px;
     line-height: 1.42857143;
     background-color: #ffffff;
     border: 1px solid #e5e5e5;
@@ -79,9 +89,11 @@ textarea.form-control {
 
 textarea.form-control {
     height: auto;
+    padding: 8px 12px;
 }
 
 input[type='text'].form-control:focus,
+input[type='password'].form-control:focus,
 textarea.form-control:focus {
     border-color: #999999;
     outline: none;

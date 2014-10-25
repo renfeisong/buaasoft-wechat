@@ -20,6 +20,22 @@ body {
     font-size: 18px;
     padding: 0 15px;
     font-weight: 300;
+    display: inline-block;
+}
+
+.log-out {
+    color: #999999;
+    text-decoration: none;
+    float: right;
+    line-height: 46px;
+    display: inline-block;
+    padding: 0 10px;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.log-out:hover {
+    background-color: #393939;
 }
 
 .site-main::before,
@@ -100,4 +116,107 @@ body {
     line-height: 38px;
     clear: left;
     color: #a3a3a3;
+}
+
+/* login/register */
+
+.login .site-title,
+.account-disabled .site-title {
+    margin: 0 auto;
+    margin-top: 60px;
+    padding: 15px;
+    text-align: center;
+    display: block;
+    line-height: 20px;
+}
+
+.login .content {
+    background-color: #ffffff;
+    width: 360px;
+    margin: 0 auto;
+    padding: 20px 30px 15px;
+}
+
+.login form::after,
+.account-disabled .content::after{
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.login h2 {
+    font-weight: 300;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    font-size: 23px;
+}
+
+.login .input {
+    margin-bottom: 15px;
+    border-left: 2px solid #35aa47;
+}
+
+.login .input i {
+    color: #ccc;
+    display:block;
+    position: absolute;
+    margin: 10px 2px 7px 10px;
+    width:16px;
+    height: 16px;
+    text-align:center;
+}
+
+.login input.form-control {
+    padding-left: 33px;
+    border-left: 0;
+}
+
+.login label {
+    font-size: 14px;
+    display: inline-block;
+    margin: 6px 0;
+}
+
+.login .submit-button {
+    float: right;
+    margin: 0;
+}
+
+.login .alternate-option {
+    border-top: 1px dotted #eee;
+    padding:10px 0 0;
+    margin:15px 0 0;
+    font-size:12px;
+}
+
+.account-disabled .site-title {
+    color: #666;
+}
+
+.account-disabled .content {
+    background-color: #ffffff;
+    width: 360px;
+    margin: 0 auto;
+    font-size: 15px;
+    padding: 20px 30px 15px;
+}
+
+.account-disabled .user {
+    font-weight: 300;
+    margin-bottom: 10px;
+    font-size: 23px;
+}
+
+.account-disabled .message {
+    margin: 0 0 10px;
+}
+
+.account-disabled .note {
+    font-size: 13px;
+    color: #999;
+}
+
+.account-disabled .logout {
+    float:right;
+    font-size:13px;
 }

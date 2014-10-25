@@ -54,13 +54,18 @@ function is_logged_in() {
     return current_user() != null;
 }
 
-function log_in($username, $password) {
+function log_in($username, $password, $remember) {
     global $wxdb; /* @var $wxdb wxdb */
     $sql = $wxdb->prepare("SELECT * FROM `admin_user` WHERE userName = '%s' AND hashedPassword = '%s'", $username, sha1($password));
     $user = $wxdb->get_row($sql, ARRAY_A);
     if ($user) {
-        setcookie('user', $user['userName'], time() + 3600 * 24 * 30);
-        setcookie('token', sha1(LOGIN_SALT . $user['userName']), time() + 3600 * 24 * 30);
+        if ($remember) {
+            setcookie('user', $user['userName'], time() + 3600 * 24 * 30);
+            setcookie('token', sha1(LOGIN_SALT . $user['userName']), time() + 3600 * 24 * 30);
+        } else {
+            setcookie('user', $user['userName']);
+            setcookie('token', sha1(LOGIN_SALT . $user['userName']));
+        }
         return true;
     }
     return false;
