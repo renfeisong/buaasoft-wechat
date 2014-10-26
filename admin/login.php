@@ -41,9 +41,11 @@ if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['tok
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
     <link rel="stylesheet" href="../includes/css/reset.css" media="all">
     <link rel="stylesheet" href="../includes/css/font-awesome.css" media="all">
+    <link rel="stylesheet" href="../includes/plugins/icheck/grey.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
-    <script type="text/javascript" src="../includes/js/jquery/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="../includes/plugins/icheck/icheck.js"></script>
     <title>后台登录</title>
 </head>
 <body class="login">
@@ -71,5 +73,11 @@ if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['tok
         Don't have an account? <a href="register.php">Click to register</a>
     </div>
 </div>
+<script>
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_minimal-grey',
+        radioClass: 'iradio_minimal-grey'
+    });
+</script>
 </body>
 </html>

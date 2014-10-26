@@ -3,6 +3,7 @@ body {
     color: #333333;
     background-color: #3d3d3d;
     line-height: 1.5;
+    font-size: 14px;
 }
 
 a {
@@ -20,7 +21,7 @@ a:hover {
     height: 46px;
     top: 0;
     position: fixed;
-    z-index: 4;
+    z-index: 10000;
 }
 
 .site-title {
@@ -39,7 +40,6 @@ a:hover {
     line-height: 46px;
     display: inline-block;
     padding: 0 10px;
-    font-size: 14px;
     margin-right: 10px;
 }
 
@@ -87,7 +87,6 @@ a:hover {
     display: block;
     padding: 10px 15px;
     text-decoration: none;
-    font-size: 14px;
     font-weight: 300;
 }
 
@@ -111,7 +110,6 @@ a:hover {
     padding: 15px;
     color: #9e9e9e;
     text-transform: uppercase;
-    font-size: 14px;
     font-weight: 300;
 }
 
@@ -171,7 +169,6 @@ a:hover {
     border: 1px solid #ebccd1;
     border-left-width: 0;
     border-right-width: 0;
-    font-size: 14px;
     color: #a94442;
     margin: 15px 0 0;
 }
@@ -197,7 +194,6 @@ a:hover {
 }
 
 .login label {
-    font-size: 14px;
     display: inline-block;
     margin: 6px 0;
 }

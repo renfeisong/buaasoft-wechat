@@ -22,7 +22,7 @@ if (is_disabled() == false) {
     <link rel="stylesheet" href="../includes/css/font-awesome.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
-    <script type="text/javascript" src="../includes/js/jquery/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.js"></script>
     <title>无权访问</title>
 </head>
 <body class="account-disabled">

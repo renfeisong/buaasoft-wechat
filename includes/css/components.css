@@ -19,6 +19,8 @@
     margin: 15px 0;
 }
 
+/* buttons */
+
 .button {
     padding: 7px 14px;
     font-size: 14px;
@@ -30,10 +32,6 @@
     cursor: pointer;
     border: none;
     outline: none;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
     box-shadow: none;
     transition: background-color ease .25s;
     border-radius: 3px;
@@ -61,6 +59,12 @@
 .reset-button:hover,
 .reset-button:active {
     background-color: #c13726;
+}
+
+/* form controls */
+
+.control {
+    line-height: 1.95;
 }
 
 input[type='text'].form-control,
@@ -103,6 +107,11 @@ textarea.form-control.error:focus {
     border-color: #dca7b0;
 }
 
+.icheckbox_minimal-grey,
+.iradio_minimal-grey {
+    margin-right: 4px !important;
+}
+
 label.error {
     font-size: 13px;
     color: #a94442;
@@ -134,18 +143,7 @@ label.error {
     width: 60%;
 }
 
-.alert {
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    font-size: 14px;
-}
-
-.alert-success {
-    color: #3c763d;
-    background-color: #dff0d8;
-    border-color: #d6e9c6;
-}
+/* notifications */
 
 #toast-container div.toast {
     box-shadow: none;

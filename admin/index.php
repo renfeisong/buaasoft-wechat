@@ -47,14 +47,20 @@ if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['tok
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
     <link rel="stylesheet" href="../includes/css/reset.css" media="all">
     <link rel="stylesheet" href="../includes/css/font-awesome.css" media="all">
-    <link rel="stylesheet" href="../includes/js/toastr-notifications/toastr.css" media="all">
+    <link rel="stylesheet" href="../includes/plugins/toastr-notifications/toastr.css" media="all">
+    <link rel="stylesheet" href="../includes/plugins/icheck/grey.css" media="all">
+    <link rel="stylesheet" href="../includes/plugins/select2/select2.css" media="all">
+    <link rel="stylesheet" href="../includes/css/select2-custom.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
-    <script type="text/javascript" src="../includes/js/jquery/jquery-2.1.1.js"></script>
-    <script type="text/javascript" src="../includes/js/jquery-validation/jquery.validate.js"></script>
-    <script type="text/javascript" src="../includes/js/jquery-validation/additional-methods.js"></script>
-    <script type="text/javascript" src="../includes/js/jquery-validation/messages_zh.js"></script>
-    <script type="text/javascript" src="../includes/js/toastr-notifications/toastr.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery-validation/jquery.validate.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery-validation/additional-methods.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery-validation/messages_zh.js"></script>
+    <script type="text/javascript" src="../includes/plugins/toastr-notifications/toastr.js"></script>
+    <script type="text/javascript" src="../includes/plugins/icheck/icheck.js"></script>
+    <script type="text/javascript" src="../includes/plugins/select2/select2.js"></script>
+    <script type="text/javascript" src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
     <title>管理后台</title>
 </head>
 <body>
@@ -106,6 +112,13 @@ if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['tok
 <?php endif; ?>
 
 <script>
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_minimal-grey',
+        radioClass: 'iradio_minimal-grey'
+    });
+
+    $('select').select2();
+
     window.addEventListener('resize', onWindowResize);
     onWindowResize();
     function onWindowResize() {

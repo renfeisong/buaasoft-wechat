@@ -47,8 +47,8 @@
         </div>
         <div class="control">
             <?php $in3 = get_option('in3') ?>
-            <input class="form-control" type="radio" name="in3" value="v3-1" <?php if ($in3 == 'v3-1') echo 'checked' ?>> Offer A
-            <input class="form-control" type="radio" name="in3" value="v3-2" <?php if ($in3 == 'v3-2') echo 'checked' ?>> Offer B
+            <input class="form-control" type="radio" name="in3" value="v3-1" <?php if ($in3 == 'v3-1') echo 'checked' ?>> Offer A<br>
+            <input class="form-control" type="radio" name="in3" value="v3-2" <?php if ($in3 == 'v3-2') echo 'checked' ?>> Offer B<br>
             <input class="form-control" type="radio" name="in3" value="v3-3" <?php if ($in3 == 'v3-3') echo 'checked' ?>> Offer C
         </div>
     </div>
@@ -60,8 +60,8 @@
         <div class="control">
             <?php $in4 = get_option('in4') ?>
             <input class="form-control" type="hidden" name="in4[]">
-            <input class="form-control" type="checkbox" name="in4[]" value="v4-1" <?php if (in_array('v4-1', $in4)) echo 'checked' ?>> Product A
-            <input class="form-control" type="checkbox" name="in4[]" value="v4-2" <?php if (in_array('v4-2', $in4)) echo 'checked' ?>> Product B
+            <input class="form-control" type="checkbox" name="in4[]" value="v4-1" <?php if (in_array('v4-1', $in4)) echo 'checked' ?>> Product A<br>
+            <input class="form-control" type="checkbox" name="in4[]" value="v4-2" <?php if (in_array('v4-2', $in4)) echo 'checked' ?>> Product B<br>
             <input class="form-control" type="checkbox" name="in4[]" value="v4-3" <?php if (in_array('v4-3', $in4)) echo 'checked' ?>> Product C
         </div>
     </div>
@@ -97,5 +97,6 @@
 <script>
     $("#my-form").validate();
     function reset_form() {
+        // reset the form
     }
 </script>
