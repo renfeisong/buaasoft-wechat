@@ -9,17 +9,41 @@
 require_once dirname(__FILE__) . '/includes/admin.php';
 
 if (isset($_POST['submit'])) {
-    if ($_POST['password1'] == $_POST['password2']) {
-        if (register($_POST['username'], $_POST['password1'])) {
-            log_in($_POST['username'], $_POST['password1'], false);
-            redirect('index.php');
-            exit;
-        }
+    $username = $_POST['username'];
+    $password1 = $_POST['password1'];
+    $password2 = $_POST['password2'];
+
+    if (empty($username) || empty($password2) || empty($password2)) {
+        redirect('register.php?msg=1&token=' . time());
+    } else if ($password1 != $password2) {
+        redirect('register.php?msg=2&token=' . time());
+    } else if (register($username,$password1)) {
+        log_in($username, $password1, false);
+        redirect('index.php');
+    } else {
+        redirect('register.php?msg=3&token=' . time());
+    }
+    exit;
+}
+
+if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
+    switch ($_GET['msg']) {
+        case 1:
+            $msg = "请输入用户名和密码。";
+            break;
+        case 2:
+            $msg = "密码和确认密码不一致。";
+            break;
+        case 3:
+            $msg = "用户名已经被占用。";
+            break;
+        case 4:
+            $msg = "密码过于简单。";
+            break;
     }
 }
 
-?>
-
+?><!DOCTYPE HTML>
 <html>
 <head>
     <meta charset="utf-8">
@@ -34,8 +58,11 @@ if (isset($_POST['submit'])) {
 <body class="login">
 <h1 class="site-title">AdminCenter</h1>
 <div class="content">
+    <h2>Register an account</h2>
+    <?php if (isset($msg)): ?>
+        <div class="error"><?php echo $msg ?></div>
+    <?php endif; ?>
     <form method="POST" action="register.php">
-        <h2>Register an account</h2>
         <div class="input">
             <i class="fa fa-user"></i>
             <input name="username" type="text" class="form-control" placeholder="Username">
@@ -48,9 +75,6 @@ if (isset($_POST['submit'])) {
             <i class="fa fa-lock"></i>
             <input name="password2" type="password" class="form-control" placeholder="Confirm Password">
         </div>
-        <label>
-            <input type="checkbox" name="remember" value="1"> Remember me
-        </label>
         <button name="submit" type="submit" class="button submit-button">Register <i class="fa fa-sign-in"></i></button>
     </form>
     <div class="alternate-option">

@@ -141,6 +141,6 @@ function submit_button($text = 'Submit', $class = '') {
 }
 
 function reset_button($callback = '', $text = 'Reset', $class = '') {
-    $template = '<button class="button reset-button %s" onclick="%s">%s</button>';
+    $template = '<button class="button reset-button %s" onclick="%s;return false;">%s</button>';
     echo sprintf($template, $class, $callback, $text);
 }

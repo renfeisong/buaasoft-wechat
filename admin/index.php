@@ -28,17 +28,33 @@ if (isset($_POST['submit'])) {
     foreach ($data as $key => $value) {
         set_value(new $_GET['page'], $key, $value);
     }
+    redirect('index.php?page=' . $_GET['page'] . '&msg=1&token=' . time());
+    exit;
 }
 
-?><!DOCTYPE HTML><html>
+if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
+    switch ($_GET['msg']) {
+        case 1:
+            $success = true;
+            break;
+    }
+}
+
+?><!DOCTYPE HTML>
+<html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
     <link rel="stylesheet" href="../includes/css/reset.css" media="all">
     <link rel="stylesheet" href="../includes/css/font-awesome.css" media="all">
+    <link rel="stylesheet" href="../includes/js/toastr-notifications/toastr.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
     <script type="text/javascript" src="../includes/js/jquery/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="../includes/js/jquery-validation/jquery.validate.js"></script>
+    <script type="text/javascript" src="../includes/js/jquery-validation/additional-methods.js"></script>
+    <script type="text/javascript" src="../includes/js/jquery-validation/messages_zh.js"></script>
+    <script type="text/javascript" src="../includes/js/toastr-notifications/toastr.js"></script>
     <title>管理后台</title>
 </head>
 <body>
@@ -68,6 +84,26 @@ if (isset($_POST['submit'])) {
         footer content
     </footer>
 </div>
+
+<?php if (isset($success)): ?>
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "1000",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        toastr.success('Your settings have been saved.', 'Success');
+    </script>
+<?php endif; ?>
 
 <script>
     window.addEventListener('resize', onWindowResize);

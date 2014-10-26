@@ -9,14 +9,32 @@
 require_once dirname(__FILE__) . '/includes/admin.php';
 
 if (isset($_POST['submit'])) {
-    if (log_in($_POST['username'], $_POST['password'], isset($_POST['remember']))) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $remember = $_POST['remember'];
+
+    if (empty($username) || empty($password)) {
+        redirect('login.php?msg=1&token=' . time());
+    } else if (log_in($username, $password, isset($remember))) {
         redirect('index.php');
-        exit;
+    } else {
+        redirect('login.php?msg=2&token=' . time());
+    }
+    exit;
+}
+
+if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
+    switch ($_GET['msg']) {
+        case 1:
+            $msg = "请输入用户名和密码。";
+            break;
+        case 2:
+            $msg = "用户名或密码错误。";
+            break;
     }
 }
 
-?>
-
+?><!DOCTYPE HTML>
 <html>
 <head>
     <meta charset="utf-8">
@@ -31,11 +49,11 @@ if (isset($_POST['submit'])) {
 <body class="login">
 <h1 class="site-title">AdminCenter</h1>
 <div class="content">
+    <h2>Login to your account</h2>
+    <?php if (isset($msg)): ?>
+    <div class="error"><?php echo $msg ?></div>
+    <?php endif; ?>
     <form method="POST" action="login.php">
-        <h2>Login to your account</h2>
-<!--        <div class="alert alert-danger display-hide">-->
-<!--			Enter any username and password. -->
-<!--        </div>-->
         <div class="input">
             <i class="fa fa-user"></i>
             <input name="username" type="text" class="form-control" placeholder="Username">

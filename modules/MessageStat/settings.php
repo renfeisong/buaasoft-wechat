@@ -20,13 +20,13 @@
 
 <h3>更多设定(sample)</h3>
 
-<form method="post">
+<form method="post" id="my-form">
     <div class="form-group">
         <div class="prompt">
             <label for="in1">设置1</label>
         </div>
         <div class="control">
-            <input class="form-control" type="text" name="in1" value="<?php echo get_option('in1') ?>">
+            <input class="form-control" type="text" name="in1" id="in1" value="<?php echo get_option('in1') ?>" required>
         </div>
     </div>
 
@@ -36,7 +36,7 @@
             <p class="note">note2</p>
         </div>
         <div class="control">
-            <input class="form-control" type="text" name="in2" value="<?php echo get_option('in2') ?>">
+            <input class="form-control" type="text" name="in2" id="in2" value="<?php echo get_option('in2') ?>">
         </div>
     </div>
 
@@ -59,7 +59,7 @@
         </div>
         <div class="control">
             <?php $in4 = get_option('in4') ?>
-            <input class="form-control"  type="hidden" name="in4[]">
+            <input class="form-control" type="hidden" name="in4[]">
             <input class="form-control" type="checkbox" name="in4[]" value="v4-1" <?php if (in_array('v4-1', $in4)) echo 'checked' ?>> Product A
             <input class="form-control" type="checkbox" name="in4[]" value="v4-2" <?php if (in_array('v4-2', $in4)) echo 'checked' ?>> Product B
             <input class="form-control" type="checkbox" name="in4[]" value="v4-3" <?php if (in_array('v4-3', $in4)) echo 'checked' ?>> Product C
@@ -71,7 +71,7 @@
             <label for="in5">设置5</label>
         </div>
         <div class="control">
-            <textarea class="form-control"  name="in5" rows="4"><?php echo get_option('in5') ?></textarea>
+            <textarea class="form-control" name="in5" rows="4" id="in5"><?php echo get_option('in5') ?></textarea>
         </div>
     </div>
 
@@ -81,7 +81,7 @@
         </div>
         <div class="control">
             <?php $in6 = get_option('in6') ?>
-            <select name="in6" class="form-control" >
+            <select name="in6" class="form-control" id="in6">
                 <option value="v6-1" <?php if ($in6 == 'v6-1') echo 'selected' ?>>Option 1</option>
                 <option value="v6-2" <?php if ($in6 == 'v6-2') echo 'selected' ?>>Option 2</option>
                 <option value="v6-3" <?php if ($in6 == 'v6-3') echo 'selected' ?>>Option 3</option>
@@ -91,5 +91,11 @@
     </div>
 
     <?php submit_button(); ?>
-    <?php reset_button(''); ?>
+    <?php reset_button('reset_form()'); ?>
 </form>
+
+<script>
+    $("#my-form").validate();
+    function reset_form() {
+    }
+</script>
