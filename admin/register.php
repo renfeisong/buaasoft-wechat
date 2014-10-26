@@ -52,7 +52,7 @@ if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['tok
     <link rel="stylesheet" href="../includes/css/font-awesome.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
-    <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
     <title>后台账户注册</title>
 </head>
 <body class="login">

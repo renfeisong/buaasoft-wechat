@@ -53,13 +53,13 @@ if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['tok
     <link rel="stylesheet" href="../includes/css/select2-custom.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
-    <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-validation/jquery.validate.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-validation/additional-methods.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery-validation/additional-methods.min.js"></script>
     <script type="text/javascript" src="../includes/plugins/jquery-validation/messages_zh.js"></script>
-    <script type="text/javascript" src="../includes/plugins/toastr-notifications/toastr.js"></script>
-    <script type="text/javascript" src="../includes/plugins/icheck/icheck.js"></script>
-    <script type="text/javascript" src="../includes/plugins/select2/select2.js"></script>
+    <script type="text/javascript" src="../includes/plugins/toastr-notifications/toastr.min.js"></script>
+    <script type="text/javascript" src="../includes/plugins/icheck/icheck.min.js"></script>
+    <script type="text/javascript" src="../includes/plugins/select2/select2.min.js"></script>
     <script type="text/javascript" src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
     <title>管理后台</title>
 </head>
