@@ -23,7 +23,7 @@ if (!isset($_GET['page'])) {
     exit;
 }
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['wx_submit'])) {
     $data = $_POST;
     foreach ($data as $key => $value) {
         set_value(new $_GET['page'], $key, $value);
@@ -51,6 +51,7 @@ if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['tok
     <link rel="stylesheet" href="../includes/plugins/icheck/grey.css" media="all">
     <link rel="stylesheet" href="../includes/plugins/select2/select2.css" media="all">
     <link rel="stylesheet" href="../includes/css/select2-custom.css" media="all">
+    <link rel="stylesheet" href="../includes/plugins/datatables/css/jquery.dataTables.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
     <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
@@ -61,6 +62,7 @@ if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['tok
     <script type="text/javascript" src="../includes/plugins/icheck/icheck.min.js"></script>
     <script type="text/javascript" src="../includes/plugins/select2/select2.min.js"></script>
     <script type="text/javascript" src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
+    <script type="text/javascript" src="../includes/plugins/datatables/js/jquery.dataTables.min.js"></script>
     <title>管理后台</title>
 </head>
 <body>
