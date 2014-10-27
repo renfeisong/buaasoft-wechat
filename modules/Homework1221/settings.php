@@ -8,7 +8,6 @@
 if (isset($_POST['add'])) {
     redirect_success('Homework added!');
 }
-H
 ?>
 
 <h2>Homework Mgmt. Panel</h2>

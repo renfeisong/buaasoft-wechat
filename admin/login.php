@@ -11,11 +11,10 @@ require_once dirname(__FILE__) . '/includes/admin.php';
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $remember = $_POST['remember'];
 
     if (empty($username) || empty($password)) {
         redirect('login.php?msgid=1&token=' . time());
-    } else if (log_in($username, $password, isset($remember))) {
+    } else if (log_in($username, $password, isset($_POST['remember']))) {
         redirect('index.php');
     } else {
         redirect('login.php?msgid=2&token=' . time());
