@@ -27,7 +27,7 @@ $result = $wxdb->get_results('select * from admin_user');
         <td><?=$row->userName?></td>
         <td><?=$row->isSuperAdmin == 1 ? "超级管理员" : "管理员"?></td>
         <td style="padding: 0">
-            <a href="#" id="tags" data-type="select2" data-pk="1" data-title="Enter tags" class="editable editable-click"">css, javascript, ajax</a>
+            <a href="#" id="tags" data-type="select2" data-pk="1" data-title="Enter tags" class="editable editable-click">123</a>
         </td>
         <td></td>
         <td><?=$row->joinDate?></td>
