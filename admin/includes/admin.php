@@ -15,8 +15,8 @@ require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
 // User Mgmt.
 
 function current_user() {
-    $user = $_COOKIE['user'];
-    $token = $_COOKIE['token'];
+    $user = @$_COOKIE['user'];
+    $token = @$_COOKIE['token'];
 
     global $wxdb; /* @var $wxdb wxdb */
     $sql = $wxdb->prepare("SELECT * FROM `admin_user` WHERE userName = '%s'", $user);
