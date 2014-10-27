@@ -18,6 +18,11 @@ class MessageReceiver {
             $object = simplexml_load_string($post, 'SimpleXMLElement', LIBXML_NOCDATA);
             $this->input->openid = $object->FromUserName;
             $this->input->accountId = $object->ToUserName;
+
+            global $wxdb; /* @var $wxdb wxdb */
+            $sql = $wxdb->prepare("SELECT * FROM `user` WHERE `identifyId` = '%s'", $this->input->openid);
+            $this->user = $wxdb->get_row($sql, ARRAY_A);
+
             switch ($object->MsgType) {
                 case "text":
                     $this->input->inputType = InputType::Text;

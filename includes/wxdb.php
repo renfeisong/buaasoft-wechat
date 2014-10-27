@@ -372,7 +372,7 @@ class wxdb {
 
     public function get_col($query = null , $x = 0) {
         if ($query)
-            $this->query( $query );
+            $this->query($query);
 
         $new_array = array();
         // Extract the column values
@@ -380,6 +380,12 @@ class wxdb {
             $new_array[$i] = $this->get_var(null, $x, $i);
         }
         return $new_array;
+    }
+
+    public function schema_exists($schema_name) {
+        $sql = $this->prepare("SHOW TABLES LIKE '%s'", $schema_name);
+        $this->query($sql);
+        return 1 == $this->num_rows;
     }
 
     public function print_error($error) {

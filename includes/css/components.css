@@ -86,6 +86,7 @@ textarea.form-control {
 textarea.form-control {
     height: auto;
     padding: 8px 12px;
+    resize: vertical;
 }
 
 input[type='text'].form-control.error,

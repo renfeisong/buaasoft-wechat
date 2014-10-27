@@ -26,18 +26,19 @@ if (!isset($_GET['page'])) {
 // Handle Form Submission
 
 if (isset($_POST['wx_submit'])) {
-    $data = $_POST;
-    foreach ($data as $key => $value) {
+    foreach ($_POST as $key => $value) {
         set_value(new $_GET['page'], $key, $value);
     }
-    redirect_success();
+    redirect_success('');
     exit;
 }
 
 // Show Messages
 
+$show_success_msg = $show_failure_msg = false;
+
 if (!empty($_GET['msg']) && sha1(MESSAGE_SALT . $_GET['msg']) == $_GET['auth']) {
-    $show_message_content = $_GET['msg'];
+    $show_message_content = addslashes($_GET['msg']);
 }
 
 if (isset($_GET['success']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
@@ -47,6 +48,10 @@ if (isset($_GET['success']) && (time() - $_GET['token']) < 3 && (time() - $_GET[
 if (isset($_GET['failure']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
     $show_failure_msg = true;
 }
+
+// Start the output buffer to allow possible headers sent
+// by modules setting page
+ob_start();
 
 ?><!DOCTYPE HTML>
 <html>
@@ -117,14 +122,14 @@ if (isset($_GET['failure']) && (time() - $_GET['token']) < 3 && (time() - $_GET[
         "hideMethod": "fadeOut"
     };
 </script>
-
-<?php if (isset($show_success_msg)): ?>
+<?php echo $show_success_msg ?>
+<?php if ($show_success_msg): ?>
     <script>
         toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Your settings have been saved.'; ?>', 'Success');
     </script>
 <?php endif; ?>
 
-<?php if (isset($show_failure_msg)): ?>
+<?php if ($show_failure_msg): ?>
     <script>
         toastr.error('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'An error occured.'; ?>', 'Error');
     </script>
@@ -148,3 +153,5 @@ if (isset($_GET['failure']) && (time() - $_GET['token']) < 3 && (time() - $_GET[
 
 </body>
 </html>
+
+<?php ob_end_flush(); ?>

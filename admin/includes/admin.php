@@ -152,16 +152,14 @@ function reset_button($callback = '', $text = 'Reset', $class = '') {
 
 function redirect_success($message = null) {
     $page = $_GET['page'];
-    $message = urlencode($message);
     $token = time();
     $auth = sha1(MESSAGE_SALT . $message);
-    redirect('index.php?page=' . $page . '&success=1&msg=' . $message . '&token=' . $token . '&auth=' . $auth);
+    redirect('index.php?page=' . $page . '&success=1&msg=' . urlencode($message) . '&token=' . $token . '&auth=' . $auth);
 }
 
 function redirect_failure($message = null) {
     $page = $_GET['page'];
-    $message = urlencode($message);
     $token = time();
     $auth = sha1(MESSAGE_SALT . $message);
-    redirect('index.php?page=' . $page . '&failure=1&msg=' . $message . '&token=' . $token . '&auth=' . $auth);
+    redirect('index.php?page=' . $page . '&failure=1&msg=' . urlencode($message) . '&token=' . $token . '&auth=' . $auth);
 }
