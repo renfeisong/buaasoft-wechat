@@ -79,17 +79,19 @@ function get_modules() {
  */
 function load_modules($module_list) {
     global $modules;
-    usort($modules, 'cmp_modules');
     foreach ($module_list as $module) {
         if ($module['name'] == 'ClassScheduleQuery')
             continue;
         require_once $module['path'];
-        $m = new $module['name'];
-        if (is_subclass_of($m, 'BaseModule')) {
-            $modules[] = $m; /* @var $m BaseModule */
-            $m->prepare();
+        if (class_exists($module['name'])) {
+            $m = new $module['name'];
+            if (is_subclass_of($m, 'BaseModule')) {
+                $modules[] = $m; /* @var $m BaseModule */
+                $m->prepare();
+            }
         }
     }
+    usort($modules, 'cmp_modules');
 }
 
 function cmp_modules(BaseModule $a, BaseModule $b) {
@@ -99,6 +101,6 @@ function cmp_modules(BaseModule $a, BaseModule $b) {
 }
 
 function get_module_priority(BaseModule $module) {
-    $priority = get_value(null, get_class($module) . '_priority');
+    $priority = get_global_value(null, get_class($module) . '_priority');
     return $priority == null ? $module->priority() : $priority;
 }
