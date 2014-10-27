@@ -89,7 +89,7 @@ if (isset($_GET['failure']) && (time() - $_GET['token']) < 3 && (time() - $_GET[
             </div>
         </div>
         <div id="secondary" class="site-sidebar">
-            <ul class="site-navigation" role="navigation">
+            <ul class="site-navigation">
                 <?php list_global_setting_items() ?>
                 <li class="heading">Modules</li>
                 <?php list_module_setting_items() ?>
@@ -97,7 +97,7 @@ if (isset($_GET['failure']) && (time() - $_GET['token']) < 3 && (time() - $_GET[
         </div>
     </div>
     <footer id="colophon" class="site-footer">
-        footer content
+        <?php echo queries_count() ?> queries processed in <?php echo timer_stop(6) * 1000 ?> μs.
     </footer>
 </div>
 
@@ -120,7 +120,7 @@ if (isset($_GET['failure']) && (time() - $_GET['token']) < 3 && (time() - $_GET[
 
 <?php if (isset($show_success_msg)): ?>
     <script>
-        toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Congrats! Your settings have been saved.'; ?>', 'Success');
+        toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Your settings have been saved.'; ?>', 'Success');
     </script>
 <?php endif; ?>
 

@@ -32,18 +32,27 @@ function timer_stop($precision = 3) {
     global $time_start, $time_end;
     $time_end = microtime(true);
     $time_total = $time_end - $time_start;
-    $r = (function_exists( 'number_format_i18n')) ? number_format_i18n($time_total, $precision) : number_format($time_total, $precision);
+    $r = (function_exists('number_format_i18n')) ? number_format_i18n($time_total, $precision) : number_format($time_total, $precision);
     return $r;
 }
 
 /**
- * Load the database class file and instantiate the `$wxdb` global.
+ * Return the number of queries the system has executed.
+ *
+ * @return int Number of queries.
+ */
+function queries_count() {
+    global $wxdb; /* @var $wxdb wxdb */
+    return $wxdb->num_queries;
+}
+
+/**
+ * Instantiate the `$wxdb` global.
  *
  * @global wxdb $wxdb The database class.
  */
 function require_db() {
     global $wxdb;
-    require_once('wxdb.php');
     $wxdb = new wxdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 }
 
