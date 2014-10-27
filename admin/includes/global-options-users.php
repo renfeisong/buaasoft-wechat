@@ -1,23 +1,43 @@
+<?php
+global $wxdb; /* @var $wxdb wxdb */
+$result = $wxdb->get_results('select * from admin_user');
+?>
+
 <h2>用户管理</h2>
 
-<h3>待审核用户</h3>
+<!--<h3>待审核用户</h3>-->
+<!---->
+<!--<h3>所有用户</h3>-->
 
-<h3>所有用户</h3>
-
-<table>
+<table id="user-table">
     <thead>
     <tr>
         <th>用户名</th>
         <th>用户类型</th>
+        <th>后台管理</th>
+        <th>模块管理</th>
         <th>加入时间</th>
         <th>上次活动时间</th>
         <th>操作</th>
     </tr>
     </thead>
     <tbody>
-    <?php
-        global $wxdb; /* @var $wxdb wxdb */
-        $wxdb->get_results('select * from admin_user');
-    ?>
+    <?php foreach($result as $row):?>
+    <tr>
+        <td><?=$row->userName?></td>
+        <td><?=$row->isSuperAdmin == 1 ? "超级管理员" : "管理员"?></td>
+        <td style="padding: 0">
+            <select multiple>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+        </td>
+        <td></td>
+        <td><?=$row->joinDate?></td>
+        <td><?=$row->lastActivity?></td>
+        <td>1</td>
+    </tr>
+    <?php endforeach;?>
     </tbody>
 </table>
