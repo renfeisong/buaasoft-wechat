@@ -61,6 +61,16 @@
     background-color: #c13726;
 }
 
+.action-button {
+    color: #ffffff;
+    background-color: #4b8df8;
+}
+
+.action-button:hover,
+.action-button:active {
+    background-color: #2474f6;
+}
+
 /* form controls */
 
 .control {

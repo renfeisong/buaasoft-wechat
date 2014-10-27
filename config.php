@@ -24,6 +24,7 @@ define('DB_CHARSET', 'utf8');
 // Authentication unique salts
 define('LOGIN_SALT', 'unique string here');
 define('MESSAGE_SALT', 'unique string here');
+define('AJAX_SALT', 'unique string here');
 
 // Website root URL
 define('ROOT_URL', '/');

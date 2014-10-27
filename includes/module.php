@@ -130,3 +130,7 @@ function get_option($key) {
 function get_global_value($key) {
     return _get_value('global', $key);
 }
+
+function set_option($key, $value) {
+    return _set_value($_GET['page'], $key, $value);
+}
