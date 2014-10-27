@@ -76,6 +76,8 @@ ob_start();
     <script type="text/javascript" src="../includes/plugins/select2/select2.min.js"></script>
     <script type="text/javascript" src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
     <script type="text/javascript" src="../includes/plugins/datatables/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript" src="../includes/js/global-options-users.js"></script>
     <title>管理后台</title>
 </head>
 <body>
