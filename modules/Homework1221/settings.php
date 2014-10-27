@@ -97,7 +97,7 @@ function get_homework_count($subject) {
             <label for="publishDate">布置日期</label>
         </div>
         <div class="control">
-            <input class="form-control" type="text" name="publishDate" id="publishDate" required>
+            <input class="form-control date-picker" type="text" name="publishDate" id="publishDate" required>
         </div>
     </div>
     <div class="form-group">
@@ -105,7 +105,7 @@ function get_homework_count($subject) {
             <label for="dueDate">截止日期</label>
         </div>
         <div class="control">
-            <input class="form-control" type="text" name="dueDate" id="dueDate">
+            <input class="form-control date-picker" type="text" name="dueDate" id="dueDate">
         </div>
     </div>
     <div class="form-group">
@@ -113,7 +113,11 @@ function get_homework_count($subject) {
             <label for="subject">科目</label>
         </div>
         <div class="control">
-            <input class="form-control" type="text" name="subject" id="subject">
+            <select class="form-control" name="subject">
+                <?php foreach ($subjects as $subject): ?>
+                <option value="<?php echo $subject ?>"><?php echo $subject ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </div>
     <div class="form-group">
@@ -121,14 +125,17 @@ function get_homework_count($subject) {
             <label for="content">内容</label>
         </div>
         <div class="control">
-            <textarea class="form-control" name="content" rows="3" id="content"></textarea>
+            <textarea class="form-control" name="content" rows="5" id="content"></textarea>
         </div>
     </div>
     <button type="submit" class="button submit-button green-button button-with-icon" name="add-homework"><i class="fa fa-plus"></i> 添加作业</button>
 </form>
 
 <script>
-    $("#add-homework").validate();
+    $('.date-picker').datepicker({
+        dateFormat: "yy-mm-dd"
+    });
+    $('#add-homework').validate();
 </script>
 
 <h3>作业管理</h3>
