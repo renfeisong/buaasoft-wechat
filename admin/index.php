@@ -77,6 +77,7 @@ ob_start();
     <script type="text/javascript" src="../includes/plugins/select2/select2.min.js"></script>
     <script type="text/javascript" src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
     <script type="text/javascript" src="../includes/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../includes/plugins/poshytip-1.2/jquery.poshytip.min.js"></script>
     <script type="text/javascript" src="../includes/plugins/jquery-editable/js/jquery-editable-poshytip.min.js"></script>
 
     <script type="text/javascript" src="../includes/js/global-options-users.js"></script>
