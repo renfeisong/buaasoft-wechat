@@ -139,12 +139,12 @@ function redirect($location, $status = 302) {
 ///// Public Admin Panel API
 
 function submit_button($text = 'Submit', $class = '') {
-    $template = '<button type="submit" name="wx_submit" class="button submit-button %s"><i class="fa fa-check"></i> %s</button>';
+    $template = '<button type="submit" name="wx_submit" class="button submit-button green-button button-with-icon %s"><i class="fa fa-check"></i> %s</button>';
     echo sprintf($template, $class, $text);
 }
 
 function reset_button($callback = '', $text = 'Reset', $class = '') {
-    $template = '<button class="button reset-button %s" onclick="%s;return false;">%s</button>';
+    $template = '<button class="button reset-button red-button %s" onclick="%s;return false;">%s</button>';
     echo sprintf($template, $class, $callback, $text);
 }
 
