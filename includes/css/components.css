@@ -167,3 +167,8 @@ label.error {
 #toast-container .toast-message {
     font-size: 14px;
 }
+
+/* tables */
+th, td {
+    border: 1px solid #000000;
+}

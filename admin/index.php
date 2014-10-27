@@ -65,6 +65,7 @@ ob_start();
     <link rel="stylesheet" href="../includes/plugins/select2/select2.css" media="all">
     <link rel="stylesheet" href="../includes/css/select2-custom.css" media="all">
     <link rel="stylesheet" href="../includes/plugins/datatables/css/jquery.dataTables.css" media="all">
+    <link rel="stylesheet" href="../includes/plugins/jquery-editable/css/jquery-editable.css">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
     <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
@@ -76,6 +77,7 @@ ob_start();
     <script type="text/javascript" src="../includes/plugins/select2/select2.min.js"></script>
     <script type="text/javascript" src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
     <script type="text/javascript" src="../includes/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../includes/plugins/jquery-editable/js/jquery-editable-poshytip.min.js"></script>
 
     <script type="text/javascript" src="../includes/js/global-options-users.js"></script>
     <title>管理后台</title>
