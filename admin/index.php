@@ -23,6 +23,8 @@ if (!isset($_GET['page'])) {
     exit;
 }
 
+// Handle Form Submission
+
 if (isset($_POST['wx_submit'])) {
     $data = $_POST;
     foreach ($data as $key => $value) {
@@ -31,6 +33,8 @@ if (isset($_POST['wx_submit'])) {
     redirect_success();
     exit;
 }
+
+// Show Messages
 
 if (!empty($_GET['msg']) && sha1(MESSAGE_SALT . $_GET['msg']) == $_GET['auth']) {
     $show_message_content = $_GET['msg'];

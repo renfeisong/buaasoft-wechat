@@ -23,6 +23,7 @@ function current_user() {
     $user = $wxdb->get_row($sql, ARRAY_A);
     if ($user) {
         if (sha1(LOGIN_SALT . $user['userName']) == $token) {
+            $wxdb->update('admin_user', array('lastActivity' => date('c')), array('userName' => $user['userName']));
             return $user;
         }
     }
