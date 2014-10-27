@@ -40,6 +40,8 @@ $wxdb = null;
 $time_start = 0.0;
 $time_end = 0.0;
 
+date_default_timezone_set('Asia/Shanghai');
+
 require_db();
 
 load_modules(get_modules());

@@ -14,17 +14,17 @@ if (isset($_POST['submit'])) {
     $remember = $_POST['remember'];
 
     if (empty($username) || empty($password)) {
-        redirect('login.php?msg=1&token=' . time());
+        redirect('login.php?msgid=1&token=' . time());
     } else if (log_in($username, $password, isset($remember))) {
         redirect('index.php');
     } else {
-        redirect('login.php?msg=2&token=' . time());
+        redirect('login.php?msgid=2&token=' . time());
     }
     exit;
 }
 
-if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
-    switch ($_GET['msg']) {
+if (isset($_GET['msgid']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
+    switch ($_GET['msgid']) {
         case 1:
             $msg = "请输入用户名和密码。";
             break;

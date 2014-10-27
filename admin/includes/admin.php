@@ -30,24 +30,22 @@ function current_user() {
     return null;
 }
 
-function current_user_id() {
-    return ($user = current_user()) == null ? 0 : $user['id'];
-}
-
 function current_user_name() {
     return ($user = current_user()) == null ? null : $user['userName'];
 }
 
-function is_admin() {
-    return ($user = current_user()) != null && ($user['userType'] == 1 || $user['userType'] == 0);
+function current_user_can_manage($page) {
+    $user = current_user();
+    $authorized_pages = json_decode($user['authorizedPages']);
+    return in_array($page, $authorized_pages);
 }
 
-function is_superadmin() {
-    return ($user = current_user()) != null && $user['userType'] == 0;
+function is_super_admin() {
+    return ($user = current_user()) != null && $user['isSuperAdmin'] == 1;
 }
 
-function is_disabled() {
-    return ($user = current_user()) != null && $user['userType'] == 2;
+function is_enabled() {
+    return ($user = current_user()) != null && $user['isEnabled'] == 1;
 }
 
 function is_logged_in() {
@@ -81,9 +79,13 @@ function register($username, $password) {
     $success = $wxdb->insert('admin_user', array(
         'userName' => $username,
         'hashedPassword' => sha1($password),
-        'userType' => 2
+        'isEnabled' => 0,
+        'joinDate' => date('c'),
+        'lastActivity' => date('c'),
+        'authorizedPages' => '[]',
+        'isSuperAdmin' => 0
     ));
-    return $success != false;
+    return false != $success;
 }
 
 // Pages and Items
@@ -143,4 +145,22 @@ function submit_button($text = 'Submit', $class = '') {
 function reset_button($callback = '', $text = 'Reset', $class = '') {
     $template = '<button class="button reset-button %s" onclick="%s;return false;">%s</button>';
     echo sprintf($template, $class, $callback, $text);
+}
+
+///// Public Admin Panel API for Custom Pages
+
+function redirect_success($message = null) {
+    $page = $_GET['page'];
+    $message = urlencode($message);
+    $token = time();
+    $auth = sha1(MESSAGE_SALT . $message);
+    redirect('index.php?page=' . $page . '&success=1&msg=' . $message . '&token=' . $token . '&auth=' . $auth);
+}
+
+function redirect_failure($message = null) {
+    $page = $_GET['page'];
+    $message = urlencode($message);
+    $token = time();
+    $auth = sha1(MESSAGE_SALT . $message);
+    redirect('index.php?page=' . $page . '&failure=1&msg=' . $message . '&token=' . $token . '&auth=' . $auth);
 }

@@ -14,20 +14,20 @@ if (isset($_POST['submit'])) {
     $password2 = $_POST['password2'];
 
     if (empty($username) || empty($password2) || empty($password2)) {
-        redirect('register.php?msg=1&token=' . time());
+        redirect('register.php?msgid=1&token=' . time());
     } else if ($password1 != $password2) {
-        redirect('register.php?msg=2&token=' . time());
-    } else if (register($username,$password1)) {
+        redirect('register.php?msgid=2&token=' . time());
+    } else if (register($username, $password1)) {
         log_in($username, $password1, false);
         redirect('index.php');
     } else {
-        redirect('register.php?msg=3&token=' . time());
+        redirect('register.php?msgid=3&token=' . time());
     }
     exit;
 }
 
-if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
-    switch ($_GET['msg']) {
+if (isset($_GET['msgid']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
+    switch ($_GET['msgid']) {
         case 1:
             $msg = "请输入用户名和密码。";
             break;

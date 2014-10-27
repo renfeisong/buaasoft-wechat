@@ -8,7 +8,7 @@
 
 require_once dirname(__FILE__) . '/includes/admin.php';
 
-if (is_disabled() == false) {
+if (!is_enabled() == false) {
     redirect('index.php');
     exit;
 }

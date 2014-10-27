@@ -13,7 +13,7 @@ if (is_logged_in() == false) {
     exit;
 }
 
-if (is_disabled()) {
+if (!is_enabled()) {
     redirect('account-disabled.php');
     exit;
 }
@@ -28,16 +28,20 @@ if (isset($_POST['wx_submit'])) {
     foreach ($data as $key => $value) {
         set_value(new $_GET['page'], $key, $value);
     }
-    redirect('index.php?page=' . $_GET['page'] . '&msg=1&token=' . time());
+    redirect_success();
     exit;
 }
 
-if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
-    switch ($_GET['msg']) {
-        case 1:
-            $success = true;
-            break;
-    }
+if (!empty($_GET['msg']) && sha1(MESSAGE_SALT . $_GET['msg']) == $_GET['auth']) {
+    $show_message_content = $_GET['msg'];
+}
+
+if (isset($_GET['success']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
+    $show_success_msg = true;
+}
+
+if (isset($_GET['failure']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
+    $show_failure_msg = true;
 }
 
 ?><!DOCTYPE HTML>
@@ -93,23 +97,32 @@ if (isset($_GET['msg']) && (time() - $_GET['token']) < 3 && (time() - $_GET['tok
     </footer>
 </div>
 
-<?php if (isset($success)): ?>
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "positionClass": "toast-top-right",
+        "onclick": null,
+        "showDuration": "1000",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+</script>
+
+<?php if (isset($show_success_msg)): ?>
     <script>
-        toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "positionClass": "toast-top-right",
-            "onclick": null,
-            "showDuration": "1000",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
-        toastr.success('Your settings have been saved.', 'Success');
+        toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Congrats! Your settings have been saved.'; ?>', 'Success');
+    </script>
+<?php endif; ?>
+
+<?php if (isset($show_failure_msg)): ?>
+    <script>
+        toastr.error('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'An error occured.'; ?>', 'Error');
     </script>
 <?php endif; ?>
 
