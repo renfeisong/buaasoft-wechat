@@ -79,6 +79,8 @@ function get_modules() {
  */
 function load_modules($module_list) {
     global $modules;
+    print_r($module_list);
+    echo $modules;
     usort($modules, 'cmp_modules');
     foreach ($module_list as $module) {
         require_once $module['path'];

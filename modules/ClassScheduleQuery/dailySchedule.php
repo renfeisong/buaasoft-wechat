@@ -1,14 +1,21 @@
 <?php
 
-// print_r(daily_scheduel_test());
-// $wxdb = null;
+daily_scheduel_test();
 
 function daily_scheduel_test() {
 	global $wxdb;
-	require_once("../../includes/wxdb.php");
-	$wxdb = new wxdb("root", "root", "weixin", "localhost");
+	require_once("../../config.php");
 
 	$shahe = new DailySchedule("shahe_schedule");
+
+	// clean the table
+	$shahe->drop_table();
+	$shahe->create_table();
+
+	$shahe->delete();
+	$shahe->query();
+	print_r($shahe->get_sections()); // must be empty
+	echo "\n";
 	// morning
 	$shahe->add_class_str(1, "8:10", "9:00")
 		  ->add_break_str(2, "9:00", "9:10")
@@ -31,14 +38,67 @@ function daily_scheduel_test() {
 
 	// afternoon
 	$shahe->add_break_str(9, "17:20","18:20");
+
+	$shahe->add_class_str(9, "18:20", "19:10")
+		  ->add_break_str(10, "19:10", "19:20")
+		  ->add_class_str(10, "19:20", "20:10")
+		  ->add_break_str(11, "20:10", "20:20")
+		  ->add_class_str(11, "20:20", "21:10")
+		  ->add_break_str(12, "21:10", "21:20")
+		  ->add_class_str(12, "21:20", "22:10");
+
+	// need add the midnight?
 	$shahe->save();
-	return $shahe->get_sections();
+	$shahe->clean();
+	print_r($shahe->get_sections()); // must be empty
+	echo "\n";
+	$shahe->query();
+	print_r($shahe->get_sections()); // the database content
+	echo "\n";
+
+	// just a sample
+	$xueyuan = new DailySchedule("xueyuan_schedule");
+	$xueyuan->drop_table();
+	$xueyuan->create_table();
+	// morning
+	$xueyuan->add_class_str(1, "8:00", "8:50")
+			->add_break_str(2, "8:50", "8:55")
+			->add_class_str(2, "8:55", "9:45")
+			->add_break_str(3, "9:45", "10:00")
+			->add_class_str(3, "10:00", "10:50")
+			->add_break_str(4, "10:50", "10:55")
+			->add_class_str(4, "10:55", "11:45");
+
+	// noon
+	$xueyuan->add_break_str(5, "11:45", "14:00");
+
+	$xueyuan->add_class_str(5, "14:00", "14:50")
+			->add_break_str(6, "14:50", "14:55")
+			->add_class_str(6, "14:55", "15:45")
+			->add_break_str(7, "15:45", "16:00")
+			->add_class_str(7, "16:00", "16:50")
+			->add_break_str(8, "16:50", "16:55")
+			->add_class_str(8, "16:55", "17:45");
+
+	// afternoon
+	$xueyuan->add_break_str(9, "17:45","18:00");
+
+	$xueyuan->add_class_str(9, "18:00", "18:50")
+			->add_break_str(10, "18:50", "18:55")
+			->add_class_str(10, "18:55", "19:45")
+			->add_break_str(11, "19:45", "20:00")
+			->add_class_str(11, "20:00", "20:50")
+			->add_break_str(12, "20:50", "20:55")
+			->add_class_str(12, "20:55", "21:45");
+
+	// need add the midnight?
+	$xueyuan->save();
 }
 
 /**
  * Class DailySchedule
  *
- * the daily schedule database model
+ * the daily schedule database model. 
  *
  * 需要的数据库字段:1.一个主键,2.开始时间,3.结束时间,4.时间段类型
  * 不需要的内容:1.表所对应的校区
@@ -60,6 +120,10 @@ class DailySchedule {
 	const SECTION_TYPE_CLASS = 1;
 	const SECTION_TYPE_BREAK = 2;
 
+	// the database table name
+	const TABLE_SHAEH_SCHEDULE = "shahe_schedule";
+	const TABLE_XUEYUAN_SCHEDULE = "xueyuan_schedule";
+
 	function __construct($table_name) {
 		$this->set_table($table_name);
 		$this->sections = array();
@@ -77,17 +141,30 @@ class DailySchedule {
 		$this->create_table($table_name);
 	}
 
+	/**
+	 * can get the data query from database.
+	 * 
+	 * @see query()
+	 * @return array all time section @see $this->sections
+	 */
 	public function get_sections() {
 		return $this->sections;
 	}
 
 	/**
 	 * create the database table
-	 * @todo change the scheme
+	 * @todo change the scheme is hard
 	 */
-	public function create_table($table_name) {
+	public function create_table() {
 		global $wxdb;
-		$wxdb->query("CREATE TABLE IF NOT EXISTS $table_name (cid int NOT NULL AUTO_INCREMENT, type int NOT NULL, startTime int NOT NULL, endTime int, PRIMARY KEY (`cid`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1");
+		$table_name = $this->table_name;
+		$wxdb->query("CREATE TABLE IF NOT EXISTS $table_name (id int NOT NULL AUTO_INCREMENT, cid int NOT NULL, type int NOT NULL, startTime int NOT NULL, endTime int, PRIMARY KEY (`id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1");
+	}
+
+	public function drop_table() {
+		global $wxdb;
+		$table_name = $this->table_name;
+		$wxdb->query("DROP TABLE $table_name");
 	}
 
 	/**
@@ -150,7 +227,7 @@ class DailySchedule {
 			// error
 		}
 		
-		array_push($this->sections, $section);
+		$this->sections[] = $section;
 		return $this;
 	}
 
@@ -162,41 +239,47 @@ class DailySchedule {
 	public function select_section($minutes) {
 		$sections = $this->sections;
 		foreach ($sections as $section) {
-			if ($section['startTime'] < $minutes && $minutes <= section['endTime']) {
+			if ($section['startTime'] < $minutes && $minutes <= $section['endTime']) {
 				return $section;
 			}
 		}
 	}
 
 	/**
-	 * clear the data
-	 *
-	 * @return return true if success, or false.
-	 * @todo need test
+	 * clean the content of $this->sections
 	 */
-	public function delete() {
-		global $wxdb;
-		return $wxdb->query("DELETE FROM $this->table_name");
+	public function clean() {
+		$this->sections = array();
 	}
 
 	/**
-	 * query the data and fill this instance
+	 * clear the data
 	 *
-	 * @return 成功时返回true, 否则返回false
+	 * @return return true if success, or false.
+	 */
+	public function delete() {
+		global $wxdb;
+		return $wxdb->query("TRUNCATE TABLE $this->table_name");
+	}
+
+	/**
+	 * query the data and fill this $this->sections
+	 *
+	 * @return bool return true if success, or false
 	 */
 	public function query() {
 		global $wxdb;
-		$results= $wxdb->get_results("SELECT * FROM $this->table_name");
-
+		$wxdb->query("SELECT * FROM $this->table_name");
+		$results = $wxdb->last_result;
 		// fill data
 		foreach ($results as $result) {
 			$section = array(
-				"cid"=>$result['cid'],
-				"type"=>$result['type'], 
-				"startTime"=>$result['start'], 
-				"endTime"=>$result['end']
+				"cid"=>$result->cid, 
+				"type"=>$result->type, 
+				"startTime"=>$result->startTime, 
+				"endTime"=>$result->endTime
 				);
-			array_push($this->sections, $section);
+			$this->sections[] = $section;
 		}
 		return true;
 	}
@@ -209,7 +292,6 @@ class DailySchedule {
 		$section_count = count($this->sections);
 
 		if ($section_count <= 0)
-
 			return true;
 		
 		// clean old data
@@ -219,8 +301,8 @@ class DailySchedule {
 		// query
 		for ($i = 0; $i < $section_count; $i++) {
 			$result = $wxdb->insert($this->table_name, $this->sections[$i]);
-			if (!$result) {
-				echo "fail";
+			if ($result != 1) {
+				echo "last_error:$wxdb->last_error";
 			}
 		}
 	}
