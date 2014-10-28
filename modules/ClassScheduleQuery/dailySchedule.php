@@ -6,7 +6,7 @@ function daily_scheduel_test() {
 	global $wxdb;
 	require_once("../../config.php");
 
-	$shahe = new DailySchedule("shahe_schedule");
+	$shahe = new DailySchedule(DailySchedule::TABLE_SHAEH_SCHEDULE);
 
 	// clean the table
 	$shahe->drop_table();
@@ -57,7 +57,7 @@ function daily_scheduel_test() {
 	echo "\n";
 
 	// just a sample
-	$xueyuan = new DailySchedule("xueyuan_schedule");
+	$xueyuan = new DailySchedule(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
 	$xueyuan->drop_table();
 	$xueyuan->create_table();
 	// morning

@@ -6,7 +6,7 @@ function class_schedule_test() {
 	global $wxdb;
 	require_once("../../config.php");
 	
-	$_1221 = new ClassSchedule("class_schedule", 1221);
+	$_1221 = new ClassSchedule(ClassSchedule::TABLE_CLASS_SCHEDULE, 1221);
 	$_1221->set_weekday(1)->add_class("英语口语", "s1e2k3j4g5");
 	$_1221->save();
 
@@ -127,7 +127,7 @@ class ClassSchedule {
 	 * $classification is specified in construct function
 	 * 
 	 * @param int $weekday the weekday number
-	 * @return array the array contain class information
+	 * @return array the array contain class information, or an empty array
 	 */
 	public function query($weekday) {
 		if (isset($this->schedule_days[$weekday])) {
@@ -139,10 +139,21 @@ class ClassSchedule {
 			if ($wxdb->num_rows == 1) {
 				$result = $results[0];
 			} else {
-				// error
+				$result = array();
 			}
 		}
 
+		return $result;
+	}
+
+	/**
+	 * query all weekday
+	 */
+	public function query_all_weekday() {
+		$result = array();
+		for ($weekday = 1; $weekday <= 5; $weekday++) {
+			$result[$weekday] = $this->query($weekday);
+		}
 		return $result;
 	}
 
