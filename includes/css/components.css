@@ -331,3 +331,12 @@ label.error {
 .datepicker.dropdown-menu td {
     padding: 5px !important;
 }
+
+.editable-error-block {
+    color: #a94442;
+}
+
+.editable-error-block::before {
+    content: "\f05e";
+    font: normal normal normal 14px/1 FontAwesome;
+}

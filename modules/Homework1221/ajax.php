@@ -39,7 +39,7 @@ else: // Update homework
         $publish_date = validate_date($publish_date);
         if ($publish_date == false) {
             header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
-            echo '作业发布日期无效。';
+            echo ' 作业发布日期无效。';
             exit;
         }
 
@@ -47,7 +47,7 @@ else: // Update homework
         $publish_timestamp = strtotime($publish_date);
         if ($publish_timestamp > $now_timestamp) {
             header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
-            echo '发布日期不得晚于今天。';
+            echo ' 发布日期不得晚于今天。';
             exit;
         }
 
@@ -57,7 +57,7 @@ else: // Update homework
             $due_timestamp = strtotime($due_date);
             if ($due_timestamp < $publish_timestamp) {
                 header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
-                echo '发布日期不得晚于截止日期。';
+                echo ' 发布日期不得晚于截止日期。';
                 exit;
             }
         }
@@ -69,7 +69,7 @@ else: // Update homework
             $due_date = validate_date($due_date);
             if ($due_date == false) {
                 header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
-                echo '作业截止日期无效。';
+                echo ' 作业截止日期无效。';
                 exit;
             }
 
@@ -79,7 +79,7 @@ else: // Update homework
             $due_timestamp = strtotime($due_date);
             if ($due_timestamp < $publish_timestamp) {
                 header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
-                echo '截止日期不得早于发布日期。';
+                echo ' 截止日期不得早于发布日期。';
                 exit;
             }
         }

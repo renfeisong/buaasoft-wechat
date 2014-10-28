@@ -180,7 +180,7 @@ function validate_date($date) {
 <script>
     $('.date-picker').datepicker({
         format: "yyyy-mm-dd",
-        todayBtn: true,
+        todayBtn: "linked",
         language: "zh-CN",
         keyboardNavigation: false,
         autoclose: true,
@@ -202,11 +202,11 @@ function validate_date($date) {
     <?php foreach ($rows as $row): ?>
     <tr data-pk="<?php echo $row['homeworkId'] ?>">
         <td><?php echo $row['homeworkId'] ?></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="publishDate" class="x-editable-field"><?php echo $row['publishDate'] ?></a></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="dueDate" class="x-editable-field"><?php echo $row['dueDate'] ?></a></td>
+        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="publishDate" class="x-editable-date"><?php echo $row['publishDate'] ?></a></td>
+        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="dueDate" class="x-editable-date"><?php echo $row['dueDate'] ?></a></td>
         <td><?php echo $row['userName'] ?></td>
-        <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="subject" class="x-editable-subjects"><?php echo $row['subject'] ?></a></td>
-        <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="content" class="x-editable-field"><?php echo $row['content'] ?></a></td>
+        <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="subject" class="x-editable-subject"><?php echo $row['subject'] ?></a></td>
+        <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="content" class="x-editable-content"><?php echo $row['content'] ?></a></td>
         <td><?php echo $row['dateUpdated'] ?></td>
         <td>
             <button class="button gray-button xs-button delete-homework idle" data-pk="<?php echo $row['homeworkId'] ?>">
@@ -222,8 +222,8 @@ function validate_date($date) {
 
 <script>
     homeworkTable = $("#show-homework").DataTable();
-    $(".x-editable-field").editable();
-    $(".x-editable-subjects").editable({
+    $(".x-editable-content").editable();
+    $(".x-editable-subject").editable({
         source: [
             <?php
                 foreach ($subjects as $subject) {
@@ -233,6 +233,15 @@ function validate_date($date) {
         ],
         select2: {
 
+        }
+    });
+    $(".x-editable-date").editable({
+        format: 'yyyy-mm-dd',
+        datepicker: {
+            format: "yyyy-mm-dd",
+            //language: "zh-CN",
+            keyboardNavigation: false,
+            todayHighlight: true
         }
     });
     $(".delete-homework").click(function() {

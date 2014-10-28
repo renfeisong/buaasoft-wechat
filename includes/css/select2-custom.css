@@ -7,13 +7,13 @@ contact Renfei Song for further assistance.
 
 ------------------------------------------------------------------------ */
 
-.form-control .select2-choice {
-    border: 1px solid #e5e5e5;
-    background-color: #fff;
-    background-image: none;
-    filter: none;
-    height: 34px;
-    padding: 3px 0 0px 12px;
+.select2-choice {
+    border: 1px solid #e5e5e5 !important;
+    background-color: #fff !important;
+    background-image: none !important;
+    filter: none !important;
+    height: 34px !important;
+    padding: 3px 0 0px 12px !important;
 }
 
 .select2-container.select2-drop-above .select2-choice {
@@ -213,6 +213,6 @@ html[dir="rtl"] .select2-container .select2-choice .select2-arrow,
     padding:5px 23px 5px 3px!important;
 }
 
-.form-control.select2-container {
-    min-width: 150px;
+.select2-container {
+    min-width: 150px !important;
 }
