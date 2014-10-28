@@ -35,7 +35,7 @@ if (isset($_POST['wx_submit'])) {
 
 // Show Messages
 
-$show_success_msg = $show_failure_msg = false;
+$show_success_msg = $show_failure_msg = $show_notice_msg = false;
 
 if (!empty($_GET['msg']) && sha1(MESSAGE_SALT . $_GET['msg']) == $_GET['auth']) {
     $show_message_content = addslashes($_GET['msg']);
@@ -47,6 +47,10 @@ if (isset($_GET['success']) && (time() - $_GET['token']) < 3 && (time() - $_GET[
 
 if (isset($_GET['failure']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
     $show_failure_msg = true;
+}
+
+if (isset($_GET['notice']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
+    $show_notice_msg = true;
 }
 
 // Start the output buffer to allow possible headers sent
@@ -128,17 +132,24 @@ ob_start();
         "hideMethod": "fadeOut"
     };
 </script>
-<?php if ($show_success_msg): ?>
-    <script>
-        toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Your settings have been saved.'; ?>', 'Success');
-    </script>
-<?php endif; ?>
 
-<?php if ($show_failure_msg): ?>
-    <script>
-        toastr.error('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'An error occured.'; ?>', 'Error');
-    </script>
-<?php endif; ?>
+    <?php if ($show_success_msg): ?>
+        <script>
+            toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Your settings have been saved.'; ?>', 'Success');
+        </script>
+    <?php endif; ?>
+
+    <?php if ($show_failure_msg): ?>
+        <script>
+            toastr.error('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'An error occured.'; ?>', 'Error');
+        </script>
+    <?php endif; ?>
+
+    <?php if ($show_notice_msg): ?>
+        <script>
+            toastr.info('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Something happened.'; ?>', 'Notice');
+        </script>
+    <?php endif; ?>
 
 <script>
     $('input').iCheck({

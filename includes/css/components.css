@@ -34,6 +34,16 @@ Author: Renfei Song
 }
 
 /**
+  misc
+  */
+
+code {
+    font-family: Menlo, Courier, 'Liberation Mono', Consolas, Monaco, Lucida Console, monospace;
+    background-color: #f0f0f0;
+    padding: 2px 5px;
+}
+
+/**
  buttons
  */
 
@@ -142,6 +152,7 @@ input[type='text'].form-control,
 input[type='password'].form-control,
 input[type='search'].form-control,
 textarea.form-control,
+.editable-input input[type='text'],
 .editable-input textarea {
     font-size: 14px;
     font-weight: normal;
@@ -174,6 +185,7 @@ input[type='text'].form-control:focus,
 input[type='password'].form-control:focus,
 input[type='search'].form-control:focus,
 textarea.form-control:focus,
+.editable-input input[type='text']:focus,
 .editable-input textarea:focus {
     border-color: #999999;
     outline: none;
@@ -286,7 +298,7 @@ label.error {
 }
 
 .editable-error-block::before {
-    content: "\f05e";
+    content: "\f071";
     font: normal normal normal 14px/1 FontAwesome;
 }
 
@@ -338,4 +350,49 @@ label.error {
 .editable-clear a {
     margin-top: 5px;
     display: inline-block;
+}
+
+/**
+ labels
+ */
+
+.label {
+    font-size: 13px;
+    font-weight: 300;
+    color: #fff;
+    padding: 3px 6px;
+    cursor: default;
+}
+
+.xs-label {
+    font-size: 12px;
+    padding: 0 4px 1px 4px;
+}
+
+.green-label {
+    background-color: #5cb85c;
+}
+
+.blue-label {
+    background-color: #428bca;
+}
+
+.gray-label {
+    background-color: #c6c6c6;
+}
+
+.gblue-label {
+    background-color: #45b6af;
+}
+
+.lblue-label {
+    background-color: #89c4f4;
+}
+
+.yellow-label {
+    background-color: #dfba49;
+}
+
+.red-label {
+    background-color: #f3565d;
 }

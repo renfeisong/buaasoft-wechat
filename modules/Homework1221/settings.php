@@ -122,7 +122,7 @@ if (!isset($subjects)) {
 
 function get_homework_count($subject) {
     global $wxdb; /* @var $wxdb wxdb */
-    global $table_name;
+    $table_name = get_option('table');
     $sql = $wxdb->prepare("SELECT count(*) FROM `" . $table_name . "` WHERE subject = '%s'", $subject);
     return $wxdb->get_var($sql);
 }
@@ -197,8 +197,14 @@ function validate_date($date) {
 <table id="show-homework" class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
-        <th>序号</th><th>布置日期</th><th>过期日期</th><th>添加人</th>
-        <th>科目</th><th>内容</th><th>更新日期</th><th>操作</th>
+        <th>序号</th>
+        <th>布置日期</th>
+        <th>过期日期</th>
+        <th>添加人</th>
+        <th>科目</th>
+        <th class="nosort">内容</th>
+        <th>更新日期</th>
+        <th class="nosort">操作</th>
     </tr>
     </thead>
     <tbody>
@@ -224,7 +230,12 @@ function validate_date($date) {
 </table>
 
 <script>
-    homeworkTable = $("#show-homework").DataTable();
+    homeworkTable = $("#show-homework").DataTable({
+        'aoColumnDefs': [{
+            'bSortable': false,
+            'aTargets': ['nosort']
+        }]
+    });
     $(".x-editable-content").editable();
     $(".x-editable-subject").editable({
         source: [

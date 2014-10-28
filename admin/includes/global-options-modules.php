@@ -2,13 +2,13 @@
 
 if (isset($_POST['enable'])) {
     set_global_value('enabled_' . $_POST['enable'], true);
-    redirect_success('该模块已启用。');
+    redirect_success('已成功启用模块。');
     exit;
 }
 
 if (isset($_POST['disable'])) {
     set_global_value('enabled_' . $_POST['disable'], false);
-    redirect_success('该模块已停用。');
+    redirect_success('已经停用该模块。');
     exit;
 }
 
@@ -55,28 +55,39 @@ foreach (new DirectoryIterator($path) as $fileInfo) {
         <th>总触发次数</th>
         <th>近24小时触发次数</th>
         <th>权重</th>
-        <th>状态</th>
-        <th>控制</th>
+        <th class="nosort">控制</th>
     </tr>
     </thead>
     <tbody>
     <?php
         foreach ($all_modules as $module) {
-            $template = '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td><form method="POST">%s</form></td></tr>';
+            $template = '<tr><td>%s%s</td><td><code>%s</code></td><td>%s</td><td>%s</td><td><a href="#" data-type="text" data-pk="%s" data-url="includes/global-options-modules-ajax.php?auth=%s" data-name="priority" class="x-editable-field">%s</a></td><td><form method="POST">%s</form></td></tr>';
             if ($module['enabled']) {
-                $status = '已启用';
-                $button = '<button type="submit" name="disable" value="'.$module['name'].'">停用</button>';
+                $status = '<span class="label green-label">已启用</span>';
+                $button = '<button type="submit" class="button xs-button gray-button" name="disable" value="'.$module['name'].'">停用</button>';
             } else {
-                $status = '未启用';
-                $button = '<button type="submit" name="enable" value="'.$module['name'].'">启用</button>';
+                $status = '<span class="label gray-label">未启用</span>';
+                $button = '<button type="submit" class="button xs-button gray-button" name="enable" value="'.$module['name'].'">启用</button>';
             }
 
-            echo sprintf($template, $module['display_name'], $module['name'], 0, 0, $module['priority'], $status, $button);
+            echo sprintf($template, $module['display_name'], $status, $module['name'], 0, 0, $module['name'], sha1(AJAX_SALT), $module['priority'], $button);
         }
     ?>
     </tbody>
 </table>
 
 <script>
-    $('#modules-table').DataTable();
+    $('#modules-table').DataTable({
+        paging: false,
+        aoColumnDefs: [{
+            bSortable: false,
+            aTargets: ['nosort']
+        }]
+    });
+    $('.x-editable-field').editable();
 </script>
+<style>
+    #modules-table .label {
+        float: right;
+    }
+</style>

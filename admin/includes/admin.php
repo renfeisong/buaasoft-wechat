@@ -163,3 +163,10 @@ function redirect_failure($message = null) {
     $auth = sha1(MESSAGE_SALT . $message);
     redirect('index.php?page=' . $page . '&failure=1&msg=' . urlencode($message) . '&token=' . $token . '&auth=' . $auth);
 }
+
+function redirect_notice($message = null) {
+    $page = $_GET['page'];
+    $token = time();
+    $auth = sha1(MESSAGE_SALT . $message);
+    redirect('index.php?page=' . $page . '&notice=1&msg=' . urlencode($message) . '&token=' . $token . '&auth=' . $auth);
+}
