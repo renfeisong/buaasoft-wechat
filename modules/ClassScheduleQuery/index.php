@@ -1,7 +1,10 @@
 <?php
 
-class_schedule_query_test();
+// class_schedule_query_test();
 
+/**
+ * test function, not complete
+ */
 function class_schedule_query_test() {
 	global $wxdb;
 	require_once("../../config.php");

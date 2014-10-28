@@ -1,6 +1,6 @@
 <?php
 
-daily_scheduel_test();
+// daily_scheduel_test();
 
 function daily_scheduel_test() {
 	global $wxdb;
