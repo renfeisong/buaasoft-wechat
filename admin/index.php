@@ -131,7 +131,6 @@ ob_start();
         "hideMethod": "fadeOut"
     };
 </script>
-<?php echo $show_success_msg ?>
 <?php if ($show_success_msg): ?>
     <script>
         toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Your settings have been saved.'; ?>', 'Success');

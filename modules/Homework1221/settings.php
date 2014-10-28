@@ -1,6 +1,6 @@
 <?php
 /**
- * Homework Module
+ * Setting page for Homework Module
  *
  * @author Renfei Song
  */

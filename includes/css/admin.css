@@ -1,3 +1,12 @@
+/*
+
+Main CSS Styles for the Admin Panel.
+
+Also see: reset.css | components.css
+Author: Renfei Song
+
+------------------------------------------------------------------------ */
+
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: #333333;

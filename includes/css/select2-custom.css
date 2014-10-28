@@ -1,3 +1,12 @@
+/*
+
+Select2 custom styles adopted from plugins.css (Metronic)
+
+Should you have any questions regarding this file, please
+contact Renfei Song for further assistance.
+
+------------------------------------------------------------------------ */
+
 .form-control .select2-choice {
     border: 1px solid #e5e5e5;
     background-color: #fff;
@@ -205,5 +214,5 @@ html[dir="rtl"] .select2-container .select2-choice .select2-arrow,
 }
 
 .form-control.select2-container {
-    min-width: 128px;
+    min-width: 150px;
 }

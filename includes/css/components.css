@@ -1,3 +1,17 @@
+/*
+
+Headings, Buttons, Form Controls, Notifications, Tables
+and other components for the Admin Panel.
+
+Also see: reset.css | admin.css
+Author: Renfei Song
+
+------------------------------------------------------------------------ */
+
+/**
+ headings
+ */
+
 .site-content h1,
 .site-content h2 {
     font-size: 28px;
@@ -246,5 +260,4 @@ label.error {
 .dataTables_filter input[type='search'] {
     width: auto;
     display: inline-block;
-
 }
