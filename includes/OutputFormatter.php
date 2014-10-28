@@ -76,19 +76,19 @@ class OutputFormatter {
                 <CreateTime>%s</CreateTime>
                 <MsgType><![CDATA[news]]></MsgType>
                 <ArticleCount>1</ArticleCount>
-                <Articles>"
+                <Articles>";
         $item_template = 
                     "<item> 
                         <Title><![CDATA[%s]]></Title>
                         <Description><![CDATA[%s]]></Description>
                         <PicUrl><![CDATA[%s]]></PicUrl>
                         <Url><![CDATA[%s]]></Url>
-                    </item>"
+                    </item>";
         $template_end = 
                 "</Articles>
             </xml>";
 
-        $result = sprintf($template, $this->openid, $this->accountId, time(), $title, $description, $pic_url, $redirect_url)
+        $result = sprintf($template, $this->openid, $this->accountId, time(), $title, $description, $pic_url, $redirect_url);
 
         foreach ($articles as $article) {
             $result .= sprintf($item_template, $article["title"], $article["description"], $article["pic_url"], $article["$redirect_url"]);
