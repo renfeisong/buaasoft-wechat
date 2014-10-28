@@ -89,13 +89,15 @@ function get_modules() {
 function load_modules($module_list) {
     global $modules;
     foreach ($module_list as $module) {
-        if ($module['name'] == 'ClassScheduleQuery')
+        if (get_global_value('enabled_' . $module["name"]) == false) {
             continue;
+        }
         require_once $module['path'];
         if (class_exists($module['name'])) {
             $m = new $module['name'];
             if (is_subclass_of($m, 'BaseModule')) {
                 $modules[] = $m; /* @var $m BaseModule */
+                set_global_value('display_name_' . get_class($m), $m->display_name());
                 $m->prepare();
             }
         }
@@ -110,6 +112,6 @@ function cmp_modules(BaseModule $a, BaseModule $b) {
 }
 
 function get_module_priority(BaseModule $module) {
-    $priority = get_global_value(null, get_class($module) . '_priority');
-    return $priority == null ? $module->priority() : $priority;
+    $priority = get_global_value(get_class($module) . '_priority');
+    return $priority == null ? 10 : $priority;
 }

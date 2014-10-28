@@ -121,6 +121,175 @@ Author: Renfei Song
     padding-left: 12px;
 }
 
+/**
+ form controls
+ */
+
+input[type="search"] {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+input[type='text'].form-control,
+input[type='password'].form-control,
+input[type='search'].form-control,
+textarea.form-control,
+.editable-input textarea {
+    font-size: 14px;
+    font-weight: normal;
+    color: #333333;
+    height: 34px;
+    padding: 2px 12px;
+    line-height: 1.42857143;
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
+    transition: border-color ease-in-out .15s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+textarea.form-control,
+.editable-input textarea {
+    height: auto;
+    padding: 8px 12px;
+    resize: vertical;
+}
+
+input[type='text'].form-control.error,
+input[type='password'].form-control.error,
+input[type='search'].form-control.error,
+textarea.form-control.error {
+    border-color: #ebccd1;
+}
+
+input[type='text'].form-control:focus,
+input[type='password'].form-control:focus,
+input[type='search'].form-control:focus,
+textarea.form-control:focus,
+.editable-input textarea:focus {
+    border-color: #999999;
+    outline: none;
+}
+
+input[type='text'].form-control.error:focus,
+input[type='password'].form-control.error:focus,
+input[type='search'].form-control.error:focus,
+textarea.form-control.error:focus {
+    border-color: #dca7b0;
+}
+
+.icheckbox_minimal-grey,
+.iradio_minimal-grey {
+    margin-right: 4px !important;
+}
+
+label.error {
+    font-size: 13px;
+    color: #a94442;
+}
+
+.form-group {
+    margin: 10px 0;
+}
+
+.form-group .prompt {
+    width: 25%;
+    display: inline-block;
+}
+
+.form-group .prompt label {
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.form-group .note {
+    font-size: 14px;
+    color: #999999;
+}
+
+.form-group .control {
+    display: inline-block;
+    vertical-align: top;
+    line-height: 1.95;
+    width: 70%;
+}
+
+/**
+ notifications
+ */
+
+#toast-container div.toast {
+    box-shadow: none;
+    border-radius: 0;
+    font-size: 14px;
+    padding: 13px 15px 15px 50px;
+}
+
+.toast-close-button {
+    top: -0.7em;
+    font-weight: 300;
+    font-size: 24px;
+}
+
+#toast-container .toast-title {
+    margin: 0 0 5px;
+    font-size: 15px;
+}
+
+#toast-container .toast-message {
+    font-size: 14px;
+}
+
+/**
+ tables
+ */
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.dataTables_filter input[type='search'] {
+    width: auto;
+    display: inline-block;
+}
+
+/**
+ form-x-editable & datepickers
+ */
+
+.datepicker-days td,
+.datepicker td {
+    box-sizing: border-box !important;
+}
+
+.popover,
+.datepicker.dropdown-menu {
+    border-radius: 0 !important;
+}
+
+.datepicker.dropdown-menu th,
+.datepicker.dropdown-menu td {
+    padding: 5px !important;
+}
+
+.editable-error-block {
+    color: #a94442;
+}
+
+.editable-error-block::before {
+    content: "\f05e";
+    font: normal normal normal 14px/1 FontAwesome;
+}
+
 .editable-submit,
 .editable-cancel {
     padding: 7px 14px;
@@ -169,174 +338,4 @@ Author: Renfei Song
 .editable-clear a {
     margin-top: 5px;
     display: inline-block;
-}
-
-
-/**
- form controls
- */
-
-input[type="search"] {
-    -moz-appearance: textfield;
-    -webkit-appearance: textfield;
-}
-
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-}
-
-.control {
-    line-height: 1.95;
-}
-
-input[type='text'].form-control,
-input[type='password'].form-control,
-input[type='search'].form-control,
-textarea.form-control {
-    font-size: 14px;
-    font-weight: normal;
-    color: #333333;
-    height: 34px;
-    padding: 2px 12px;
-    line-height: 1.42857143;
-    background-color: #ffffff;
-    border: 1px solid #e5e5e5;
-    transition: border-color ease-in-out .15s;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-textarea.form-control {
-    height: auto;
-    padding: 8px 12px;
-    resize: vertical;
-}
-
-input[type='text'].form-control.error,
-input[type='password'].form-control.error,
-input[type='search'].form-control.error,
-textarea.form-control.error {
-    border-color: #ebccd1;
-}
-
-input[type='text'].form-control:focus,
-input[type='password'].form-control:focus,
-input[type='search'].form-control:focus,
-textarea.form-control:focus {
-    border-color: #999999;
-    outline: none;
-}
-
-input[type='text'].form-control.error:focus,
-input[type='password'].form-control.error:focus,
-input[type='search'].form-control.error:focus,
-textarea.form-control.error:focus {
-    border-color: #dca7b0;
-}
-
-.icheckbox_minimal-grey,
-.iradio_minimal-grey {
-    margin-right: 4px !important;
-}
-
-label.error {
-    font-size: 13px;
-    color: #a94442;
-}
-
-.form-group {
-    margin: 10px 0;
-}
-
-.form-group .prompt {
-    width: 30%;
-    display: inline-block;
-}
-
-.form-group .prompt label {
-    font-weight: bold;
-    display: inline-block;
-    margin-bottom: 5px;
-}
-
-.form-group .note {
-    font-size: 14px;
-    color: #999999;
-}
-
-.form-group .control {
-    display: inline-block;
-    vertical-align: top;
-    width: 60%;
-}
-
-/**
- notifications
- */
-
-#toast-container div.toast {
-    box-shadow: none;
-    border-radius: 0;
-    font-size: 14px;
-    padding: 13px 15px 15px 50px;
-}
-
-.toast-close-button {
-    top: -0.7em;
-    font-weight: 300;
-    font-size: 24px;
-}
-
-#toast-container .toast-title {
-    margin: 0 0 5px;
-    font-size: 15px;
-}
-
-#toast-container .toast-message {
-    font-size: 14px;
-}
-
-/**
- tables
- */
-
-.table > tbody > tr > td {
-    vertical-align: middle;
-}
-
-.dataTables_filter input[type='search'] {
-    width: auto;
-    display: inline-block;
-}
-
-/**
- datepickers
- */
-
-.datepicker-days td,
-.datepicker td {
-    box-sizing: border-box !important;
-}
-
-.popover,
-.datepicker.dropdown-menu {
-    border-radius: 0 !important;
-}
-
-.datepicker.dropdown-menu th,
-.datepicker.dropdown-menu td {
-    padding: 5px !important;
-}
-
-.editable-error-block {
-    color: #a94442;
-}
-
-.editable-error-block::before {
-    content: "\f05e";
-    font: normal normal normal 14px/1 FontAwesome;
 }
