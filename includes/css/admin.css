@@ -1,0 +1,253 @@
+/*
+
+Main CSS Styles for the Admin Panel.
+
+Also see: reset.css | components.css
+Author: Renfei Song
+
+------------------------------------------------------------------------ */
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333333;
+    background-color: #3d3d3d;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+a {
+    color: #428bca;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.site-header {
+    background-color: #1f1f1f;
+    width: 100%;
+    height: 46px;
+    top: 0;
+    position: fixed;
+    z-index: 10000;
+}
+
+.site-title {
+    color: #fff;
+    line-height: 46px;
+    font-size: 18px;
+    padding: 0 15px;
+    font-weight: 300;
+    display: inline-block;
+}
+
+.log-out {
+    color: #999999;
+    text-decoration: none;
+    float: right;
+    line-height: 46px;
+    display: inline-block;
+    padding: 0 10px;
+    margin-right: 10px;
+}
+
+.log-out:hover {
+    background-color: #393939;
+    text-decoration: none;
+}
+
+.site-main::before,
+.site-main::after {
+    content: "";
+    display: table;
+}
+
+.site-main {
+    margin-top: 46px;
+}
+
+/* primary content */
+
+.content-area {
+    float: left;
+    width: 100%;
+}
+
+.site-content {
+    margin-left: 195px;
+    padding: 25px;
+    background: #ffffff;
+}
+
+/* sidebar */
+
+.site-sidebar {
+    width: 195px;
+    float: left;
+    margin: 0 0 0 -100%;
+    position: relative;
+    z-index: 2;
+}
+
+.site-navigation li a {
+    color: #d9d9d9;
+    border-top: 1px solid #484848;
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    font-weight: 300;
+}
+
+.site-navigation li.current a,
+.site-navigation li.current a:hover {
+    background: #d64635;
+    color: #ffffff;
+    border-top-color: transparent;
+}
+
+.site-navigation li.current + li a {
+    border-top-color: transparent;
+}
+
+.site-navigation li a:hover {
+    background: #303030;
+    color: #d9d9d9;
+}
+
+.site-navigation li.heading {
+    padding: 15px;
+    color: #9e9e9e;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+/* footer */
+
+.site-footer {
+    position: relative;
+    z-index: 3;
+    padding: 0 20px;
+    font-size: 12px;
+    height: 38px;
+    line-height: 38px;
+    clear: left;
+    color: #a3a3a3;
+}
+
+/* login/register */
+
+.login .site-title,
+.account-disabled .site-title {
+    margin: 0 auto;
+    margin-top: 60px;
+    padding: 15px;
+    text-align: center;
+    display: block;
+    line-height: 20px;
+}
+
+.login .content {
+    background-color: #ffffff;
+    width: 360px;
+    margin: 0 auto;
+    border-radius: 3px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,.3);
+}
+
+.login form {
+    padding: 20px 30px 15px;
+}
+
+.login form::after,
+.account-disabled .content::after{
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.login h2 {
+    font-weight: 300;
+    font-size: 23px;
+    padding: 20px 30px 0;
+}
+
+.login .error {
+    padding: 9px 30px 8px;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    border-left-width: 0;
+    border-right-width: 0;
+    color: #a94442;
+    margin: 15px 0 0;
+}
+
+.login .input {
+    margin-bottom: 15px;
+    border-left: 2px solid #35aa47;
+}
+
+.login .input i {
+    color: #ccc;
+    display:block;
+    position: absolute;
+    margin: 10px 2px 7px 10px;
+    width:16px;
+    height: 16px;
+    text-align:center;
+}
+
+.login input.form-control {
+    padding-left: 33px;
+    border-left: 0;
+}
+
+.login label {
+    display: inline-block;
+    margin: 6px 0;
+}
+
+.login .submit-button {
+    float: right;
+    margin: 0;
+}
+
+.login .alternate-option {
+    border-top: 1px dotted #eee;
+    padding:10px 30px 10px;
+    font-size:12px;
+}
+
+.account-disabled .site-title {
+    color: #666;
+}
+
+.account-disabled .content {
+    background-color: #ffffff;
+    width: 360px;
+    margin: 0 auto;
+    font-size: 15px;
+    padding: 20px 30px 15px;
+    border-radius: 3px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,.3);
+}
+
+.account-disabled .user {
+    font-weight: 300;
+    margin-bottom: 10px;
+    font-size: 23px;
+}
+
+.account-disabled .message {
+    margin: 0 0 10px;
+}
+
+.account-disabled .note {
+    font-size: 13px;
+    color: #999;
+}
+
+.account-disabled .logout {
+    float:right;
+    font-size:13px;
+}

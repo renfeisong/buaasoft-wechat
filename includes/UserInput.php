@@ -28,4 +28,5 @@ class UserInput {
     public $ticket;
     public $precision;
 
+    public $user;
 }

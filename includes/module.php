@@ -25,7 +25,7 @@ function add_action($tag, $object, $function_to_add, $priority = 10) {
         return false;
     }
 
-    if (!is_array($actions[$tag])) {
+    if (!isset($actions[$tag])) {
         $actions[$tag] = array();
     }
     array_push($actions[$tag], array(
@@ -48,7 +48,7 @@ function cmp_actions($a, $b) {
 
 function remove_action($tag, $object, $function_to_remove) {
     global $actions;
-    if (is_array($actions[$tag])) {
+    if (isset($actions[$tag])) {
         foreach ($actions[$tag] as $action) {
             if ($action['module'] == $object && $action['function'] == $function_to_remove) {
                 unset($action);
@@ -59,7 +59,7 @@ function remove_action($tag, $object, $function_to_remove) {
 
 function remove_all_actions($tag, $object) {
     global $actions;
-    if (is_array($actions[$tag])) {
+    if (isset($actions[$tag])) {
         foreach ($actions[$tag] as $action) {
             if ($action['module'] == $object) {
                 unset($action);
@@ -70,7 +70,7 @@ function remove_all_actions($tag, $object) {
 
 function has_action($tag, $object, $function_to_check) {
     global $actions;
-    if (is_array($actions[$tag])) {
+    if (isset($actions[$tag])) {
         foreach ($actions[$tag] as $action) {
             if ($action['module'] == $object && $action['function'] == $function_to_check) {
                 return true;
@@ -124,9 +124,13 @@ function get_value($object, $key) {
 }
 
 function get_option($key) {
-    return _get_value($_GET['module'], $key);
+    return _get_value($_GET['page'], $key);
 }
 
 function get_global_value($key) {
     return _get_value('global', $key);
+}
+
+function set_option($key, $value) {
+    return _set_value($_GET['page'], $key, $value);
 }

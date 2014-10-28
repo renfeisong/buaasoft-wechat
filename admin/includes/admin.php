@@ -10,15 +10,20 @@ require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
 
 ///// Internal API
 
+// Get strings
+
+// User Mgmt.
+
 function current_user() {
-    $user = $_COOKIE['user'];
-    $token = $_COOKIE['token'];
+    $user = @$_COOKIE['user'];
+    $token = @$_COOKIE['token'];
 
     global $wxdb; /* @var $wxdb wxdb */
     $sql = $wxdb->prepare("SELECT * FROM `admin_user` WHERE userName = '%s'", $user);
     $user = $wxdb->get_row($sql, ARRAY_A);
     if ($user) {
         if (sha1(LOGIN_SALT . $user['userName']) == $token) {
+            $wxdb->update('admin_user', array('lastActivity' => date('c')), array('userName' => $user['userName']));
             return $user;
         }
     }
@@ -26,37 +31,40 @@ function current_user() {
     return null;
 }
 
-function current_user_id() {
-    return ($user = current_user()) == null ? 0 : $user['id'];
-}
-
 function current_user_name() {
     return ($user = current_user()) == null ? null : $user['userName'];
 }
 
-function is_admin() {
-    return ($user = current_user()) != null && ($user['userType'] == 1 || $user['userType'] == 0);
+function current_user_can_manage($page) {
+    $user = current_user();
+    $authorized_pages = json_decode($user['authorizedPages']);
+    return in_array($page, $authorized_pages);
 }
 
-function is_superadmin() {
-    return ($user = current_user()) != null && $user['userType'] == 0;
+function is_super_admin() {
+    return ($user = current_user()) != null && $user['isSuperAdmin'] == 1;
 }
 
-function is_disabled() {
-    return ($user = current_user()) != null && $user['userType'] == 2;
+function is_enabled() {
+    return ($user = current_user()) != null && $user['isEnabled'] == 1;
 }
 
 function is_logged_in() {
     return current_user() != null;
 }
 
-function log_in($username, $password) {
+function log_in($username, $password, $remember) {
     global $wxdb; /* @var $wxdb wxdb */
     $sql = $wxdb->prepare("SELECT * FROM `admin_user` WHERE userName = '%s' AND hashedPassword = '%s'", $username, sha1($password));
     $user = $wxdb->get_row($sql, ARRAY_A);
     if ($user) {
-        setcookie('user', $user['userName'], time() + 3600 * 24 * 30);
-        setcookie('token', sha1(LOGIN_SALT . $user['userName']), time() + 3600 * 24 * 30);
+        if ($remember) {
+            setcookie('user', $user['userName'], time() + 3600 * 24 * 30);
+            setcookie('token', sha1(LOGIN_SALT . $user['userName']), time() + 3600 * 24 * 30);
+        } else {
+            setcookie('user', $user['userName']);
+            setcookie('token', sha1(LOGIN_SALT . $user['userName']));
+        }
         return true;
     }
     return false;
@@ -72,14 +80,16 @@ function register($username, $password) {
     $success = $wxdb->insert('admin_user', array(
         'userName' => $username,
         'hashedPassword' => sha1($password),
-        'userType' => 2
+        'isEnabled' => 0,
+        'joinDate' => date('c'),
+        'lastActivity' => date('c'),
+        'authorizedPages' => '[]',
+        'isSuperAdmin' => 0
     ));
-    return $success != false;
+    return false != $success;
 }
 
-function redirect($location, $status = 302) {
-    header("Location: " . $location, true, $status);
-}
+// Pages and Items
 
 function has_settings_page(BaseModule $module) {
     return file_exists(ABSPATH . 'modules/' . get_class($module) . '/settings.php');
@@ -89,32 +99,67 @@ function settings_page_url(BaseModule $module) {
     return ROOT_URL . 'modules/' . get_class($module) . '/settings.php';
 }
 
-function include_settings_page($module_name) {
-    if ($module_name == 'global')
-        require_once ABSPATH . 'admin/includes/global-options.php';
+function include_settings($page_or_module_name) {
+    global $global_options;
+    if (array_key_exists($page_or_module_name, $global_options))
+        require_once ABSPATH . 'admin/includes/global-options-' . $page_or_module_name . '.php';
     else
-        require_once ABSPATH . 'modules/' . $module_name . '/settings.php';
+        require_once ABSPATH . 'modules/' . $page_or_module_name . '/settings.php';
 }
 
-function list_module_navigation_items() {
-    echo '<ul>';
+function list_global_setting_items() {
+    global $global_options;
+    global $global_option_icons;
+    foreach ($global_options as $slug_name => $display_name) {
+        $icon_name = $global_option_icons[$slug_name];
+        $class = $_GET['page'] == $slug_name ? 'current' : '';
+        $template = '<li class="module-navigation-item %s"><a href="%s"><i class="fa fa-lg fa-fw fa-%s"></i>&nbsp; %s</a></li>';
+        echo sprintf($template, $class, ROOT_URL . 'admin/index.php?page=' . $slug_name, $icon_name, $display_name);
+    }
+}
 
+function list_module_setting_items() {
     global $modules;
-
     foreach ($modules as $module) {
         if (has_settings_page($module)) {
             /* @var $module BaseModule */
-            $template = '<li class="module-navigation-item"><a href="%s">%s</a></li>';
-            echo sprintf($template, ROOT_URL . 'admin/index.php?module=' . get_class($module), $module->display_name());
+            $class = $_GET['page'] == get_class($module) ? 'current' : '';
+            $template = '<li class="module-navigation-item %s"><a href="%s">%s</a></li>';
+            echo sprintf($template, $class, ROOT_URL . 'admin/index.php?page=' . get_class($module), $module->display_name());
         }
     }
+}
 
-    echo '</ul>';
+// Misc.
+
+function redirect($location, $status = 302) {
+    header("Location: " . $location, true, $status);
 }
 
 ///// Public Admin Panel API
 
-function submit_button($text = 'Submit', $class = '', $id = '') {
-    $template = '<input type="submit" name="submit" value="%s" id="%s" class="%s">';
-    echo sprintf($template, $text, $id, $class);
+function submit_button($text = 'Submit', $class = '') {
+    $template = '<button type="submit" name="wx_submit" class="button submit-button green-button button-with-icon %s"><i class="fa fa-check"></i> %s</button>';
+    echo sprintf($template, $class, $text);
+}
+
+function reset_button($callback = '', $text = 'Reset', $class = '') {
+    $template = '<button class="button reset-button red-button %s" onclick="%s;return false;">%s</button>';
+    echo sprintf($template, $class, $callback, $text);
+}
+
+///// Public Admin Panel API for Custom Pages
+
+function redirect_success($message = null) {
+    $page = $_GET['page'];
+    $token = time();
+    $auth = sha1(MESSAGE_SALT . $message);
+    redirect('index.php?page=' . $page . '&success=1&msg=' . urlencode($message) . '&token=' . $token . '&auth=' . $auth);
+}
+
+function redirect_failure($message = null) {
+    $page = $_GET['page'];
+    $token = time();
+    $auth = sha1(MESSAGE_SALT . $message);
+    redirect('index.php?page=' . $page . '&failure=1&msg=' . urlencode($message) . '&token=' . $token . '&auth=' . $auth);
 }

@@ -23,6 +23,8 @@ define('DB_CHARSET', 'utf8');
 
 // Authentication unique salts
 define('LOGIN_SALT', 'unique string here');
+define('MESSAGE_SALT', 'unique string here');
+define('AJAX_SALT', 'unique string here');
 
 // Website root URL
 define('ROOT_URL', '/');
@@ -32,6 +34,7 @@ define('ABSPATH', dirname(__FILE__) . '/');
 
 // Sets which PHP errors are reported
 error_reporting(E_ALL);
+ini_set('display_errors', 'On');
 
 // Sets up vars and included files
 require_once ABSPATH . 'includes/load.php';
