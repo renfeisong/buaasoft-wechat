@@ -6,11 +6,16 @@
  */
 
 class Homework1221 extends BaseModule {
+
+    public $table_name = "homework";
+
     public function prepare() {
         global $wxdb; /* @var $wxdb wxdb */
-        if (!$wxdb->schema_exists('homework')) {
+        set_value($this, 'table', $this->table_name);
+
+        if (!$wxdb->schema_exists($this->table_name)) {
             $sql = <<<SQL
-CREATE TABLE `homework` (
+CREATE TABLE `{$this->table_name}` (
   `homeworkId` int(11) NOT NULL,
   `subject` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
   `content` varchar(1000) COLLATE utf8_unicode_ci NOT NULL,
@@ -21,10 +26,7 @@ CREATE TABLE `homework` (
   PRIMARY KEY (`homeworkId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 SQL;
-            $success = $wxdb->query($sql);
-            if (!$success) {
-                throw new ErrorException('Cannot create schema `homework`.');
-            }
+            $wxdb->query($sql);
         }
     }
 
@@ -38,7 +40,7 @@ SQL;
     public function get_homework() {
         global $wxdb; /* @var $wxdb wxdb */
         $today = time('c');
-        $sql = $wxdb->prepare("SELECT * FROM homework WHERE dueDate > '%s' ORDER BY publishDate ASC, subject ASC", $today);
+        $sql = $wxdb->prepare("SELECT * FROM `" . $this->table_name . "` WHERE dueDate > '%s' ORDER BY publishDate ASC, subject ASC", $today);
         $rows = $wxdb->get_results($sql, ARRAY_A);
         $homework = '';
         $last_date = '';

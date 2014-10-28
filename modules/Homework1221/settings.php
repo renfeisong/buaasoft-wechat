@@ -5,6 +5,8 @@
  * @author Renfei Song
  */
 
+$table_name = get_option('table');
+
 if (isset($_POST['add-subject'])) {
     $subject = $_POST['subject'];
     if (empty($subject)) {
@@ -96,7 +98,7 @@ if (isset($_POST['add-homework'])) {
     }
 
     global $wxdb; /* @var $wxdb wxdb */
-    $wxdb->insert('homework', array(
+    $wxdb->insert($table_name, array(
         'subject' => $subject,
         'content' => $content,
         'userName' => current_user_name(),
@@ -111,7 +113,7 @@ if (isset($_POST['add-homework'])) {
 
 global $wxdb; /* @var $wxdb wxdb */
 
-$sql = "SELECT * FROM homework ORDER BY homeworkId DESC";
+$sql = "SELECT * FROM `" . $table_name . "` ORDER BY homeworkId DESC";
 $rows = $wxdb->get_results($sql, ARRAY_A);
 $subjects = get_option('subjects');
 if (!isset($subjects)) {
@@ -120,7 +122,8 @@ if (!isset($subjects)) {
 
 function get_homework_count($subject) {
     global $wxdb; /* @var $wxdb wxdb */
-    $sql = $wxdb->prepare("SELECT count(*) FROM homework WHERE subject = '%s'", $subject);
+    global $table_name;
+    $sql = $wxdb->prepare("SELECT count(*) FROM `" . $table_name . "` WHERE subject = '%s'", $subject);
     return $wxdb->get_var($sql);
 }
 
@@ -159,7 +162,7 @@ function validate_date($date) {
             <label for="subject">科目</label>
         </div>
         <div class="control">
-            <select class="form-control" name="subject" required>
+            <select class="form-control" name="subject" data-placeholder="选择科目..." required>
                 <?php foreach ($subjects as $subject): ?>
                 <option value="<?php echo $subject ?>"><?php echo $subject ?></option>
                 <?php endforeach; ?>
@@ -202,11 +205,11 @@ function validate_date($date) {
     <?php foreach ($rows as $row): ?>
     <tr data-pk="<?php echo $row['homeworkId'] ?>">
         <td><?php echo $row['homeworkId'] ?></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="publishDate" class="x-editable-date"><?php echo $row['publishDate'] ?></a></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="dueDate" class="x-editable-date"><?php echo $row['dueDate'] ?></a></td>
+        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="publishDate" class="x-editable-date"><?php echo $row['publishDate'] ?></a></td>
+        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="dueDate" class="x-editable-date"><?php echo $row['dueDate'] ?></a></td>
         <td><?php echo $row['userName'] ?></td>
-        <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="subject" class="x-editable-subject"><?php echo $row['subject'] ?></a></td>
-        <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=homework&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="content" class="x-editable-content"><?php echo $row['content'] ?></a></td>
+        <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="subject" class="x-editable-subject"><?php echo $row['subject'] ?></a></td>
+        <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="content" class="x-editable-content"><?php echo $row['content'] ?></a></td>
         <td><?php echo $row['dateUpdated'] ?></td>
         <td>
             <button class="button gray-button xs-button delete-homework idle" data-pk="<?php echo $row['homeworkId'] ?>">
@@ -232,7 +235,7 @@ function validate_date($date) {
             ?>
         ],
         select2: {
-
+            placeholder: "选择新科目..."
         }
     });
     $(".x-editable-date").editable({
@@ -251,7 +254,7 @@ function validate_date($date) {
             $(this).removeClass('confirm');
             $(this).addClass('in-progress');
             $.ajax({
-                url: '/modules/Homework1221/ajax.php?table=homework&action=delete&auth=<?php echo sha1(AJAX_SALT) ?>&pk=' + $(this).data('pk')
+                url: '/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&action=delete&auth=<?php echo sha1(AJAX_SALT) ?>&pk=' + $(this).data('pk')
             }).done(function() {
                 location.reload();
                 $("#show-homework tr[data-pk='" + $(this).data('pk') + "']").addClass('to-delete');
