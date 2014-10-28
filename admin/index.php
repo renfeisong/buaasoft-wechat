@@ -64,9 +64,8 @@ ob_start();
     <link rel="stylesheet" href="../includes/plugins/icheck/grey.css" media="all">
     <link rel="stylesheet" href="../includes/plugins/select2/select2.css" media="all">
     <link rel="stylesheet" href="../includes/css/select2-custom.css" media="all">
-    <link rel="stylesheet" href="../includes/plugins/jquery-editable/jquery-ui-datepicker/css/redmond/jquery-ui-1.10.3.custom.css" media="all">
-    <link rel="stylesheet" href="../includes/plugins/jquery-editable/css/jquery-editable.css" media="all">
     <link rel="stylesheet" href="../includes/css/table.css" media="all">
+    <link rel="stylesheet" href="../includes/css/editable.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
     <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
@@ -79,17 +78,16 @@ ob_start();
     <script type="text/javascript" src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
     <script type="text/javascript" src="../includes/plugins/datatables/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="../includes/plugins/datatables/js/dataTables.bootstrap.js"></script>
-    <script type="text/javascript" src="../includes/plugins/poshytip-1.2/jquery.poshytip.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-editable/jquery-ui-datepicker/js/jquery-ui-1.10.3.custom.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-editable/jquery-ui-datepicker/js/jquery.ui.datepicker-zh-CN.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-editable/js/jquery-editable-poshytip.min.js"></script>
-
+    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/tooltip.js"></script>
+    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/popover.js"></script>
+    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.js"></script><!-- Optional -->
+    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.zh-CN.js"></script><!-- Optional -->
     <script type="text/javascript" src="../includes/js/global-options-users.js"></script>
     <title>管理后台</title>
 </head>
 <body>
 
-<div id="wrapper" class="site home">
     <header id="masthead" class="site-header">
         <div class="inner">
             <h1 class="site-title">Admin<span>Center</span></h1>
@@ -113,7 +111,6 @@ ob_start();
     <footer id="colophon" class="site-footer">
         <?php echo queries_count() ?> queries processed in <?php echo timer_stop(6) * 1000 ?> μs.
     </footer>
-</div>
 
 <script>
     toastr.options = {

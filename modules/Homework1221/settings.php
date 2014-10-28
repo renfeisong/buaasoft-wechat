@@ -179,7 +179,12 @@ function validate_date($date) {
 
 <script>
     $('.date-picker').datepicker({
-        dateFormat: "yy-mm-dd"
+        format: "yyyy-mm-dd",
+        todayBtn: true,
+        language: "zh-CN",
+        keyboardNavigation: false,
+        autoclose: true,
+        todayHighlight: true
     });
     $('#add-homework').validate();
 </script>

@@ -121,6 +121,57 @@ Author: Renfei Song
     padding-left: 12px;
 }
 
+.editable-submit,
+.editable-cancel {
+    padding: 7px 14px;
+    font-size: 14px;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 20px;
+    height: 34px;
+    width: 40px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    transition: background-color ease .25s;
+    border-radius: 0;
+    margin: 0 0 0 5px !important;
+
+}
+
+.editable-cancel {
+    margin: 0 0 0 10px !important;
+}
+
+.editable-submit {
+    color: #ffffff;
+    background-color: #35aa47;
+}
+
+.editable-submit:hover,
+.editable-submit:active {
+    background-color: #2b8b3a;
+}
+
+.editable-cancel {
+    color: #ffffff;
+    background-color: #d84a38;
+}
+
+.editable-cancel:hover,
+.editable-cancel:active {
+    background-color: #c13726;
+}
+
+.editable-clear a {
+    margin-top: 5px;
+    display: inline-block;
+}
+
+
 /**
  form controls
  */
@@ -260,4 +311,23 @@ label.error {
 .dataTables_filter input[type='search'] {
     width: auto;
     display: inline-block;
+}
+
+/**
+ datepickers
+ */
+
+.datepicker-days td,
+.datepicker td {
+    box-sizing: border-box !important;
+}
+
+.popover,
+.datepicker.dropdown-menu {
+    border-radius: 0 !important;
+}
+
+.datepicker.dropdown-menu th,
+.datepicker.dropdown-menu td {
+    padding: 5px !important;
 }
