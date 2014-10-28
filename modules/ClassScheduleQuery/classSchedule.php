@@ -1,16 +1,21 @@
 <?php 
 
-// $wxdb = null;
 // class_schedule_test();
 
 function class_schedule_test() {
 	global $wxdb;
-	require_once("../../includes/wxdb.php");
-	$wxdb = new wxdb("root", "root", "weixin", "localhost");
-
+	require_once("../../config.php");
+	
 	$_1221 = new ClassSchedule("class_schedule", 1221);
-	$_1221->setWeekday(1)->add_class("英语口语", "s1e2k3j4g5");
+	$_1221->set_weekday(1)->add_class("英语口语", "s1e2k3j4g5");
 	$_1221->save();
+
+	$_1221->clean();
+	echo "\n";
+	print_r($_1221->get_schedule_days()); // must be empty
+
+	echo "\n";
+	print_r($_1221->query(1)); // must have content
 }
 
 /**
@@ -41,10 +46,13 @@ class ClassSchedule {
 	// max class num
 	const NUM_MAX_CLASS = 12;
 	const SEPARATOR = '#';
+	// the database table name
+	const TABLE_CLASS_SCHEDULE = "class_schedule";
 
 	function __construct($table_name, $classification) {
 		$this->table_name = $table_name;
 		$this->create_table($table_name);
+		$tshi->cur_weekday = -1;
 		$this->classification = $classification;
 		$this->schedule_days = array();
 	}
@@ -73,13 +81,20 @@ class ClassSchedule {
 	}
 
 	/**
-	 * delete all database
-	 * @return bool
+	 * clean all data
 	 */
-	public function clear() {
+	public function clean() {
+		$this->cur_weekday = -1;
+		$this->schedule_days = array();
+	}
+
+	/**
+	 * delete all data in database
+	 * @return bool return true if success, or false.
+	 */
+	public function delete() {
 		global $wxdb;
-		$wxdb->delete($table_name);
-		
+		$wxdb->query("TRUNCATE TABLE $this->table_name");
 		return true;
 	}
 
@@ -87,10 +102,10 @@ class ClassSchedule {
 	 * set the weekday
 	 * 
 	 * @see $cur_weekday
-	 * @param int $day 
+	 * @param int $weekday 
 	 * @return object the instance of classSchedule
 	 */
-	public function setWeekday($weekday) {
+	public function set_weekday($weekday) {
 		$this->cur_weekday = $weekday;
 		// prepare the array
 		if (!isset($this->schedule_days[$weekday]) || !is_array($this->schedule_days[$weekday])) {
@@ -101,23 +116,33 @@ class ClassSchedule {
 	}
 
 	/**
+	 * get all schedule
+	 */
+	public function get_schedule_days() {
+		return $this->schedule_days;
+	}
+
+	/**
 	 * query according to the $weekday and $classification
 	 * $classification is specified in construct function
 	 * 
 	 * @param int $weekday the weekday number
 	 * @return array the array contain class information
-	 * @todo need to know more about the $result
 	 */
 	public function query($weekday) {
-		global $wxdb;
-		$result = null;
-		$results = $wxdb->get_results("SELECT * FROM class_schedule WHERE weekday=$weekday");
-		if ($wxdb->num_rows == 1) {
-			$result = $results[0];
-
+		if (isset($this->schedule_days[$weekday])) {
+			$schedule_day = $this->schedule_days[$weekday];
 		} else {
-			// error
+			global $wxdb;
+			$result = null;
+			$results = $wxdb->get_results("SELECT * FROM class_schedule WHERE weekday=$weekday AND classification=$this->classification", ARRAY_A);
+			if ($wxdb->num_rows == 1) {
+				$result = $results[0];
+			} else {
+				// error
+			}
 		}
+
 		return $result;
 	}
 

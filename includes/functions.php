@@ -88,6 +88,7 @@ function get_modules() {
  */
 function load_modules($module_list) {
     global $modules;
+
     foreach ($module_list as $module) {
         if (get_global_value('enabled_' . $module["name"]) == false) {
             continue;
