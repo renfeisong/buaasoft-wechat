@@ -52,9 +52,47 @@ if (isset($_POST['add-homework'])) {
     $subject = $_POST['subject'];
     $content = $_POST['content'];
 
-    if (empty($publish_date) || empty($due_date) || empty($subject) || empty($content)) {
-        redirect_failure('Empty form is not accepted.');
+    if (empty($publish_date) || empty($subject) || empty($content)) {
+        redirect_failure('请填写完整表格。');
         exit;
+    }
+
+    $subjects = get_option('subjects');
+    if (!isset($subjects))
+        $subjects = array();
+    if (!in_array($subject, $subjects)) {
+        redirect_failure('科目填写无效。');
+        exit;
+    }
+
+    $publish_date = validate_date($publish_date);
+    if ($publish_date == false) {
+        redirect_failure('作业发布日期无效。');
+        exit;
+    }
+
+    if (!empty($due_date)) {
+        $due_date = validate_date($due_date);
+        if ($due_date == false) {
+            redirect_failure('作业截止日期无效。');
+            exit;
+        }
+    }
+
+    $now_timestamp = time();
+    $publish_timestamp = strtotime($publish_date);
+
+    if ($publish_timestamp > $now_timestamp) {
+        redirect_failure('发布日期不得晚于今天。');
+        exit;
+    }
+
+    if (!empty($due_date)) {
+        $due_timestamp = strtotime($due_date);
+        if ($due_timestamp < $publish_timestamp) {
+            redirect_failure('截止日期不得早于发布日期。');
+            exit;
+        }
     }
 
     global $wxdb; /* @var $wxdb wxdb */
@@ -86,6 +124,14 @@ function get_homework_count($subject) {
     return $wxdb->get_var($sql);
 }
 
+function validate_date($date) {
+    $dt = DateTime::createFromFormat('Y-m-d', $date);
+    if ($dt !== false && !array_sum($dt->getLastErrors())) {
+        return $dt->format('Y-m-d');
+    }
+    return false;
+}
+
 ?>
 
 <h2>Homework Mgmt. Panel</h2>
@@ -113,7 +159,7 @@ function get_homework_count($subject) {
             <label for="subject">科目</label>
         </div>
         <div class="control">
-            <select class="form-control" name="subject">
+            <select class="form-control" name="subject" required>
                 <?php foreach ($subjects as $subject): ?>
                 <option value="<?php echo $subject ?>"><?php echo $subject ?></option>
                 <?php endforeach; ?>
@@ -125,7 +171,7 @@ function get_homework_count($subject) {
             <label for="content">内容</label>
         </div>
         <div class="control">
-            <textarea class="form-control" name="content" rows="5" id="content"></textarea>
+            <textarea class="form-control" name="content" rows="5" id="content" required></textarea>
         </div>
     </div>
     <button type="submit" class="button submit-button green-button button-with-icon" name="add-homework"><i class="fa fa-plus"></i> 添加作业</button>
