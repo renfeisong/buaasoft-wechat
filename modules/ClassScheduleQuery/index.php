@@ -88,7 +88,7 @@ class ClassScheduleQuery extends BaseModule {
 	 * @param array $config the content for query
 	 */
 	public function set_config($config) {
-		$this->config = $config
+		$this->config = $config;
 	}
 
 	/**
