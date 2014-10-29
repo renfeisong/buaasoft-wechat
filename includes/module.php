@@ -82,8 +82,10 @@ function has_action($tag, $object, $function_to_check) {
 
 function do_actions($tag, $args) {
     global $actions;
-    foreach ($actions[$tag] as $action) {
-        call_user_func_array(array($action['module'], $action['function']), $args);
+    if (!empty($actions[$tag])) {
+        foreach ($actions[$tag] as $action) {
+            call_user_func_array(array($action['module'], $action['function']), $args);
+        }
     }
 }
 

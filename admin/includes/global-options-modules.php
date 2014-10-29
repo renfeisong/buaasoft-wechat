@@ -44,6 +44,10 @@ foreach (new DirectoryIterator($path) as $fileInfo) {
     }
 }
 
+// Get AJAX Key
+$ajax_key = sha1(rand(111111, 999999));
+set_global_value('options_module_ajax', $ajax_key);
+
 ?>
 
 <h2>模块管理</h2>
@@ -70,7 +74,7 @@ foreach (new DirectoryIterator($path) as $fileInfo) {
                 $button = '<button type="submit" class="button xs-button gray-button" name="enable" value="'.$module['name'].'">启用</button>';
             }
 
-            echo sprintf($template, $module['display_name'], $status, $module['name'], 0, 0, $module['name'], sha1(AJAX_SALT), $module['priority'], $button);
+            echo sprintf($template, $module['display_name'], $status, $module['name'], 0, 0, $module['name'], sha1(AJAX_SALT . $ajax_key), $module['priority'], $button);
         }
     ?>
     </tbody>

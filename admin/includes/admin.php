@@ -15,16 +15,19 @@ require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
 // User Mgmt.
 
 function current_user() {
-    $user = @$_COOKIE['user'];
-    $token = @$_COOKIE['token'];
+    if (!isset($_COOKIE['login'])) {
+        return null;
+    }
 
     global $wxdb; /* @var $wxdb wxdb */
-    $sql = $wxdb->prepare("SELECT * FROM `admin_user` WHERE userName = '%s'", $user);
+    $sql = $wxdb->prepare("SELECT * FROM `admin_user` WHERE `loginToken` = '%s'", $_COOKIE['login']);
     $user = $wxdb->get_row($sql, ARRAY_A);
     if ($user) {
-        if (sha1(LOGIN_SALT . $user['userName']) == $token) {
+        if ($_SERVER['REMOTE_ADDR'] == $user['ip']) {
             $wxdb->update('admin_user', array('lastActivity' => date('c')), array('userName' => $user['userName']));
             return $user;
+        } else {
+            log_out();
         }
     }
 
@@ -58,12 +61,18 @@ function log_in($username, $password, $remember) {
     $sql = $wxdb->prepare("SELECT * FROM `admin_user` WHERE userName = '%s' AND hashedPassword = '%s'", $username, sha1($password));
     $user = $wxdb->get_row($sql, ARRAY_A);
     if ($user) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $token = sha1(LOGIN_SALT . $ip) . sha1(strval(rand(1111111, 9999999)) . $user['userName']);
+        $wxdb->update('admin_user', array(
+            'ip' => $ip,
+            'loginToken' => $token
+        ), array(
+            'userName' => $username
+        ));
         if ($remember) {
-            setcookie('user', $user['userName'], time() + 3600 * 24 * 30);
-            setcookie('token', sha1(LOGIN_SALT . $user['userName']), time() + 3600 * 24 * 30);
+            setcookie('login', $token, time() + 3600 * 24 * 30);
         } else {
-            setcookie('user', $user['userName']);
-            setcookie('token', sha1(LOGIN_SALT . $user['userName']));
+            setcookie('login', $token, 0);
         }
         return true;
     }
@@ -71,8 +80,8 @@ function log_in($username, $password, $remember) {
 }
 
 function log_out() {
-    setcookie('id', null, 0);
-    setcookie('token', null, 0);
+    setcookie('login', "", 1);
+    unset($_COOKIE['login']);
 }
 
 function register($username, $password) {

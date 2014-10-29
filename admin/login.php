@@ -66,7 +66,7 @@ if (isset($_GET['msgid']) && (time() - $_GET['token']) < 3 && (time() - $_GET['t
         <label>
             <input type="checkbox" name="remember" value="1"> Remember me
         </label>
-        <button name="submit" type="submit" class="button submit-button">Login <i class="fa fa-sign-in"></i></button>
+        <button name="submit" type="submit" class="button submit-button green-button">Login <i class="fa fa-sign-in"></i></button>
     </form>
     <div class="alternate-option">
         Don't have an account? <a href="register.php">Click to register</a>

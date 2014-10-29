@@ -120,6 +120,10 @@ if (!isset($subjects)) {
     $subjects = array();
 }
 
+// Get AJAX Key
+$ajax_key = sha1(rand(111111, 999999));
+set_option('ajax', $ajax_key);
+
 function get_homework_count($subject) {
     global $wxdb; /* @var $wxdb wxdb */
     $table_name = get_option('table');
@@ -211,11 +215,11 @@ function validate_date($date) {
     <?php foreach ($rows as $row): ?>
     <tr data-pk="<?php echo $row['homeworkId'] ?>">
         <td><?php echo $row['homeworkId'] ?></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="publishDate" class="x-editable-date"><?php echo $row['publishDate'] ?></a></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="dueDate" class="x-editable-date"><?php echo $row['dueDate'] ?></a></td>
+        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="publishDate" class="x-editable-date"><?php echo $row['publishDate'] ?></a></td>
+        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="dueDate" class="x-editable-date"><?php echo $row['dueDate'] ?></a></td>
         <td><?php echo $row['userName'] ?></td>
-        <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="subject" class="x-editable-subject"><?php echo $row['subject'] ?></a></td>
-        <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="content" class="x-editable-content"><?php echo $row['content'] ?></a></td>
+        <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="subject" class="x-editable-subject"><?php echo $row['subject'] ?></a></td>
+        <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="content" class="x-editable-content"><?php echo $row['content'] ?></a></td>
         <td><?php echo $row['dateUpdated'] ?></td>
         <td>
             <button class="button gray-button xs-button delete-homework idle" data-pk="<?php echo $row['homeworkId'] ?>">

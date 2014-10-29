@@ -8,13 +8,10 @@
 require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
 
 // Security check
-if (sha1(AJAX_SALT) != @$_GET['auth'] || !isset($_GET['table'])) {
+$ajax_key = _get_value(@$_GET['m'], 'ajax');
+if (sha1(AJAX_SALT . $ajax_key) != @$_GET['auth'] || !isset($_GET['table'])) {
     header($_SERVER['SERVER_PROTOCOL'] . " 401 Unauthorized");
-    echo <<<HTML
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<html><head><title>401 Unauthorized</title></head>
-<body><h1>401 Unauthorized</h1><p>Your request has been denied by the server. Back off.</p></body></html>
-HTML;
+    echo ' 请求失败－权限验证错误。';
     exit;
 }
 

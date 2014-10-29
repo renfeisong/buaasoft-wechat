@@ -75,7 +75,7 @@ if (isset($_GET['msgid']) && (time() - $_GET['token']) < 3 && (time() - $_GET['t
             <i class="fa fa-lock"></i>
             <input name="password2" type="password" class="form-control" placeholder="Confirm Password">
         </div>
-        <button name="submit" type="submit" class="button submit-button">Register <i class="fa fa-sign-in"></i></button>
+        <button name="submit" type="submit" class="button submit-button green-button">Register <i class="fa fa-sign-in"></i></button>
     </form>
     <div class="alternate-option">
         Already have an account? <a href="login.php">Click to login</a>
