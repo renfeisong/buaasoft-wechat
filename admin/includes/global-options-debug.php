@@ -1,5 +1,5 @@
 <?php
-    global $wxdb;
+    global $wxdb; /* @var $wxdb wxdb */
     $rows = $wxdb->get_results('select * from `user`', ARRAY_A);
 ?>
 <h2>系统调试</h2>
@@ -27,10 +27,11 @@
             </div>
             <div class="form-group">
                 <div class="prompt">
-                    <label for="postRawData">POST 数据 (raw)</label>
+                    <label for="postRawData">POST 数据 (raw)</label><br>
+                    <button class="button xs-button gray-button" name="sample">加载示例数据</button>
                 </div>
                 <div class="control">
-                    <textarea class="form-control monospace" name="postRawData" id="postRawData" rows="12"></textarea>
+                    <textarea class="form-control monospace" name="postRawData" id="postRawData" rows="16"></textarea>
                 </div>
             </div>
             <button class="button blue-button button-with-icon" name="send"><i class="fa fa-send"></i> 发送</button>
@@ -46,6 +47,18 @@
             <pre class="response prettyprint lang-xml linenums monospace"></pre>
         </div>
         <script>
+            $('#manual button[name="sample"]').click(function() {
+                var sampleData = '<xml>' +
+                    '<ToUserName><![CDATA[toUser]]></ToUserName>' +
+                    '<FromUserName><![CDATA[fromUser]]></FromUserName>' +
+                    '<CreateTime>1348831860</CreateTime>' +
+                    '<MsgType><![CDATA[text]]></MsgType>' +
+                    '<Content><![CDATA[你好]]></Content>' +
+                    '<MsgId>1234567890123456</MsgId>' +
+                    '</xml>';
+                $('#postRawData').val(vkbeautify.xml(sampleData));
+            });
+
             $('#manual button[name="send"]').click(function() {
                 var url = $('#postUrl-1').val();
                 var data = $('#postRawData').val();
@@ -56,6 +69,12 @@
                     contentType: 'raw',
                     url: url,
                     data: data,
+                    error: function() {
+                        $("#manual .status").addClass('label red-label');
+                    },
+                    success: function() {
+                        $("#manual .status").removeClass('label red-label');
+                    },
                     complete: function(jqXHR, textStatus) {
                         var timeDiff = (Date.now() - time) + ' ms';
                         $("#manual .response").removeClass('prettyprinted');
@@ -71,6 +90,7 @@
                 $('#manual .time').text('N/A');
                 $('#manual .status').text('N/A');
                 $('#manual .response').text('');
+                $("#manual .status").removeClass('label red-label');
             });
         </script>
     </div>
@@ -141,6 +161,12 @@
                     contentType: 'raw',
                     url: url,
                     data: xml,
+                    error: function() {
+                        $("#manual .status").addClass('label red-label');
+                    },
+                    success: function() {
+                        $("#manual .status").removeClass('label red-label');
+                    },
                     complete: function(jqXHR, textStatus) {
                         var timeDiff = (Date.now() - time) + ' ms';
                         $("#message .response").removeClass('prettyprinted');
@@ -153,6 +179,7 @@
             });
             $('#message button[name="clear"]').click(function() {
                 $('#textMessage').val('');
+                $("#manual .status").removeClass('label red-label');
                 $('#message .time').text('N/A');
                 $('#message .status').text('N/A');
                 $('#message .response').text('');
@@ -250,8 +277,15 @@
                     contentType: 'raw',
                     url: url,
                     data: xml,
+                    error: function() {
+                        $("#manual .status").addClass('label red-label');
+                    },
+                    success: function() {
+                        $("#manual .status").removeClass('label red-label');
+                    },
                     complete: function(jqXHR, textStatus) {
                         var timeDiff = (Date.now() - time) + ' ms';
+                        $("#manual .status").removeClass('label red-label');
                         $("#event .response").removeClass('prettyprinted');
                         $("#event .status").text(jqXHR.status + ' ' + jqXHR.statusText);
                         $("#event .response").text(vkbeautify.xml(jqXHR.responseText));

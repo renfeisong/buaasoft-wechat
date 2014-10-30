@@ -13,25 +13,28 @@ class MessageReceiver {
     public function receive() {
         $this->input = new UserInput();
 
-        if (!isset($GLOBALS['HTTP_RAW_POST_DATA']))
-            return false;
-
-        $post = $GLOBALS['HTTP_RAW_POST_DATA'];
+        $post = @$GLOBALS['HTTP_RAW_POST_DATA'];
 
         if (empty($post)) {
-            return false;
+            return 'Empty HTTP_RAW_POST_DATA.';
         }
 
-        $object = simplexml_load_string($post, 'SimpleXMLElement', LIBXML_NOCDATA);
-        $this->input->openid = $object->FromUserName;
-        $this->input->accountId = $object->ToUserName;
+        $object = @simplexml_load_string($post, 'SimpleXMLElement', LIBXML_NOCDATA);
+
+        if ($object == false) {
+            $last_error = libxml_get_last_error();
+            return 'Error when parsing XML string. Error message: ' . $last_error->message;
+        }
+
+        $this->input->openid = trim($object->FromUserName);
+        $this->input->accountId = trim($object->ToUserName);
 
         global $wxdb; /* @var $wxdb wxdb */
 
         $sql = $wxdb->prepare("SELECT * FROM `user` WHERE `identifyId` = '%s'", $this->input->openid);
         $this->user = $wxdb->get_row($sql, ARRAY_A);
 
-        switch ($object->MsgType) {
+        switch (trim($object->MsgType)) {
             case "text":
                 $this->input->inputType = InputType::Text;
                 $this->input->content = trim($object->Content);
@@ -88,7 +91,7 @@ class MessageReceiver {
                 }
                 break;
             default:
-                return false;
+                return 'Invalid MsgType `'.$object->MsgType.'`. MsgType must be one of the following: text, voice, video, image, location, link, event.';
         }
 
         do_actions('message_received', array($this->input));
