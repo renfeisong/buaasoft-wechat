@@ -45,35 +45,36 @@
             </div>
             <pre class="response prettyprint lang-xml linenums monospace"></pre>
         </div>
-    </div>
-    <script>
-        $('#manual button[name="send"]').click(function() {
-            var url = $('#postUrl-1').val();
-            var data = $('#postRawData').val();
-            var time = Date.now();
-            $.ajax({
-                type: 'POST',
-                cache: false,
-                contentType: 'raw',
-                url: url,
-                data: data,
-                complete: function(jqXHR, textStatus) {
-                    var timeDiff = (Date.now() - time) + ' ms';
-                    $("#manual .response").removeClass('prettyprinted');
-                    $("#manual .status").text(jqXHR.status + ' ' + jqXHR.statusText);
-                    $("#manual .response").text(vkbeautify.xml(jqXHR.responseText));
-                    $("#manual .time").text(timeDiff);
-                    prettyPrint();
-                }
+        <script>
+            $('#manual button[name="send"]').click(function() {
+                var url = $('#postUrl-1').val();
+                var data = $('#postRawData').val();
+                var time = Date.now();
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    contentType: 'raw',
+                    url: url,
+                    data: data,
+                    complete: function(jqXHR, textStatus) {
+                        var timeDiff = (Date.now() - time) + ' ms';
+                        $("#manual .response").removeClass('prettyprinted');
+                        $("#manual .status").text(jqXHR.status + ' ' + jqXHR.statusText);
+                        $("#manual .response").text(vkbeautify.xml(jqXHR.responseText));
+                        $("#manual .time").text(timeDiff);
+                        prettyPrint();
+                    }
+                });
             });
-        });
-        $('#manual button[name="clear"]').click(function() {
-            $('#postRawData').val('');
-            $('#manual .time').text('N/A');
-            $('#manual .status').text('N/A');
-            $('#manual .response').text('');
-        });
-    </script>
+            $('#manual button[name="clear"]').click(function() {
+                $('#postRawData').val('');
+                $('#manual .time').text('N/A');
+                $('#manual .status').text('N/A');
+                $('#manual .response').text('');
+            });
+        </script>
+    </div>
+
     <!-- message -->
     <div role="tabpanel" class="tab-pane fade" id="message">
         <div class="send-panel">
@@ -158,6 +159,7 @@
             });
         </script>
     </div>
+
     <!-- event -->
     <div role="tabpanel" class="tab-pane fade" id="event">
         <div class="send-panel">
@@ -215,64 +217,94 @@
             </div>
             <pre class="response prettyprint lang-xml linenums monospace"></pre>
         </div>
-    </div>
-    <script>
-        function onEventChange() {
-            var eventName = $('#eventName').val();
-            console.log(eventName);
-            if (eventName == 'subscribe') {
-                $('#event .not-subscribe').fadeOut();
-            } else {
-                $('#event .not-subscribe').fadeIn();
-            }
-        }
-        onEventChange();
-        $('#eventName').change(onEventChange);
-        $('#event button[name="send"]').click(function() {
-            var url = $('#postUrl-3').val();
-            var openid = $('#sender-3').val();
-            var timestamp = Math.round(new Date().getTime() / 1000);
-            var eventName = $('#eventName').val();
-            var eventKey = $('#eventKey').val();
-            var time = Date.now();
-            var xml = '<xml>' +
-                '<ToUserName><![CDATA[toUser]]></ToUserName>' +
-                '<FromUserName><![CDATA[' + openid + ']]></FromUserName>' +
-                '<CreateTime>' + timestamp + '</CreateTime>' +
-                '<MsgType><![CDATA[event]]></MsgType>' +
-                '<Event><![CDATA[' + eventName + ']]></Event>' +
-                '<EventKey><![CDATA[' + eventKey + ']]></EventKey>' +
-                '</xml>';
-            $.ajax({
-                type: 'POST',
-                cache: false,
-                contentType: 'raw',
-                url: url,
-                data: xml,
-                complete: function(jqXHR, textStatus) {
-                    var timeDiff = (Date.now() - time) + ' ms';
-                    $("#event .response").removeClass('prettyprinted');
-                    $("#event .status").text(jqXHR.status + ' ' + jqXHR.statusText);
-                    $("#event .response").text(vkbeautify.xml(jqXHR.responseText));
-                    $("#event .time").text(timeDiff);
-                    prettyPrint();
+        <script>
+            function onEventChange() {
+                var eventName = $('#eventName').val();
+                console.log(eventName);
+                if (eventName == 'subscribe') {
+                    $('#event .not-subscribe').fadeOut();
+                } else {
+                    $('#event .not-subscribe').fadeIn();
                 }
+            }
+            onEventChange();
+            $('#eventName').change(onEventChange);
+            $('#event button[name="send"]').click(function() {
+                var url = $('#postUrl-3').val();
+                var openid = $('#sender-3').val();
+                var timestamp = Math.round(new Date().getTime() / 1000);
+                var eventName = $('#eventName').val();
+                var eventKey = $('#eventKey').val();
+                var time = Date.now();
+                var xml = '<xml>' +
+                    '<ToUserName><![CDATA[toUser]]></ToUserName>' +
+                    '<FromUserName><![CDATA[' + openid + ']]></FromUserName>' +
+                    '<CreateTime>' + timestamp + '</CreateTime>' +
+                    '<MsgType><![CDATA[event]]></MsgType>' +
+                    '<Event><![CDATA[' + eventName + ']]></Event>' +
+                    '<EventKey><![CDATA[' + eventKey + ']]></EventKey>' +
+                    '</xml>';
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    contentType: 'raw',
+                    url: url,
+                    data: xml,
+                    complete: function(jqXHR, textStatus) {
+                        var timeDiff = (Date.now() - time) + ' ms';
+                        $("#event .response").removeClass('prettyprinted');
+                        $("#event .status").text(jqXHR.status + ' ' + jqXHR.statusText);
+                        $("#event .response").text(vkbeautify.xml(jqXHR.responseText));
+                        $("#event .time").text(timeDiff);
+                        prettyPrint();
+                    }
+                });
             });
-        });
-        $('#event button[name="clear"]').click(function() {
-            $('#eventKey').val('');
-            $('#event .time').text('N/A');
-            $('#event .status').text('N/A');
-            $('#event .response').text('');
-        });
-    </script>
-    <!-- log -->
-    <div role="tabpanel" class="tab-pane fade" id="log">
+            $('#event button[name="clear"]').click(function() {
+                $('#eventKey').val('');
+                $('#event .time').text('N/A');
+                $('#event .status').text('N/A');
+                $('#event .response').text('');
+            });
+        </script>
+    </div>
 
+    <!-- log -->
+    <?php
+        function add_row($key, $value) {
+            echo '<tr><td>' . $key . '</td><td>' . $value . '</td></tr>';
+        }
+    ?>
+    <div role="tabpanel" class="tab-pane fade" id="log">
+        <table class="table">
+            <tr><td style="width: 200px">参数</td><td>值</td></tr>
+            <?php
+            global $modules;
+            $sql = 'SELECT table_schema "table", Round(Sum(data_length + index_length) / 1024, 1) "size" FROM information_schema.tables GROUP BY table_schema';
+            $size = $wxdb->get_results($sql, OBJECT_K);
+
+            add_row('Apache 版本', apache_get_version());
+            add_row('PHP 版本', phpversion());
+            add_row('PHP 内存使用', round(memory_get_usage(true)/1048576, 2) . 'M');
+            add_row('PHP 内存限制', ini_get('memory_limit'));
+            add_row('最大执行时间限制', ini_get('max_execution_time') . 's');
+            add_row('PHP 模块', implode(', ', get_loaded_extensions()));
+            add_row('默认时区', date_default_timezone_get());
+            add_row('Error Reporting Level', ini_get('error_reporting'));
+            add_row('Display Errors', ini_get('display_errors'));
+            add_row('加载的模块', count($modules));
+            add_row('ABSPATH', ABSPATH);
+            add_row('Module 目录状态', is_writable(ABSPATH . 'modules') ? '可写' : '不可写');
+            add_row('MySQL 数据库大小', $size['weixin']->size . "KB");
+            ?>
+        </table>
     </div>
 </div>
 
 <style>
+    .tab-content {
+        margin-top: 15px;
+    }
     .receive-panel {
         margin: 15px 0;
         border-top: 1px solid #ddd;
@@ -282,7 +314,7 @@
         margin-right: 15px;
     }
     .monospace {
-        font-family: Menlo, Courier, 'Liberation Mono', Consolas, Monaco, Lucida Console, monospace;
+        font-family: Menlo, Courier, 'Liberation Mono', Consolas, Monaco, 'Lucida Console', monospace;
         white-space: pre-wrap;
 
     }
