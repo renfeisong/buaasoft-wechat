@@ -287,9 +287,12 @@
             add_row('PHP 版本', phpversion());
             add_row('PHP 内存使用', round(memory_get_usage(true)/1048576, 2) . 'M');
             add_row('PHP 内存限制', ini_get('memory_limit'));
+            add_row('POST 大小限制', ini_get('post_max_size'));
+            add_row('最大上传限制', ini_get('upload_max_filesize'));
             add_row('最大执行时间限制', ini_get('max_execution_time') . 's');
             add_row('PHP 模块', implode(', ', get_loaded_extensions()));
             add_row('默认时区', date_default_timezone_get());
+            add_row('Error Log', ini_get('error_log'));
             add_row('Error Reporting Level', ini_get('error_reporting'));
             add_row('Display Errors', ini_get('display_errors'));
             add_row('加载的模块', count($modules));
