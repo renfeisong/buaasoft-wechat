@@ -70,24 +70,24 @@ ob_start();
     <link rel="stylesheet" href="../includes/css/select2-custom.css" media="all">
     <link rel="stylesheet" href="../includes/css/table.css" media="all">
     <link rel="stylesheet" href="../includes/css/editable.css" media="all">
+    <link rel="stylesheet" href="../includes/css/tab.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
-    <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-validation/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-validation/additional-methods.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-validation/messages_zh.js"></script>
-    <script type="text/javascript" src="../includes/plugins/toastr-notifications/toastr.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/icheck/icheck.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/select2/select2.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
-    <script type="text/javascript" src="../includes/plugins/datatables/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/datatables/js/dataTables.bootstrap.js"></script>
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/tooltip.js"></script>
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/popover.js"></script>
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/bootstrap-editable.js"></script>
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.js"></script><!-- Optional -->
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.zh-CN.js"></script><!-- Optional -->
-    <script type="text/javascript" src="../includes/js/global-options-users.js"></script>
+    <script src="../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
+    <script src="../includes/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="../includes/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="../includes/plugins/jquery-validation/messages_zh.js"></script>
+    <script src="../includes/plugins/toastr-notifications/toastr.min.js"></script>
+    <script src="../includes/plugins/icheck/icheck.min.js"></script>
+    <script src="../includes/plugins/select2/select2.min.js"></script>
+    <script src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
+    <script src="../includes/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../includes/plugins/datatables/js/dataTables.bootstrap.js"></script>
+    <script src="../includes/plugins/bootstrap/bootstrap.min.js"></script>
+    <script src="../includes/plugins/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <script src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.js"></script><!-- Optional -->
+    <script src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.zh-CN.js"></script><!-- Optional -->
+    <script src="../includes/js/global-options-users.js"></script>
     <title>管理后台</title>
 </head>
 <body>
