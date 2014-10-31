@@ -8,6 +8,10 @@ Author: Renfei Song
 
 ------------------------------------------------------------------------ */
 
+.hidden {
+    display: none !important;
+}
+
 /**
  headings
  */
@@ -117,6 +121,10 @@ code {
 }
 
 /* dedicated use cases */
+
+.disabled-button {
+    opacity: 0.65;
+}
 
 .submit-button {
     margin: 15px 0 10px;
@@ -264,6 +272,8 @@ label.error {
 /**
  tables
  */
+
+ta
 
 .table > tbody > tr > td {
     vertical-align: middle;
