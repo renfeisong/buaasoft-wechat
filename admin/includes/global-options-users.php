@@ -29,7 +29,8 @@ foreach ($modules as $module) {
         margin-right: 8px;
     }
 
-    .disabled, .disabled a {
+    tr.disabled,
+    tr.disabled a {
         color: #aaaaaa !important;
         border-bottom-color: #aaaaaa !important;
     }
@@ -61,7 +62,7 @@ foreach ($modules as $module) {
 <!---->
 <!--<h3>所有用户</h3>-->
 
-<table id="user-table" class="table">
+<table id="user-table" class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
         <th>用户名</th>

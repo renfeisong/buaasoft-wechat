@@ -152,15 +152,17 @@ ob_start();
     <?php endif; ?>
 
 <script>
-    $('input').iCheck({
-        checkboxClass: 'icheckbox_minimal-grey',
-        radioClass: 'iradio_minimal-grey'
+    $(document).ready(function() {
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_minimal-grey',
+            radioClass: 'iradio_minimal-grey'
+        });
+
+        $('select').select2();
+        window.addEventListener('resize', onWindowResize);
+        onWindowResize();
     });
 
-    $('select').select2();
-
-    window.addEventListener('resize', onWindowResize);
-    onWindowResize();
     function onWindowResize() {
         $('.site-sidebar')[0].style.minHeight = ($(window).height() - 46 - 38) + 'px';
         $('.site-content')[0].style.minHeight = ($(window).height() - 46 - 38) + 'px';
