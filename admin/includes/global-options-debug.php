@@ -22,7 +22,7 @@
                     <label for="postUrl-1">入口地址</label>
                 </div>
                 <div class="control">
-                    <input class="form-control" type="text" name="postUrl-1" id="postUrl-1" value="http://localhost/index.php" required>
+                    <input class="form-control" type="text" name="postUrl-1" id="postUrl-1" value="http://<?php echo $_SERVER['SERVER_NAME'] ?>:<?php echo $_SERVER['SERVER_PORT']?>/index.php" required>
                 </div>
             </div>
             <div class="form-group">
@@ -44,6 +44,7 @@
                 <label class="label gray-label">Time</label>
                 <span class="time">N/A</span>
             </div>
+            <p class="no-response" style="display: none">得不到任何响应，请检查服务器是否启动或地址是否正确。</p>
             <pre class="response prettyprint lang-xml linenums monospace"></pre>
         </div>
         <script>
@@ -69,19 +70,25 @@
                     contentType: 'raw',
                     url: url,
                     data: data,
-                    error: function() {
-                        $("#manual .status").addClass('label red-label');
-                    },
-                    success: function() {
-                        $("#manual .status").removeClass('label red-label');
-                    },
-                    complete: function(jqXHR, textStatus) {
+                    complete: function(jqXHR) {
+                        if (jqXHR.status == '0') {
+                            $('#manual p.no-response').show();
+                            $("#manual .response").text(null);
+                        } else {
+                            $('#manual p.no-response').hide();
+                        }
                         var timeDiff = (Date.now() - time) + ' ms';
                         $("#manual .response").removeClass('prettyprinted');
                         $("#manual .status").text(jqXHR.status + ' ' + jqXHR.statusText);
                         $("#manual .response").text(vkbeautify.xml(jqXHR.responseText));
                         $("#manual .time").text(timeDiff);
                         prettyPrint();
+                    },
+                    error: function() {
+                        $("#manual .status").addClass('label red-label');
+                    },
+                    success: function() {
+                        $("#manual .status").removeClass('label red-label');
                     }
                 });
             });
@@ -103,7 +110,7 @@
                     <label for="postUrl-2">入口地址</label>
                 </div>
                 <div class="control">
-                    <input class="form-control" type="text" name="postUrl-2" id="postUrl-2" value="http://localhost/index.php" required>
+                    <input class="form-control" type="text" name="postUrl-2" id="postUrl-2" value="http://<?php echo $_SERVER['SERVER_NAME'] ?>:<?php echo $_SERVER['SERVER_PORT']?>/index.php" required>
                 </div>
             </div>
             <div class="form-group">
@@ -161,25 +168,31 @@
                     contentType: 'raw',
                     url: url,
                     data: xml,
-                    error: function() {
-                        $("#manual .status").addClass('label red-label');
-                    },
-                    success: function() {
-                        $("#manual .status").removeClass('label red-label');
-                    },
-                    complete: function(jqXHR, textStatus) {
+                    complete: function(jqXHR) {
+                        if (jqXHR.status == '0') {
+                            $('#message p.no-response').show();
+                            $("#message .response").text(null);
+                        } else {
+                            $('#message p.no-response').hide();
+                        }
                         var timeDiff = (Date.now() - time) + ' ms';
                         $("#message .response").removeClass('prettyprinted');
                         $("#message .status").text(jqXHR.status + ' ' + jqXHR.statusText);
                         $("#message .response").text(vkbeautify.xml(jqXHR.responseText));
                         $("#message .time").text(timeDiff);
                         prettyPrint();
+                    },
+                    error: function() {
+                        $("#message .status").addClass('label red-label');
+                    },
+                    success: function() {
+                        $("#message .status").removeClass('label red-label');
                     }
                 });
             });
             $('#message button[name="clear"]').click(function() {
                 $('#textMessage').val('');
-                $("#manual .status").removeClass('label red-label');
+                $("#message .status").removeClass('label red-label');
                 $('#message .time').text('N/A');
                 $('#message .status').text('N/A');
                 $('#message .response').text('');
@@ -195,7 +208,7 @@
                     <label for="postUrl-3">入口地址</label>
                 </div>
                 <div class="control">
-                    <input class="form-control" type="text" name="postUrl-3" id="postUrl-3" value="http://localhost/index.php" required>
+                    <input class="form-control" type="text" name="postUrl-3" id="postUrl-3" value="http://<?php echo $_SERVER['SERVER_NAME'] ?>:<?php echo $_SERVER['SERVER_PORT']?>/index.php" required>
                 </div>
             </div>
             <div class="form-group">
@@ -277,25 +290,31 @@
                     contentType: 'raw',
                     url: url,
                     data: xml,
-                    error: function() {
-                        $("#manual .status").addClass('label red-label');
-                    },
-                    success: function() {
-                        $("#manual .status").removeClass('label red-label');
-                    },
-                    complete: function(jqXHR, textStatus) {
+                    complete: function(jqXHR) {
+                        if (jqXHR.status == '0') {
+                            $('#event p.no-response').show();
+                            $("#event .response").text(null);
+                        } else {
+                            $('#event p.no-response').hide();
+                        }
                         var timeDiff = (Date.now() - time) + ' ms';
-                        $("#manual .status").removeClass('label red-label');
                         $("#event .response").removeClass('prettyprinted');
                         $("#event .status").text(jqXHR.status + ' ' + jqXHR.statusText);
                         $("#event .response").text(vkbeautify.xml(jqXHR.responseText));
                         $("#event .time").text(timeDiff);
                         prettyPrint();
+                    },
+                    error: function() {
+                        $("#event .status").addClass('label red-label');
+                    },
+                    success: function() {
+                        $("#event .status").removeClass('label red-label');
                     }
                 });
             });
             $('#event button[name="clear"]').click(function() {
                 $('#eventKey').val('');
+                $("#event .status").removeClass('label red-label');
                 $('#event .time').text('N/A');
                 $('#event .status').text('N/A');
                 $('#event .response').text('');
@@ -360,6 +379,9 @@
     }
     textarea.monospace {
         font-size: 13px;
+    }
+    p.no-response {
+        margin-top: 15px;
     }
 </style>
 <script src="../includes/js/vkbeautify.0.99.00.beta.js"></script>

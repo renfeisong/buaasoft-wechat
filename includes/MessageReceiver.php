@@ -22,8 +22,12 @@ class MessageReceiver {
         $object = @simplexml_load_string($post, 'SimpleXMLElement', LIBXML_NOCDATA);
 
         if ($object == false) {
+            $error_msg = 'Error when parsing XML string.';
             $last_error = libxml_get_last_error();
-            return 'Error when parsing XML string. Error message: ' . $last_error->message;
+            if (isset($last_error->message)) {
+                $error_msg .= ' Error message: ' . $last_error->message;
+            }
+            return $error_msg;
         }
 
         $this->input->openid = trim($object->FromUserName);
