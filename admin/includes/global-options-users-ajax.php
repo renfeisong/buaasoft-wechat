@@ -1,7 +1,13 @@
+/**
+* This file provides ajax services for the user management page.
+*
+* @author Bingchen Qin
+* @since 2.0.0
+*/
+
 <?php
 
 require_once dirname(__FILE__) . '/admin.php';
-require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
 global $wxdb;
 
 if (isset($_POST["action"])) {
@@ -33,7 +39,6 @@ if (isset($_POST["action"])) {
                 $return_dict["message"] = "error";
             }
             echo json_encode($return_dict);
-            sleep(2);
             break;
         }
         case "enable": {
@@ -52,7 +57,6 @@ if (isset($_POST["action"])) {
                 $return_dict["message"] = "error";
             }
             echo json_encode($return_dict);
-            sleep(2);
             break;
         }
         case "disable": {
@@ -71,7 +75,6 @@ if (isset($_POST["action"])) {
                 $return_dict["message"] = "error";
             }
             echo json_encode($return_dict);
-            sleep(2);
             break;
         }
         case "delete": {
@@ -90,7 +93,6 @@ if (isset($_POST["action"])) {
                 $return_dict["message"] = "error";
             }
             echo json_encode($return_dict);
-            sleep(2);
             break;
         }
         default: {

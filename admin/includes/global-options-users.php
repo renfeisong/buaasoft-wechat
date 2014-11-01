@@ -1,3 +1,10 @@
+/**
+* This file is the user management page for the admin center.
+*
+* @author Bingchen Qin
+* @since 2.0.0
+*/
+
 <?php
 
 global $wxdb; /* @var $wxdb wxdb */
@@ -35,38 +42,14 @@ foreach ($modules as $module) {
         border-bottom-color: #aaaaaa !important;
     }
 
-    /*.disable-animation {*/
-        /*animation: 1s disable forwards;*/
-        /*-webkit-animation: 1s disable forwards;*/
-    /*}*/
-
-    /*@keyframes disable {*/
-        /*to {*/
-            /*color: #AAAAAA;*/
-            /*border-bottom-color: #AAAAAA;*/
-        /*}*/
-    /*}*/
-
-    /*@-webkit-keyframes disable {*/
-        /*to {*/
-            /*color: #AAAAAA;*/
-            /*border-bottom-color: #AAAAAA;*/
-        /*}*/
-    /*}*/
-
 </style>
 
 <h2>用户管理</h2>
-
-<!--<h3>待审核用户</h3>-->
-<!---->
-<!--<h3>所有用户</h3>-->
 
 <table id="user-table" class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
         <th>用户名</th>
-<!--        <th>用户类型</th>-->
         <th>可管理模块</th>
         <th>加入时间</th>
         <th>上次活动时间</th>
@@ -77,11 +60,9 @@ foreach ($modules as $module) {
     <?php foreach($result as $row):?>
     <tr class="<?=$row["isEnabled"] == 1 ? "" : "disabled"?>" data-username="<?=$row["userName"]?>">
         <td>
-            <i class="fa fa-user fa-fw <?=$row["isSuperAdmin"] == 1 ? "super-admin" : "admin"?>"></i>
+            <i class="fa fa-user fa-fw <?=$row["isSuperAdmin"] == 1 ? "super-admin" : "admin"?>" title="<?=$row["isSuperAdmin"] == 1 ? "超级管理员" : "管理员"?>"></i>
             <?=$row["userName"]?>
         </td>
-<!--        <td>--><?//=$row["isSuperAdmin"] == 1 ? "超级管理员" : "管理员"?><!--</td>-->
-
         <?php if ($row["isSuperAdmin"] == 0):?>
             <td>
                 <?php if (current_user_name() != $row["userName"]):?><a href="#" class="x-editable"><?php endif;?>
@@ -140,22 +121,7 @@ foreach ($modules as $module) {
             }
         });
 
-        $("#user-table").DataTable({
-//            "aoColumns": [
-//                null,
-//                null,
-//                {"sWidth": "132px"},
-//                {"sWidth": "132px"},
-//                {"sWidth": "186px"}
-//            ]
-//            "language": {
-//                "lengthMenu": "每页显示_MENU_条",
-//                "zeroRecords": "没有找到内容",
-//                "info": "当前显示第_PAGE_页，共_PAGES_页",
-//                "infoEmpty": "No records available",
-//                "infoFiltered": "(共_MAX_条)"
-//            }
-        });
+        $("#user-table").DataTable();
 
         $(".x-editable").editable({
             type: "select2",
@@ -194,8 +160,6 @@ foreach ($modules as $module) {
                 }
             });
         });
-
-        //TODO:设定time out
 
         $(".enable-account").click(function() {
             var $button = $(this);
