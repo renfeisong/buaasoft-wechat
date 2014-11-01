@@ -1,11 +1,10 @@
-/**
-* This file is the user management page for the admin center.
-*
-* @author Bingchen Qin
-* @since 2.0.0
-*/
-
 <?php
+/**
+ * This file is the user management page for the admin center.
+ *
+ * @author Bingchen Qin
+ * @since 2.0.0
+ */
 
 global $wxdb; /* @var $wxdb wxdb */
 

@@ -1,11 +1,11 @@
-/**
-* This file provides ajax services for the user management page.
-*
-* @author Bingchen Qin
-* @since 2.0.0
-*/
-
 <?php
+/**
+ * This file provides ajax services for the user management page.
+ *
+ * @author Bingchen Qin
+ * @since 2.0.0
+ */
+
 
 require_once dirname(__FILE__) . '/admin.php';
 global $wxdb;
