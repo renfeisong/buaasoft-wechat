@@ -28,13 +28,15 @@ $global_options = array(
     'general' => '通用设置',
     'users' => '用户管理',
     'modules' => '模块管理',
-    'install_module' => '安装模块'
+    'install_module' => '安装模块',
+    'debug' => '系统调试'
 );
 $global_option_icons = array(
     'general' => 'dashboard',
     'users' => 'user',
     'modules' => 'plug',
-    'install_module' => 'plus'
+    'install_module' => 'plus',
+    'debug' => 'wrench'
 );
 $wxdb = null;
 $time_start = 0.0;

@@ -15,6 +15,8 @@ contact Renfei Song for further assistance.
 
 /* #section1: bootstrap.min.css */
 
+/* includes well, popover */
+
 .well {
     min-height: 20px;
     padding: 19px;

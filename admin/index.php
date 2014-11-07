@@ -35,7 +35,7 @@ if (isset($_POST['wx_submit'])) {
 
 // Show Messages
 
-$show_success_msg = $show_failure_msg = false;
+$show_success_msg = $show_failure_msg = $show_notice_msg = false;
 
 if (!empty($_GET['msg']) && sha1(MESSAGE_SALT . $_GET['msg']) == $_GET['auth']) {
     $show_message_content = addslashes($_GET['msg']);
@@ -47,6 +47,10 @@ if (isset($_GET['success']) && (time() - $_GET['token']) < 3 && (time() - $_GET[
 
 if (isset($_GET['failure']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
     $show_failure_msg = true;
+}
+
+if (isset($_GET['notice']) && (time() - $_GET['token']) < 3 && (time() - $_GET['token']) >= 0) {
+    $show_notice_msg = true;
 }
 
 // Start the output buffer to allow possible headers sent
@@ -66,24 +70,24 @@ ob_start();
     <link rel="stylesheet" href="../includes/css/select2-custom.css" media="all">
     <link rel="stylesheet" href="../includes/css/table.css" media="all">
     <link rel="stylesheet" href="../includes/css/editable.css" media="all">
+    <link rel="stylesheet" href="../includes/css/tab.css" media="all">
     <link rel="stylesheet" href="../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../includes/css/admin.css" media="all">
-    <script type="text/javascript" src="../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-validation/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-validation/additional-methods.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/jquery-validation/messages_zh.js"></script>
-    <script type="text/javascript" src="../includes/plugins/toastr-notifications/toastr.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/icheck/icheck.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/select2/select2.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
-    <script type="text/javascript" src="../includes/plugins/datatables/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="../includes/plugins/datatables/js/dataTables.bootstrap.js"></script>
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/tooltip.js"></script>
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/popover.js"></script>
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/bootstrap-editable.js"></script>
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.js"></script><!-- Optional -->
-    <script type="text/javascript" src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.zh-CN.js"></script><!-- Optional -->
-    <script type="text/javascript" src="../includes/js/global-options-users.js"></script>
+    <script src="../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
+    <script src="../includes/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="../includes/plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="../includes/plugins/jquery-validation/messages_zh.js"></script>
+    <script src="../includes/plugins/toastr-notifications/toastr.min.js"></script>
+    <script src="../includes/plugins/icheck/icheck.min.js"></script>
+    <script src="../includes/plugins/select2/select2.min.js"></script>
+    <script src="../includes/plugins/select2/select2_locale_zh-CN.js"></script>
+    <script src="../includes/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../includes/plugins/datatables/js/dataTables.bootstrap.js"></script>
+    <script src="../includes/plugins/bootstrap/bootstrap.min.js"></script>
+    <script src="../includes/plugins/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <script src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.js"></script><!-- Optional -->
+    <script src="../includes/plugins/bootstrap3-editable/js/bootstrap-datepicker.zh-CN.js"></script><!-- Optional -->
+    <script src="../includes/js/global-options-users.js"></script>
     <title>管理后台</title>
 </head>
 <body>
@@ -128,28 +132,37 @@ ob_start();
         "hideMethod": "fadeOut"
     };
 </script>
-<?php if ($show_success_msg): ?>
-    <script>
-        toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Your settings have been saved.'; ?>', 'Success');
-    </script>
-<?php endif; ?>
 
-<?php if ($show_failure_msg): ?>
-    <script>
-        toastr.error('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'An error occured.'; ?>', 'Error');
-    </script>
-<?php endif; ?>
+    <?php if ($show_success_msg): ?>
+        <script>
+            toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Your settings have been saved.'; ?>', 'Success');
+        </script>
+    <?php endif; ?>
+
+    <?php if ($show_failure_msg): ?>
+        <script>
+            toastr.error('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'An error occured.'; ?>', 'Error');
+        </script>
+    <?php endif; ?>
+
+    <?php if ($show_notice_msg): ?>
+        <script>
+            toastr.info('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Something happened.'; ?>', 'Notice');
+        </script>
+    <?php endif; ?>
 
 <script>
-    $('input').iCheck({
-        checkboxClass: 'icheckbox_minimal-grey',
-        radioClass: 'iradio_minimal-grey'
+    $(document).ready(function() {
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_minimal-grey',
+            radioClass: 'iradio_minimal-grey'
+        });
+
+        $('select').select2();
+        window.addEventListener('resize', onWindowResize);
+        onWindowResize();
     });
 
-    $('select').select2();
-
-    window.addEventListener('resize', onWindowResize);
-    onWindowResize();
     function onWindowResize() {
         $('.site-sidebar')[0].style.minHeight = ($(window).height() - 46 - 38) + 'px';
         $('.site-content')[0].style.minHeight = ($(window).height() - 46 - 38) + 'px';

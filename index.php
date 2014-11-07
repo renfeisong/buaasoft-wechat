@@ -10,20 +10,22 @@ require_once dirname(__FILE__) . "/config.php";
 
 $receiver = new MessageReceiver();
 
-$receiver->receive();
+$error = $receiver->receive();
 
-$catched = false;
-
-foreach ($modules as $module) {
-    /* @var $module BaseModule */
-    if ($module->can_handle_input($receiver->input)) {
-        $catched = true;
-        do_actions('module_hit', array($receiver->input, get_class($module)));
-        echo $module->raw_output($receiver->input);
-        break;
-    }
-}
-
-if ($catched == false) {
-    do_actions('modules_missed', array($receiver->input));
+if ($error !== true) {
+    header($_SERVER['SERVER_PROTOCOL'] . " 400 Bad request");
+    echo <<<HTML
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+<title>400 Bad request</title>
+</head>
+<body>
+<h1>400 Bad request</h1>
+<p>The request could not be fulfilled due to the incorrect syntax of the request.</p>
+<p>$error</p>
+</body>
+</html>
+HTML;
+    exit;
 }

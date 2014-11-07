@@ -120,9 +120,13 @@ if (!isset($subjects)) {
     $subjects = array();
 }
 
+// Get AJAX Key
+$ajax_key = sha1(rand(111111, 999999));
+set_option('ajax', $ajax_key);
+
 function get_homework_count($subject) {
     global $wxdb; /* @var $wxdb wxdb */
-    global $table_name;
+    $table_name = get_option('table');
     $sql = $wxdb->prepare("SELECT count(*) FROM `" . $table_name . "` WHERE subject = '%s'", $subject);
     return $wxdb->get_var($sql);
 }
@@ -197,19 +201,25 @@ function validate_date($date) {
 <table id="show-homework" class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
-        <th>序号</th><th>布置日期</th><th>过期日期</th><th>添加人</th>
-        <th>科目</th><th>内容</th><th>更新日期</th><th>操作</th>
+        <th>序号</th>
+        <th>布置日期</th>
+        <th>过期日期</th>
+        <th>添加人</th>
+        <th>科目</th>
+        <th class="nosort">内容</th>
+        <th>更新日期</th>
+        <th class="nosort">操作</th>
     </tr>
     </thead>
     <tbody>
     <?php foreach ($rows as $row): ?>
     <tr data-pk="<?php echo $row['homeworkId'] ?>">
         <td><?php echo $row['homeworkId'] ?></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="publishDate" class="x-editable-date"><?php echo $row['publishDate'] ?></a></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="dueDate" class="x-editable-date"><?php echo $row['dueDate'] ?></a></td>
+        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="publishDate" class="x-editable-date"><?php echo $row['publishDate'] ?></a></td>
+        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="dueDate" class="x-editable-date"><?php echo $row['dueDate'] ?></a></td>
         <td><?php echo $row['userName'] ?></td>
-        <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="subject" class="x-editable-subject"><?php echo $row['subject'] ?></a></td>
-        <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&auth=<?php echo sha1(AJAX_SALT) ?>" data-name="content" class="x-editable-content"><?php echo $row['content'] ?></a></td>
+        <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="subject" class="x-editable-subject"><?php echo $row['subject'] ?></a></td>
+        <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="/modules/Homework1221/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="content" class="x-editable-content"><?php echo $row['content'] ?></a></td>
         <td><?php echo $row['dateUpdated'] ?></td>
         <td>
             <button class="button gray-button xs-button delete-homework idle" data-pk="<?php echo $row['homeworkId'] ?>">
@@ -224,7 +234,12 @@ function validate_date($date) {
 </table>
 
 <script>
-    homeworkTable = $("#show-homework").DataTable();
+    homeworkTable = $("#show-homework").DataTable({
+        'aoColumnDefs': [{
+            'bSortable': false,
+            'aTargets': ['nosort']
+        }]
+    });
     $(".x-editable-content").editable();
     $(".x-editable-subject").editable({
         source: [
