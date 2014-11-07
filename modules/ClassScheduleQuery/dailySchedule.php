@@ -10,7 +10,7 @@ function daily_scheduel_test() {
 
 	// clean the table
 	$shahe->drop_table();
-	$shahe->create_table();
+	$shahe->create_table(DailySchedule::TABLE_SHAEH_SCHEDULE);
 
 	$shahe->delete();
 	$shahe->query();
@@ -59,7 +59,7 @@ function daily_scheduel_test() {
 	// just a sample
 	$xueyuan = new DailySchedule(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
 	$xueyuan->drop_table();
-	$xueyuan->create_table();
+	$xueyuan->create_table(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
 	// morning
 	$xueyuan->add_class_str(1, "8:00", "8:50")
 			->add_break_str(2, "8:50", "8:55")
@@ -112,8 +112,8 @@ function daily_scheduel_test() {
  * @todo modify the scheme
  */
 class DailySchedule {
-	// database table name
-	private $table_name;
+    // database table name
+    private $table_name;
 	// store info
 	private $sections;
 	// section type
@@ -125,21 +125,17 @@ class DailySchedule {
 	const TABLE_XUEYUAN_SCHEDULE = "xueyuan_schedule";
 
 	function __construct($table_name) {
-		$this->set_table($table_name);
+        $this->set_table_name($table_name);
 		$this->sections = array();
 	}
 
-	/**
-	 * 设置数据表名称，并检测数据库是否存在，不存在则创建，
-	 *
-	 * @param $table_name string 数据表名称
-	 * @return 当设置成功时，返回true，否则返回false
-	 * @todo changing according to wxdb.php
-	 */
-	public function set_table($table_name) {
-		$this->table_name = $table_name;
-		$this->create_table($table_name);
-	}
+    /**
+     * set the database table name
+     * @param string $table_name database table name
+     */
+    public function set_table_name($table_name) {
+        $this->table_name = $table_name;
+    }
 
 	/**
 	 * can get the data query from database.
@@ -153,12 +149,21 @@ class DailySchedule {
 
 	/**
 	 * create the database table
-	 * @todo change the scheme is hard
+     * @todo need to check if the table schema is right
 	 */
-	public function create_table() {
+	public static function create_table($table_name) {
 		global $wxdb;
-		$table_name = $this->table_name;
-		$wxdb->query("CREATE TABLE IF NOT EXISTS $table_name (id int NOT NULL AUTO_INCREMENT, cid int NOT NULL, type int NOT NULL, startTime int NOT NULL, endTime int, PRIMARY KEY (`id`)) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1");
+        $table_schema = <<<SQL
+CREATE TABLE IF NOT EXISTS `{$table_name}`
+(id int NOT NULL AUTO_INCREMENT,
+cid int NOT NULL,
+type int NOT NULL,
+startTime int NOT NULL,
+endTime int,
+PRIMARY KEY (`id`))
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1
+SQL;
+		$wxdb->query($table_schema);
 	}
 
 	public function drop_table() {

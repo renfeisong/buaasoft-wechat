@@ -9,8 +9,9 @@ function class_schedule_query_test() {
 	global $wxdb;
 	require_once("../../config.php");
 
+    // I dont have the database, so it is hard for me to test whether this module is normal
 	$class_schedule_query = new ClassScheduleQuery();
-	$class_schedule_query->query_class();
+//	$class_schedule_query->query_class();
 }
 
 require_once("classSchedule.php");
@@ -19,8 +20,7 @@ require_once("dailySchedule.php");
 /**
  * Class ClassScheduleQuery
  *
- * @todo need util class
- * @todo can control the query time
+ * @todo the query the other time not just the current time
  */
 class ClassScheduleQuery extends BaseModule {
 
@@ -35,19 +35,34 @@ class ClassScheduleQuery extends BaseModule {
 		$config = array();	
 	}
 
+    /**
+     * prepare the database schema include classSchedule and dailySchedule
+     */
+    public function prepare() {
+        global $wxdb;
+        // prepare the classSchedule schema
+        if (!$wxdb->schema_exists(ClassSchedule::TABLE_CLASS_SCHEDULE)) {
+            ClassSchedule::create_table(ClassSchedule::TABLE_CLASS_SCHEDULE);
+        }
+        // prepare the shahe dailySchedule schema
+        if (!$wxdb->schema_exists(DailySchedule::TABLE_SHAEH_SCHEDULE)) {
+            DailySchedule::create_table(DailySchedule::TABLE_SHAEH_SCHEDULE);
+        }
+        // prepare the xueyuan dailySchedule schema
+        if (!$wxdb->schema_exists(DailySchedule::TABLE_XUEYUAN_SCHEDULE)) {
+            DailySchedule::create_table(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
+        }
+    }
+
 	/**
 	 * @todo according to menu setting to complete this function
 	 */
 	public function can_handle_input(UserInput $input) {
-		if ($input->inputType == InputType::Click && $input->EventKey == "....") {
+		if ($input->inputType == InputType::Click && $input->eventKey == "....") {
 			return true;
 		} else {
 			return false;
 		}
-	}
-
-	public function priority() {
-		return 10;
 	}
 
 	/**
@@ -60,6 +75,10 @@ class ClassScheduleQuery extends BaseModule {
 
 		$formatter = new OutputFormatter($input->openid, $input->accoutId);
 		return $formatter->MultiNewsOutput($query_result);
+	}
+
+	public function display_name() {
+		return "课程查询";
 	}
 
 	/**
@@ -88,7 +107,7 @@ class ClassScheduleQuery extends BaseModule {
 	 * @param array $config the content for query
 	 */
 	public function set_config($config) {
-		$this->config = $config
+		$this->config = $config;
 	}
 
 	/**
@@ -97,6 +116,7 @@ class ClassScheduleQuery extends BaseModule {
 	 * @param string $openid openid
 	 * @param int $time_stamp time stamp
 	 * @todo need teaching week get function
+     * @todo 使用这种方式得到first_day并不好
 	 */
 	private function pre_query($openid, $time_stamp) {
 
@@ -110,7 +130,7 @@ class ClassScheduleQuery extends BaseModule {
 		$config['studentInfo'] = $student_info; // student info
 		$config['class'] = $this->get_class_from_time($student_info, $time_stamp);
 		$config['group'] = $this->get_group($student_info); // student group
-		$config['teachingWeek'] = $this->get_week(self::STR_FIRST_DAY); // teaching week
+		$config['teachingWeek'] =  $this->get_teaching_week();// teaching week
 		
 		$this->set_config($config);
 	}
@@ -214,7 +234,27 @@ class ClassScheduleQuery extends BaseModule {
 		}
 		return $student_info;
 	}
-	
+
+    /**
+     * parse the $first_day and compute the current teaching week
+     * @todo try to use SchoolCalendar module
+     * @return int the teaching week from
+     */
+    public function get_teaching_week($first_day_str) {
+        $first_time = strtotime($first_day_str);
+
+        // the monday of first week
+        $first_day_id = date("w", $first_time);
+        $first_day = date("z", $first_time);
+
+        // current time
+        $cur_time = time();
+        $cur_day = date("z", $cur_time);
+
+        $teaching_week = (int)(($first_day_id + $cur_day - $first_day) / 7 + 1);
+        return $teaching_week;
+    }
+
 	/**
 	 * get current class according to daily schedule
 	 * 
@@ -240,7 +280,7 @@ class ClassScheduleQuery extends BaseModule {
 			$daily_schedule = new DailySchedule(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
 		}
 
-		$section = $daily_scheduel->select_section($total_minutes);
+		$section = $daily_schedule->select_section($total_minutes);
 
 		return $section['cid'];
 	}

@@ -36,8 +36,6 @@ class ClassSchedule {
 	
 	// store info. the sub_index is weekday
 	private $schedule_days;
-	// database table name
-	private $table_name;
 	// current weekday
 	private $cur_weekday;
 	// classification
@@ -49,10 +47,12 @@ class ClassSchedule {
 	// the database table name
 	const TABLE_CLASS_SCHEDULE = "class_schedule";
 
-	function __construct($table_name, $classification) {
-		$this->table_name = $table_name;
-		$this->create_table($table_name);
-		$tshi->cur_weekday = -1;
+    /**
+     * set the classification
+     * @param $classification
+     */
+    function __construct($classification) {
+		$this->cur_weekday = -1;
 		$this->classification = $classification;
 		$this->schedule_days = array();
 	}
@@ -72,12 +72,34 @@ class ClassSchedule {
 	}
 
 	/**
-	 * @todo 修改创建表的SQL语句
+     * create database table without any check
+     * @param $table_name the name of database table
+	 * @todo check if the shcema is right
 	 */
-	public function create_table($table_name) {
+    public static function create_table($table_name) {
 		global $wxdb;
+        $table_schema = <<<SQL
+CREATE TABLE `{$table_name}`
+(id int NOT NULL AUTO_INCREMENT,
+ weekday int NOT NULL,
+ classification int NOT NULL,
+ class_1 varchar(100),
+ class_2 varchar(100),
+ class_3 varchar(100),
+ class_4 varchar(100),
+ class_5 varchar(100),
+ class_6 varchar(100),
+ class_7 varchar(100),
+ class_8 varchar(100),
+ class_9 varchar(100),
+ class_10 varchar(100),
+ class_11 varchar(100),
+ class_12 varchar(100),
+ PRIMARY KEY (`id`))
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1
+SQL;
 
-		$wxdb->query("CREATE TABLE IF NOT EXISTS `$table_name` (id int NOT NULL AUTO_INCREMENT, weekday int NOT NULL, classification int NOT NULL, class_1 varchar(100), class_2 varchar(100), class_3 varchar(100), class_4 varchar(100), class_5 varchar(100), class_6 varchar(100), class_7 varchar(100), class_8 varchar(100), class_9 varchar(100), class_10 varchar(100), class_11 varchar(100), class_12 varchar(100), PRIMARY KEY (`id`))");
+		$wxdb->query($table_schema);
 	}
 
 	/**

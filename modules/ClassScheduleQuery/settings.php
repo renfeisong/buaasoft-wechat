@@ -4,7 +4,7 @@ require_once("DailySchedule.php");
 ?>
 <h2>课程查询和作息时间表设定</h2>
 
-<!-- 需要设置好多个年级的内容 -->
+<!-- 需要设置好多个年级的课程内容，并且这些内容都得在同一个页面中设置，这样不好!-->
 <!-- todo:change the classification according to year -->
 <!-- todo:now must expose the database implementation -->
 <!-- todo:need test -->
@@ -19,9 +19,9 @@ require_once("DailySchedule.php");
 		foreach ($classes_all_weekday as $weekday => $classes) {
 			foreach ($classes as $class) {
 				echo "<input type='text' value='$class'>";
-				// todo:try to start a new line
-				echo "<br/>";
 			}
+			// todo:try to start a new line
+			echo "<br/>";
 		}
 	?>
 	<?php submit_button(); ?>
@@ -37,7 +37,7 @@ require_once("DailySchedule.php");
     	$daily_schedule = $shahe->get_sections();
 
     	foreach ($daily_schedule as $time_section) {
-    		echo "<input type='text' value='$time_section['startTime']'><input type='text' value='$time_section['endTime']'>"
+    		echo "<input type='text' value='".$time_section['startTime']."'><input type='text' value='".$time_section['endTime']."'>";
     	}
     ?>
     <?php submit_button(); ?>
