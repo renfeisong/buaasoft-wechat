@@ -21,7 +21,7 @@ class MessageReceiver {
 
         $object = @simplexml_load_string($post, 'SimpleXMLElement', LIBXML_NOCDATA);
 
-        if ($object == false) {
+        if ($object === false) {
             $error_msg = 'Error when parsing XML string.';
             $last_error = libxml_get_last_error();
             if (isset($last_error->message)) {
