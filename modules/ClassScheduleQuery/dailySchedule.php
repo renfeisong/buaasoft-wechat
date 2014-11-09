@@ -1,16 +1,16 @@
 <?php
 
-// daily_scheduel_test();
+//daily_scheduel_test();
 
 function daily_scheduel_test() {
 	global $wxdb;
 	require_once("../../config.php");
 
-	$shahe = new DailySchedule(DailySchedule::TABLE_SHAEH_SCHEDULE);
+	$shahe = new DailySchedule(DailySchedule::TABLE_SHAHE_SCHEDULE);
 
 	// clean the table
 	$shahe->drop_table();
-	$shahe->create_table(DailySchedule::TABLE_SHAEH_SCHEDULE);
+	$shahe->create_table(DailySchedule::TABLE_SHAHE_SCHEDULE);
 
 	$shahe->delete();
 	$shahe->query();
@@ -18,33 +18,25 @@ function daily_scheduel_test() {
 	echo "\n";
 	// morning
 	$shahe->add_class_str(1, "8:10", "9:00")
-		  ->add_break_str(2, "9:00", "9:10")
-		  ->add_class_str(2, "9:10", "10:00")
-		  ->add_break_str(3, "10:00", "10:10")
+
+        // the sequence is wrong
+          ->add_class_str(2, "9:10", "10:00")
+
 		  ->add_class_str(3, "10:10", "11:00")
-		  ->add_break_str(4, "11:00", "11:10")
 		  ->add_class_str(4, "11:10", "12:00");
 
 	// noon
-	$shahe->add_break_str(5, "12:00", "13:30");
 
 	$shahe->add_class_str(5, "13:30", "14:20")
-		  ->add_break_str(6, "14:20", "14:30")
 		  ->add_class_str(6, "14:30", "15:20")
-		  ->add_break_str(7, "15:20", "15:30")
 		  ->add_class_str(7, "15:30", "16:20")
-		  ->add_break_str(8, "16:20", "16:30")
 		  ->add_class_str(8, "16:30", "17:20");
 
 	// afternoon
-	$shahe->add_break_str(9, "17:20","18:20");
 
 	$shahe->add_class_str(9, "18:20", "19:10")
-		  ->add_break_str(10, "19:10", "19:20")
 		  ->add_class_str(10, "19:20", "20:10")
-		  ->add_break_str(11, "20:10", "20:20")
 		  ->add_class_str(11, "20:20", "21:10")
-		  ->add_break_str(12, "21:10", "21:20")
 		  ->add_class_str(12, "21:20", "22:10");
 
 	// need add the midnight?
@@ -62,33 +54,22 @@ function daily_scheduel_test() {
 	$xueyuan->create_table(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
 	// morning
 	$xueyuan->add_class_str(1, "8:00", "8:50")
-			->add_break_str(2, "8:50", "8:55")
 			->add_class_str(2, "8:55", "9:45")
-			->add_break_str(3, "9:45", "10:00")
 			->add_class_str(3, "10:00", "10:50")
-			->add_break_str(4, "10:50", "10:55")
 			->add_class_str(4, "10:55", "11:45");
 
 	// noon
-	$xueyuan->add_break_str(5, "11:45", "14:00");
 
 	$xueyuan->add_class_str(5, "14:00", "14:50")
-			->add_break_str(6, "14:50", "14:55")
 			->add_class_str(6, "14:55", "15:45")
-			->add_break_str(7, "15:45", "16:00")
 			->add_class_str(7, "16:00", "16:50")
-			->add_break_str(8, "16:50", "16:55")
 			->add_class_str(8, "16:55", "17:45");
 
 	// afternoon
-	$xueyuan->add_break_str(9, "17:45","18:00");
 
 	$xueyuan->add_class_str(9, "18:00", "18:50")
-			->add_break_str(10, "18:50", "18:55")
 			->add_class_str(10, "18:55", "19:45")
-			->add_break_str(11, "19:45", "20:00")
 			->add_class_str(11, "20:00", "20:50")
-			->add_break_str(12, "20:50", "20:55")
 			->add_class_str(12, "20:55", "21:45");
 
 	// need add the midnight?
@@ -104,24 +85,20 @@ function daily_scheduel_test() {
  * 不需要的内容:1.表所对应的校区
  * database table scheme:
  * 1. id int (PK, A_I)
- * 2. cid int
+ * 2. cid int Class id or cid is the id of the class and corresponding break after class
  * 3. startTime int 
- * 4. endTime int 
- * 5. type int
+ * 4. endTime int
  * @todo change according to wxdb.php
  * @todo modify the scheme
  */
 class DailySchedule {
     // database table name
     private $table_name;
-	// store info
+	// store all time info about shahe campus
 	private $sections;
-	// section type
-	const SECTION_TYPE_CLASS = 1;
-	const SECTION_TYPE_BREAK = 2;
 
 	// the database table name
-	const TABLE_SHAEH_SCHEDULE = "shahe_schedule";
+	const TABLE_SHAHE_SCHEDULE = "shahe_schedule";
 	const TABLE_XUEYUAN_SCHEDULE = "xueyuan_schedule";
 
 	function __construct($table_name) {
@@ -157,7 +134,6 @@ class DailySchedule {
 CREATE TABLE IF NOT EXISTS `{$table_name}`
 (id int NOT NULL AUTO_INCREMENT,
 cid int NOT NULL,
-type int NOT NULL,
 startTime int NOT NULL,
 endTime int,
 PRIMARY KEY (`id`))
@@ -165,6 +141,43 @@ ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1
 SQL;
 		$wxdb->query($table_schema);
 	}
+
+    /**
+     * to sort the section according to cid
+     * @param $a
+     * @param $b
+     */
+    public static function section_compare($a, $b) {
+        if ($a['cid'] < $b['cid']) {
+            return -1;
+        } else if ($a['cid'] > $b['cid']) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * sample input '8:00'
+     * try to transmit '8:00' to the minutes type '480'
+     * @param $str
+     * @return mixed
+     */
+    public static function toInt($str) {
+        $info = explode(":", $str);
+        return (int)$info[0] * 60 + (int)$info[1];
+    }
+
+    /**
+     * the input must be integer
+     * @param $int
+     */
+    public static function toStr($int) {
+        $hour = (int)($int / 60);
+        $minute = (int)($int % 60);
+        $minute = $minute < 10 ? "0".$minute : $minute;
+        return $hour.":".$minute;
+    }
 
 	public function drop_table() {
 		global $wxdb;
@@ -174,59 +187,41 @@ SQL;
 
 	/**
 	 * a prepare implementation for add_section
-	 * add a section (type == SECTION_TYPE_BREAK)
 	 *
 	 * @param int $cid the class id, e.g. the first class => 1
 	 * @param int $startTime start time
 	 * @param int $endTime end time
 	 */
-	public function add_break_str($cid, $start_time, $end_time) {
-		return $this->add_section($cid, self::SECTION_TYPE_BREAK, $start_time, $end_time);
-	}
-
-	public function add_break_int($cid, $start_hour, $start_min, $end_hour, $end_min) {
-		return $this->add_section($cid, self::SECTION_TYPE_BREAK, $start_hour * 60 + $start_min, $end_hour * 60 + $end_min);
-	}
-
-	/**
-	 * a prepare implementation for add_section
-	 */
 	public function add_class_str($cid, $start_time, $end_time) {
-		return $this->add_section($cid, self::SECTION_TYPE_CLASS, $start_time, $end_time);
+		return $this->add_section($cid, $start_time, $end_time);
 	}
 
 	public function add_class_int($cid, $start_hour, $start_min, $end_hour, $end_min) {
-		return $this->add_section($cid, self::SECTION_TYPE_CLASS, $start_hour * 60 + $start_min, $end_hour * 60 + $end_min);
+		return $this->add_section($cid, $start_hour * 60 + $start_min, $end_hour * 60 + $end_min);
 	}
 
 	/**
 	 * add section
 	 * 
 	 * @param int $cid section type
-	 * @param $type int section type
 	 * @param int/string $start_time start time in int or string
 	 * @param int/string $end_time end time in int or string, the e.g. 480/"8:00"
 	 * @return object the instance of dailySchedule
 	 */
-	private function add_section($cid, $type, $start_time, $end_time) {
+	private function add_section($cid, $start_time, $end_time) {
 
 		$section = null;
 
 		if (is_int($start_time) && is_int($end_time)) {
 			$section = array(
-				"type"=>$type, 
 				"start"=>$start_time, 
 				"end"=>$end_time
 			);
 		} else if (is_string($start_time) && is_string($end_time)) {
-			$_start_time = explode(":", $start_time);
-			$_end_time = explode(":", $end_time);
-
 			$section = array(
-				"cid"=>$cid, 
-				"type"=>$type, 
-				"startTime"=>(int)$_start_time[0] * 60 + (int)$_start_time[1], 
-				"endTime"=>(int)$_end_time[0] * 60 + (int)$_end_time[1]
+				"cid"=>$cid,
+				"startTime"=>self::toInt($start_time),
+				"endTime"=>self::toInt($end_time)
 			);
 		} else {
 			// error
@@ -268,7 +263,7 @@ SQL;
 	}
 
 	/**
-	 * query the data and fill this $this->sections
+	 * query the data and fill this $this->sections, $this->section will be sorted according to function section_compare
 	 *
 	 * @return bool return true if success, or false
 	 */
@@ -279,13 +274,14 @@ SQL;
 		// fill data
 		foreach ($results as $result) {
 			$section = array(
-				"cid"=>$result->cid, 
-				"type"=>$result->type, 
+				"cid"=>$result->cid,
 				"startTime"=>$result->startTime, 
 				"endTime"=>$result->endTime
 				);
 			$this->sections[] = $section;
 		}
+        usort($this->sections, "self::section_compare");
+//        print_r($this->sections);
 		return true;
 	}
 

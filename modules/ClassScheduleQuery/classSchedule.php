@@ -1,19 +1,25 @@
 <?php 
 
 // class_schedule_test();
-
+/**
+ * learn how to use ClassSchedule from this function
+ */
 function class_schedule_test() {
 	global $wxdb;
 	require_once("../../config.php");
 	
 	$_1221 = new ClassSchedule(ClassSchedule::TABLE_CLASS_SCHEDULE, 1221);
+
+    // use to edit and save content
 	$_1221->set_weekday(1)->add_class("英语口语", "s1e2k3j4g5");
 	$_1221->save();
 
+    // use to clean all data
 	$_1221->clean();
 	echo "\n";
 	print_r($_1221->get_schedule_days()); // must be empty
 
+    // use to query the content in database
 	echo "\n";
 	print_r($_1221->query(1)); // must have content
 }
@@ -72,9 +78,9 @@ class ClassSchedule {
 	}
 
 	/**
-     * create database table without any check
-     * @param $table_name the name of database table
-	 * @todo check if the shcema is right
+     * create database table with no check
+     * @param string $table_name The name of database table
+	 * @todo check if the schema is right
 	 */
     public static function create_table($table_name) {
 		global $wxdb;
@@ -103,7 +109,8 @@ SQL;
 	}
 
 	/**
-	 * clean all data
+	 * clean all data is RAM, not the database
+     * @see delete
 	 */
 	public function clean() {
 		$this->cur_weekday = -1;

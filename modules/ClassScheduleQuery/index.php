@@ -45,8 +45,8 @@ class ClassScheduleQuery extends BaseModule {
             ClassSchedule::create_table(ClassSchedule::TABLE_CLASS_SCHEDULE);
         }
         // prepare the shahe dailySchedule schema
-        if (!$wxdb->schema_exists(DailySchedule::TABLE_SHAEH_SCHEDULE)) {
-            DailySchedule::create_table(DailySchedule::TABLE_SHAEH_SCHEDULE);
+        if (!$wxdb->schema_exists(DailySchedule::TABLE_SHAHE_SCHEDULE)) {
+            DailySchedule::create_table(DailySchedule::TABLE_SHAHE_SCHEDULE);
         }
         // prepare the xueyuan dailySchedule schema
         if (!$wxdb->schema_exists(DailySchedule::TABLE_XUEYUAN_SCHEDULE)) {
@@ -275,7 +275,7 @@ class ClassScheduleQuery extends BaseModule {
 		// current implementation is simple
 		$daily_schedule = null;
 		if ($student_info['classification'] == '1321' || $student_info['classification'] == '1421') {
-			$daily_schedule = new DailySchedule(DailySchedule::TABLE_SHAEH_SCHEDULE);
+			$daily_schedule = new DailySchedule(DailySchedule::TABLE_SHAHE_SCHEDULE);
 		} else if ($student_info['classification'] == '1221') {
 			$daily_schedule = new DailySchedule(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
 		}
