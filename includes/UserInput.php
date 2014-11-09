@@ -31,4 +31,5 @@ class UserInput {
 
     public $user;
     public $rawXml;
+    public $initiateMethod;
 }

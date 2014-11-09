@@ -16,6 +16,7 @@ class Analytics extends BaseModule {
 CREATE TABLE `frontend_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `openid` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `initiateMethod` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `rawXml` varchar(1000) COLLATE utf8_unicode_ci NOT NULL,
   `isHit` int(11) NOT NULL,
   `hitBy` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -58,6 +59,7 @@ SQL;
 
         $wxdb->insert('frontend_log', array(
             'openid' => $input->openid,
+            'initiateMethod' => $input->initiateMethod,
             'rawXml' => $input->rawXml,
             'isHit' => $hit ? '1' : '0',
             'hitBy' => $hit_by,

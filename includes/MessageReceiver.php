@@ -9,7 +9,6 @@
 class MessageReceiver {
 
     public $error_msg;
-    public $output;
 
     /**
      * Try to receive post data and respond to it.
@@ -81,6 +80,7 @@ class MessageReceiver {
         $input->openid = trim($object->FromUserName);
         $input->accountId = trim($object->ToUserName);
         $input->msgType = trim($object->MsgType);
+        $input->initiateMethod = $object->InitiateMethod == null ? 'default' : trim($object->InitiateMethod);
 
         global $wxdb; /* @var $wxdb wxdb */
 

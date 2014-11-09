@@ -56,6 +56,7 @@
                     '<MsgType><![CDATA[text]]></MsgType>' +
                     '<Content><![CDATA[你好]]></Content>' +
                     '<MsgId>1234567890123456</MsgId>' +
+                    '<InitiateMethod><![CDATA[debug]]></InitiateMethod>' +
                     '</xml>';
                 $('#postRawData').val(vkbeautify.xml(sampleData));
             });
@@ -160,6 +161,7 @@
                     '<CreateTime>' + timestamp + '</CreateTime>' +
                     '<MsgType><![CDATA[text]]></MsgType>' +
                     '<Content><![CDATA[' + msg + ']]></Content>' +
+                    '<InitiateMethod><![CDATA[debug]]></InitiateMethod>' +
                     '<MsgId>1234567890123456</MsgId>' +
                     '</xml>';
                 $.ajax({
@@ -283,6 +285,7 @@
                     '<MsgType><![CDATA[event]]></MsgType>' +
                     '<Event><![CDATA[' + eventName + ']]></Event>' +
                     '<EventKey><![CDATA[' + eventKey + ']]></EventKey>' +
+                    '<InitiateMethod><![CDATA[debug]]></InitiateMethod>' +
                     '</xml>';
                 $.ajax({
                     type: 'POST',
