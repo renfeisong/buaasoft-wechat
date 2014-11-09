@@ -10,9 +10,9 @@ require_once dirname(__FILE__) . "/config.php";
 
 $receiver = new MessageReceiver();
 
-$error = $receiver->receive();
+$success = $receiver->receive();
 
-if ($error !== true) {
+if ($success === false) {
     header($_SERVER['SERVER_PROTOCOL'] . " 400 Bad request");
     echo <<<HTML
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
@@ -23,7 +23,7 @@ if ($error !== true) {
 <body>
 <h1>400 Bad request</h1>
 <p>The request could not be fulfilled due to the incorrect syntax of the request.</p>
-<p>$error</p>
+<p>{$receiver->error_msg}</p>
 </body>
 </html>
 HTML;

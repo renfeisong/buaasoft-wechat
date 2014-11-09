@@ -7,10 +7,10 @@
  */
 
 class UserInput {
-
     public $openid;
     public $accountId;
     public $inputType;
+    public $msgType;
     public $content;
     public $picUrl;
     public $mediaId;
@@ -24,9 +24,11 @@ class UserInput {
     public $title;
     public $url;
     public $description;
+    public $event;
     public $eventKey;
     public $ticket;
     public $precision;
 
     public $user;
+    public $rawXml;
 }
