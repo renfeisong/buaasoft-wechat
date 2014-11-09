@@ -36,7 +36,6 @@ CREATE TABLE `backend_log` (
   `opDetail` varchar(800) COLLATE utf8_unicode_ci DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-ALTER TABLE `backend_log` ADD PRIMARY KEY (`id`);
 SQL;
             $wxdb->query($sql);
         }
