@@ -9,9 +9,8 @@
 class Bound extends BaseModule {
     public function can_handle_input(UserInput $input) {
         global $wxdb;
-        $today = time('c');
         $openid = $input->openid;
-        $sql = $wxdb->prepare("SELECT * FROM user WHERE openid = " . $openid, $today);
+        $sql = $wxdb->prepare("SELECT * FROM user WHERE openid = '%s'" , $openid);
         $wxdb->query($sql);
         $num = $wxdb->num_rows;
         if ($num == 0)

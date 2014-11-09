@@ -12,8 +12,7 @@ $stuid = $_POST['stuid'];
 $identify = $_POST['identify'];
 if($identify != "" && $stuid != "")
 {
-    $today = time('c');
-    $sql = $wxdb->prepare("SELECT * FROM user WHERE userId = " . $stuid, $today);
+    $sql = $wxdb->prepare("SELECT * FROM user WHERE userId = '%s'" , $stuid);
     $wxdb->query($sql);
     $result = $wxdb->last_result;
     $num = $wxdb->num_rows;
