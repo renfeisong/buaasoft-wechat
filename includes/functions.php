@@ -113,6 +113,6 @@ function cmp_modules(BaseModule $a, BaseModule $b) {
 }
 
 function get_module_priority(BaseModule $module) {
-    $priority = get_global_value(get_class($module) . '_priority');
+    $priority = get_global_value('priority_' . get_class($module));
     return $priority == null ? 10 : $priority;
 }
