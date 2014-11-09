@@ -161,7 +161,7 @@ class ClassScheduleQuery extends BaseModule {
 				$class_str = $class_info[0];
 				$info_str = $class_info[1];
 				
-				$info = $this->analyze_info_str($info_str);
+				$info = ClassSchedule::parse_info_str($info_str);
 				// check if match
 				if ($this->is_info_match($info, $config)) {
 					// change the start class
@@ -284,40 +284,7 @@ class ClassScheduleQuery extends BaseModule {
 
 		return $section['cid'];
 	}
-	
-	/**
-	 * 根据信息字符串来获得课程信息
-	 *
-	 * @param string $info_str a string contain the class information
-	 * @return array 返回解析 $info_str 后获得的包含信息的数组
-	 */
-	private function analyze_info_str($info_str) {
-		// store the info 
-		$info["s"] = array();
-		$info["e"] = array();
-		$info["w"] = array();
-		$info["k"] = array();
-		$info["j"] = array();
-		$info["g"] = array();
-		
-		$patterns["s"] = '/s([0-9]+)/';
-		$patterns["e"] = '/e([0-9]+)/';
-		$patterns["w"] = '/w([0-9]+)/';
-		$patterns["k"] = '/k([0-9]+)/';
-		$patterns["j"] = '/j([0-9]+)/';
-		$patterns["g"] = '/g([0-9]+)/';
 
-		$match = array();
-		foreach ($patterns as $key => $pattern) {
-			$times = preg_match($pattern, $info_str, $match);
-			if ($times == 1) {
-				$info[$key][count($info[$key])] = $match[1];
-			}
-		}
-		
-		return $info;
-	}
-	
 	/**
 	 * check the $info which is parsed from the database content whether match the $config
 	 *

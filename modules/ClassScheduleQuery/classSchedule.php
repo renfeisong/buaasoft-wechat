@@ -1,6 +1,6 @@
 <?php 
 
-// class_schedule_test();
+//class_schedule_test();
 /**
  * learn how to use ClassSchedule from this function
  */
@@ -12,7 +12,7 @@ function class_schedule_test() {
 
     // use to edit and save content
 	$_1221->set_weekday(1)->add_class("英语口语", "s1e2k3j4g5");
-	$_1221->save();
+	echo $_1221->save() ? "save success" : "save fail";
 
     // use to clean all data
 	$_1221->clean();
@@ -46,7 +46,8 @@ class ClassSchedule {
 	private $cur_weekday;
 	// classification
 	private $classification;
-
+    // table name
+    private $table_name;
 	// max class num
 	const NUM_MAX_CLASS = 12;
 	const SEPARATOR = '#';
@@ -57,8 +58,9 @@ class ClassSchedule {
      * set the classification
      * @param $classification
      */
-    function __construct($classification) {
+    function __construct($table_name, $classification) {
 		$this->cur_weekday = -1;
+        $this->table_name = $table_name;
 		$this->classification = $classification;
 		$this->schedule_days = array();
 	}
@@ -107,6 +109,67 @@ SQL;
 
 		$wxdb->query($table_schema);
 	}
+
+    public static function drop_table($table_name) {
+        global $wxdb;
+        $wxdb->query("DROP TABLE $table_name");
+    }
+
+    /**
+     * try to make a 5 (weekday) * 12 (class) array
+     *
+     * @deprecated this function is not completed
+     * @param $classes_all_weekday
+     */
+    public static function normalize($classes_all_weekday) {
+        $normalized_classes = array();
+
+        for ($weekday = 1; $weekday <= 5; $weekday++) {
+            $normalized_classes[$weekday] = array();
+
+            $classes = $classes_all_weekday[$weekday];
+            for ($i = 1; $i < self::NUM_MAX_CLASS; $i++) {
+                $class = $classes["class_".$i];
+                $class_info = explode(ClassSchedule::SEPARATOR, $class);
+                $info_str = $class_info[1];
+                $info = self::parse_info_str($info_str);
+            }
+        }
+    }
+
+    /**
+     * 根据信息字符串来获得课程信息
+     *
+     * sample input : s1e2k3j4g5
+     * @param string $info_str a string contain the class information
+     * @return array 返回解析 $info_str 后获得的包含信息的数组
+     */
+    public static function parse_info_str($info_str) {
+        // store the info
+        $info["s"] = array();
+        $info["e"] = array();
+        $info["w"] = array();
+        $info["k"] = array();
+        $info["j"] = array();
+        $info["g"] = array();
+
+        $patterns["s"] = '/s([0-9]+)/';
+        $patterns["e"] = '/e([0-9]+)/';
+        $patterns["w"] = '/w([0-9]+)/';
+        $patterns["k"] = '/k([0-9]+)/';
+        $patterns["j"] = '/j([0-9]+)/';
+        $patterns["g"] = '/g([0-9]+)/';
+
+        $match = array();
+        foreach ($patterns as $key => $pattern) {
+            $times = preg_match($pattern, $info_str, $match);
+            if ($times == 1) {
+                $info[$key][count($info[$key])] = $match[1];
+            }
+        }
+
+        return $info;
+    }
 
 	/**
 	 * clean all data is RAM, not the database
@@ -159,11 +222,11 @@ SQL;
 	 * @return array the array contain class information, or an empty array
 	 */
 	public function query($weekday) {
+        $result = null;
 		if (isset($this->schedule_days[$weekday])) {
-			$schedule_day = $this->schedule_days[$weekday];
+			$result = $this->schedule_days[$weekday];
 		} else {
 			global $wxdb;
-			$result = null;
 			$results = $wxdb->get_results("SELECT * FROM class_schedule WHERE weekday=$weekday AND classification=$this->classification", ARRAY_A);
 			if ($wxdb->num_rows == 1) {
 				$result = $results[0];
@@ -187,33 +250,37 @@ SQL;
 	}
 
 	/**
-	 * save to database
+	 * save all weekday content to database
 	 */
 	public function save() {
 
 		global $wxdb;
 		$weekdays = array_keys($this->schedule_days);
-
 		foreach ($weekdays as $weekday) {
-			$wxdb->query("SELECT * FROM $this->table_name WHERE classification=$this->classification AND weekday=$weekday");
-			$class_count = count($this->schedule_days[$weekday]);
-			$where = array(
-				"classification"=>$this->classification, 
-				"weekday"=>$this->cur_weekday
-				);
+            if (count($this->schedule_days[$weekday])) {
+                $wxdb->query("SELECT * FROM $this->table_name WHERE classification=$this->classification AND weekday=$weekday");
+                $class_count = count($this->schedule_days[$weekday]);
+                $where = array(
+                    "classification"=>$this->classification,
+                    "weekday"=>$weekday
+                );
 
-			$result = false;
+                $result = false;
+                // clear first, according to the $classification and $weekday to update database content
+                if ($wxdb->num_rows == 1) {
+                    // need update
+                    $result = $wxdb->update($this->table_name, $this->schedule_days[$weekday], $where);
+                } else {
+                    // need insert
+                    $result = $wxdb->insert($this->table_name, array_merge($this->schedule_days[$weekday], $where));
+                }
 
-			// clear first, according to the $classification and $weekday to update database content
-			if ($wxdb->num_rows == 1) {
-				// need update
-				$result = $wxdb->update($this->table_name, $this->schedule_days[$weekday], $where);
-			} else {
-				// need insert
-				$result = $wxdb->insert($this->table_name, array_merge($this->schedule_days[$weekday], $where));
-			}
+                if ($result === false) {
+                    return false;
+                }
+            }
 		}
-		
+        return true;
 		
 	}
 }

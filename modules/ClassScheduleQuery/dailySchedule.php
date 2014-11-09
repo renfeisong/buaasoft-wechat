@@ -9,8 +9,8 @@ function daily_scheduel_test() {
 	$shahe = new DailySchedule(DailySchedule::TABLE_SHAHE_SCHEDULE);
 
 	// clean the table
-	$shahe->drop_table();
-	$shahe->create_table(DailySchedule::TABLE_SHAHE_SCHEDULE);
+	DailySchedule::drop_table(DailySchedule::TABLE_SHAHE_SCHEDULE);
+	DailySchedule::create_table(DailySchedule::TABLE_SHAHE_SCHEDULE);
 
 	$shahe->delete();
 	$shahe->query();
@@ -50,8 +50,8 @@ function daily_scheduel_test() {
 
 	// just a sample
 	$xueyuan = new DailySchedule(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
-	$xueyuan->drop_table();
-	$xueyuan->create_table(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
+	DailySchedule::drop_table(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
+	DailySchedule::create_table(DailySchedule::TABLE_XUEYUAN_SCHEDULE);
 	// morning
 	$xueyuan->add_class_str(1, "8:00", "8:50")
 			->add_class_str(2, "8:55", "9:45")
@@ -179,11 +179,12 @@ SQL;
         return $hour.":".$minute;
     }
 
-	public function drop_table() {
+	public static function drop_table($table_name) {
 		global $wxdb;
-		$table_name = $this->table_name;
 		$wxdb->query("DROP TABLE $table_name");
 	}
+
+
 
 	/**
 	 * a prepare implementation for add_section
@@ -287,6 +288,7 @@ SQL;
 
 	/**
 	 * save info into database
+     * @return bool true if success, or false
 	 */
 	public function save() {
 		global $wxdb;
@@ -303,9 +305,10 @@ SQL;
 		for ($i = 0; $i < $section_count; $i++) {
 			$result = $wxdb->insert($this->table_name, $this->sections[$i]);
 			if ($result != 1) {
-				echo "last_error:$wxdb->last_error";
+				return false;
 			}
 		}
+        return true;
 	}
 }
 
