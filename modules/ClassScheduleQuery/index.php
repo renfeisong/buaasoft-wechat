@@ -32,7 +32,7 @@ class ClassScheduleQuery extends BaseModule {
 	const TABLE_USER = "user";
 
 	function __construct() {
-		$config = array();	
+		$this->config = array();
 	}
 
     /**
@@ -130,7 +130,7 @@ class ClassScheduleQuery extends BaseModule {
 		$config['studentInfo'] = $student_info; // student info
 		$config['class'] = $this->get_class_from_time($student_info, $time_stamp);
 		$config['group'] = $this->get_group($student_info); // student group
-		$config['teachingWeek'] =  $this->get_teaching_week();// teaching week
+		$config['teachingWeek'] =  $this->get_teaching_week(self::STR_FIRST_DAY);// teaching week
 		
 		$this->set_config($config);
 	}
@@ -216,7 +216,7 @@ class ClassScheduleQuery extends BaseModule {
 		$group = (int)substr($student_info["class"], 5, 1);
 		return $group;
 	}
-	
+
 	/**
 	 * get the student info from database according to the openid
 	 * @param string $openid the openid of user 

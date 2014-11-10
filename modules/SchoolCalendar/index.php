@@ -32,7 +32,9 @@ class SchoolCalendarQuery extends BaseModule {
 
     public function raw_output(UserInput $input) {
         $formatter = new OutputFormatter($input->openid, $input->accountId);
-        $formatter->textOutput("功能编写中");
+        $date_str = date("Y年m月d日", time());
+        $teaching_week = $this->get_teaching_week($this->first_day);
+        $formatter->textOutput("今天是{$date_str} 第{$teaching_week}教学周");
     }
 
     public function display_name() {
@@ -51,10 +53,10 @@ class SchoolCalendarQuery extends BaseModule {
      * @todo try to get content from jiaowu.buaa.edu.cn
      * @return int the teaching week from
      */
-    public static function get_teaching_week($first_day_str) {
+    public function get_teaching_week($first_day_str) {
         $first_time = strtotime($first_day_str);
 
-        //第一周的星期一
+        // 第一周的星期一
         $first_day_id = date("w", $first_time);
         $first_day = date("z", $first_time);
 

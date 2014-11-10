@@ -17,7 +17,43 @@ function weekdayToStr($weekday) {
 
 // try to change the freshmen class schedule
 if (isset($_POST["submit-freshmen-schedule"])) {
+    $freshmen = new ClassSchedule(ClassSchedule::TABLE_CLASS_SCHEDULE, "1421");
+    for ($weekday = 1; $weekday <= 5; $weekday++) {
+        $freshmen->set_weekday($weekday);
+        for ($i = 1; $i <= ClassSchedule::NUM_MAX_CLASS; $i++) {
+            $subscript = "class_{$weekday}_{$i}";
+            if (isset($_POST[$subscript]) && $_POST[$subscript] != "") {
+                $class_info = explode(ClassSchedule::SEPARATOR, $_POST[$subscript]);
+                $freshmen->add_class($class_info[0], $class_info[1]);
+            }
+        }
+    }
+    // save the weekday content
+    if ($freshmen->save()) {
+        redirect_success("修改成功");
+    } else {
+        redirect_failure("修改失败");
+    }
+}
 
+if (isset($_POST["submit-sophomore-schedule"])) {
+    $sophomore = new ClassSchedule(ClassSchedule::TABLE_CLASS_SCHEDULE, "1321");
+    for ($weekday = 1; $weekday <= 5; $weekday++) {
+        $sophomore->set_weekday($weekday);
+        for ($i = 1; $i <= ClassSchedule::NUM_MAX_CLASS; $i++) {
+            $subscript = "class_{$weekday}_{$i}";
+            if (isset($_POST[$subscript]) && $_POST[$subscript] != "") {
+                $class_info = explode(ClassSchedule::SEPARATOR, $_POST[$subscript]);
+                $sophomore->add_class($class_info[0], $class_info[1]);
+            }
+        }
+    }
+    // save the weekday content
+    if ($sophomore->save()) {
+        redirect_success("修改成功");
+    } else {
+        redirect_failure("修改失败");
+    }
 }
 
 if (isset($_POST["submit-junior-schedule"])) {
@@ -86,20 +122,67 @@ if (isset($_POST["submit-xueyuan-schedule"])) {
 <h3>大一课程</h3>
 
 <form method="post">
-	<?php
-		$freshmen_class_schedule = new ClassSchedule(ClassSchedule::TABLE_CLASS_SCHEDULE, "1421");
-		$classes_all_weekday = $freshmen_class_schedule->query_all_weekday();
-        $html = array();
+    <?php
+    $freshmen_class_schedule = new ClassSchedule(ClassSchedule::TABLE_CLASS_SCHEDULE, "1421");
+    $classes_all_weekday = $freshmen_class_schedule->query_all_weekday();
+    $html = array();
 
-		foreach ($classes_all_weekday as $weekday => $classes) {
-			foreach ($classes as $class) {
-				$html[] = "<input type='text' value='$class'>";
-			}
-		}
+    $html[] = "<div class='form-group row'>";
+    for ($weekday = 1; $weekday <= 5; $weekday++) {
+        $html[] = "<div class='col-md-2'><p class='text-center'>".weekdayToStr($weekday)."</p></div>";
+    }
+    $html[] = "</div>";
 
-        echo join("", $html);
-	?>
+    for ($i = 1; $i < ClassSchedule::NUM_MAX_CLASS; $i++) {
+
+        $html[] = "<div class='form-group row'>";
+        for ($weekday = 1; $weekday <= 5; $weekday++) {
+            if (isset($classes_all_weekday[$weekday]["class_".$i])) {
+                $class = $classes_all_weekday[$weekday]["class_".$i];
+            } else {
+                $class = "";
+            }
+            $html[] = "<div class='col-md-2'><input class='form-control' name='class_{$weekday}_{$i}' type='text' value='$class' /></div>";
+        }
+        $html[] = "</div>";
+    }
+
+    echo join("", $html);
+    ?>
     <button type="submit" class="submit-button button button-with-icon green-button" name="submit-freshmen-schedule">提交</button>
+</form>
+
+<h3>大二课程</h3>
+
+<form method="post">
+    <?php
+    $sophomore_class_schedule = new ClassSchedule(ClassSchedule::TABLE_CLASS_SCHEDULE, "1321");
+    $classes_all_weekday = $sophomore_class_schedule->query_all_weekday();
+    $html = array();
+
+    $html[] = "<div class='form-group row'>";
+    for ($weekday = 1; $weekday <= 5; $weekday++) {
+        $html[] = "<div class='col-md-2'><p class='text-center'>".weekdayToStr($weekday)."</p></div>";
+    }
+    $html[] = "</div>";
+
+    for ($i = 1; $i < ClassSchedule::NUM_MAX_CLASS; $i++) {
+
+        $html[] = "<div class='form-group row'>";
+        for ($weekday = 1; $weekday <= 5; $weekday++) {
+            if (isset($classes_all_weekday[$weekday]["class_".$i])) {
+                $class = $classes_all_weekday[$weekday]["class_".$i];
+            } else {
+                $class = "";
+            }
+            $html[] = "<div class='col-md-2'><input class='form-control' name='class_{$weekday}_{$i}' type='text' value='$class' /></div>";
+        }
+        $html[] = "</div>";
+    }
+
+    echo join("", $html);
+    ?>
+    <button type="submit" class="submit-button button button-with-icon green-button" name="submit-sophomore-schedule">提交</button>
 </form>
 
 <h3>大三课程</h3>
