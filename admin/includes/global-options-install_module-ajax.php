@@ -13,7 +13,7 @@
  * 3 type not zip
  * 4 already exists
  * 5 extract error
- * 6 file names not identical
+ * 6 file names not match
  * 7 index.php not found
  * 8 class name and file name not identical
  * 9 not subclass of BaseClass
@@ -33,10 +33,10 @@ $error_message = array(0 => "success",
                        3 => "type not zip",
                        4 => "already exists",
                        5 => "extract error",
-                       6 => "file names not identical",
+                       6 => "file name and class name not match",
                        7 => "index.php not found",
-                       8 => "class name and file name not identical",
-                       9 => "not subclass of BaseClass",
+                       //8 => "class name and file name not identical ---->  case 6",
+                       8 => "not subclass of BaseClass",
                      100 => "unknown error");
 
 if (!isset($_FILES["file"]["error"]) || is_array($_FILES["file"]["error"])) {
@@ -96,9 +96,11 @@ if ($_FILES["file"]["error"] == UPLOAD_ERR_OK) {
     require_once($temp_dir . $module_name . "/index.php");
     ob_end_clean();
     if (!class_exists($module_name)) {
-        $return_dict["code"] = 8;
+        $return_dict["code"] = 6;
         goto complete;
     }
+
+    //TODO check class name --- not easy
 
     $module = new $module_name;
     if (!is_subclass_of($module, "BaseModule")) {

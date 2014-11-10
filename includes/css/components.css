@@ -76,8 +76,8 @@ code {
     background-color: #35aa47;
 }
 
-.green-button:hover,
-.green-button:active {
+.green-button:hover:not(.disabled-button),
+.green-button:active:not(.disabled-button) {
     background-color: #2b8b3a;
 }
 
@@ -86,8 +86,8 @@ code {
     background-color: #d84a38;
 }
 
-.red-button:hover,
-.red-button:active {
+.red-button:hover:not(.disabled-button),
+.red-button:active:not(.disabled-button) {
     background-color: #c13726;
 }
 
@@ -96,8 +96,8 @@ code {
     background-color: #4b8df8;
 }
 
-.blue-button:hover,
-.blue-button:active {
+.blue-button:hover:not(.disabled-button),
+.blue-button:active:not(.disabled-button) {
     background-color: #2474f6;
 }
 
@@ -106,8 +106,8 @@ code {
     background-color: #e5e5e5;
 }
 
-.gray-button:hover,
-.gray-button:active {
+.gray-button:hover:not(.disabled-button),
+.gray-button:active:not(.disabled-button) {
     background-color: #d1d1d1;
 }
 
@@ -124,6 +124,7 @@ code {
 
 .disabled-button {
     opacity: 0.65;
+    cursor: default;
 }
 
 .submit-button {

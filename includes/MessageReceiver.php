@@ -8,16 +8,62 @@
 
 class MessageReceiver {
 
-    public $input;
+    public $error_msg;
 
+    /**
+     * Try to receive post data and respond to it.
+     *
+     * @return bool false on failure or true on success
+     */
     public function receive() {
-        $this->input = new UserInput();
-
         $post = @$GLOBALS['HTTP_RAW_POST_DATA'];
 
         if (empty($post)) {
-            return 'Empty HTTP_RAW_POST_DATA.';
+            $this->error_msg = 'Empty HTTP_RAW_POST_DATA.';
+            return false;
         }
+
+        $input = $this->process_post($post);
+
+        if ($input == false) {
+            return false;
+        }
+
+        $hit = false;
+        $hit_by = null;
+        $response = null;
+
+        global $modules;
+
+        foreach ($modules as $module) {
+            /* @var $module BaseModule */
+            if ($module->can_handle_input($input)) {
+                $hit = true;
+                $hit_by = get_class($module);
+                $response = $module->raw_output($input);
+                break;
+            }
+        }
+
+        echo $response;
+
+        do_actions('message_received', array($input, $hit, $hit_by, $response));
+
+        return true;
+    }
+
+    /**
+     * Get raw HTTP POST string and return processed UserUnput object.
+     *
+     * If any error occurs, this function will return false and the $error_msg member variable will be set.
+     *
+     * @param $post string raw HTTP POST string
+     *
+     * @return bool|UserInput Object on success or false on failure.
+     */
+    public function process_post($post) {
+        $input = new UserInput();
+        $input->rawXml = $post;
 
         $object = @simplexml_load_string($post, 'SimpleXMLElement', LIBXML_NOCDATA);
 
@@ -27,97 +73,82 @@ class MessageReceiver {
             if (isset($last_error->message)) {
                 $error_msg .= ' Error message: ' . $last_error->message;
             }
-            return $error_msg;
+            $this->error_msg = $error_msg;
+            return false;
         }
 
-        $this->input->openid = trim($object->FromUserName);
-        $this->input->accountId = trim($object->ToUserName);
+        $input->openid = trim($object->FromUserName);
+        $input->accountId = trim($object->ToUserName);
+        $input->msgType = trim($object->MsgType);
+        $input->initiateMethod = $object->InitiateMethod == null ? 'default' : trim($object->InitiateMethod);
 
         global $wxdb; /* @var $wxdb wxdb */
 
-        $sql = $wxdb->prepare("SELECT * FROM `user` WHERE `identifyId` = '%s'", $this->input->openid);
-        $this->user = $wxdb->get_row($sql, ARRAY_A);
+        $sql = $wxdb->prepare("SELECT * FROM `user` WHERE `identifyId` = '%s'", $input->openid);
+        $input->user = $wxdb->get_row($sql, ARRAY_A);
 
         switch (trim($object->MsgType)) {
             case "text":
-                $this->input->inputType = InputType::Text;
-                $this->input->content = trim($object->Content);
+                $input->inputType = InputType::Text;
+                $input->content = trim($object->Content);
                 break;
             case "voice":
-                $this->input->inputType = InputType::Voice;
-                $this->input->format = $object->Format;
-                $this->input->recognition = $object->Recognition;
+                $input->inputType = InputType::Voice;
+                $input->format = $object->Format;
+                $input->recognition = $object->Recognition;
                 break;
             case "image":
-                $this->input->inputType = InputType::Image;
-                $this->input->mediaId = $object->MediaId;
+                $input->inputType = InputType::Image;
+                $input->mediaId = $object->MediaId;
                 break;
             case "video":
-                $this->input->inputType = InputType::Video;
-                $this->input->mediaId = $object->MediaId;
-                $this->input->thumbMediaId = $object->ThumbNediaId;
+                $input->inputType = InputType::Video;
+                $input->mediaId = $object->MediaId;
+                $input->thumbMediaId = $object->ThumbNediaId;
                 break;
             case "location":
-                $this->input->inputType = InputType::Location;
-                $this->input->latitude = $object->Location_X;
-                $this->input->longitude = $object->Location_Y;
-                $this->input->scale = $object->Scale;
-                $this->input->label = $object->Label;
+                $input->inputType = InputType::Location;
+                $input->latitude = $object->Location_X;
+                $input->longitude = $object->Location_Y;
+                $input->scale = $object->Scale;
+                $input->label = $object->Label;
                 break;
             case "link":
-                $this->input->inputType = InputType::Link;
-                $this->input->title = $object->Title;
-                $this->input->description = $object->Description;
-                $this->input->url = $object->Url;
+                $input->inputType = InputType::Link;
+                $input->title = $object->Title;
+                $input->description = $object->Description;
+                $input->url = $object->Url;
                 break;
             case "event":
+                $input->event = $object->Event;
                 if ($object->Event == "subscribe") {
-                    $this->input->inputType = InputType::Subscribe;
-                    $this->input->eventKey = $object->EventKey;
-                    $this->input->ticket = $object->Ticket;
+                    $input->inputType = InputType::Subscribe;
+                    $input->eventKey = $object->EventKey;
+                    $input->ticket = $object->Ticket;
                 } elseif ($object->Event == "unsubscribe") {
-                    $this->input->inputType = InputType::Unsubscribe;
+                    $input->inputType = InputType::Unsubscribe;
                 } elseif ($object->Event == "CLICK") {
-                    $this->input->inputType = InputType::Click;
-                    $this->input->eventKey = $object->EventKey;
+                    $input->inputType = InputType::Click;
+                    $input->eventKey = $object->EventKey;
                 } elseif ($object->Event == "VIEW") {
-                    $this->input->inputType = InputType::View;
-                    $this->input->eventKey = $object->EventKey;
+                    $input->inputType = InputType::View;
+                    $input->eventKey = $object->EventKey;
                 } elseif ($object->Event == "SCAN") {
-                    $this->input->inputType = InputType::Scan;
-                    $this->input->eventKey = $object->EventKey;
-                    $this->input->ticket = $object->Ticket;
+                    $input->inputType = InputType::Scan;
+                    $input->eventKey = $object->EventKey;
+                    $input->ticket = $object->Ticket;
                 } elseif ($object->Event == "LOCATION") {
-                    $this->input->inputType = InputType::LocationReport;
-                    $this->input->latitude = $object->Latitude;
-                    $this->input->longitude = $object->Longitude;
-                    $this->input->precision = $object->Precision;
+                    $input->inputType = InputType::LocationReport;
+                    $input->latitude = $object->Latitude;
+                    $input->longitude = $object->Longitude;
+                    $input->precision = $object->Precision;
                 }
                 break;
             default:
-                return 'Invalid MsgType `'.$object->MsgType.'`. MsgType must be one of the following: text, voice, video, image, location, link, event.';
+                $this->error_msg = 'Invalid MsgType `'.$object->MsgType.'`. MsgType must be one of the following: text, voice, video, image, location, link, event.';
+                return false;
         }
 
-        do_actions('message_received', array($this->input));
-
-        $catched = false;
-
-        global $modules;
-
-        foreach ($modules as $module) {
-            /* @var $module BaseModule */
-            if ($module->can_handle_input($this->input)) {
-                $catched = true;
-                do_actions('module_hit', array($this->input, get_class($module)));
-                echo $module->raw_output($this->input);
-                break;
-            }
-        }
-
-        if ($catched == false) {
-            do_actions('modules_missed', array($this->input));
-        }
-
-        return true;
+        return $input;
     }
 }
