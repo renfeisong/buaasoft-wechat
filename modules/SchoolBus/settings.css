@@ -1,0 +1,22 @@
+button.transition {
+    transition: width .2s ease;
+}
+.idle .idle-only,
+.pre-confirm .idle-only,
+.confirm .confirm-only,
+.in-progress .in-progress-only {
+    display: inline !important;
+}
+.idle {
+    width: 55px;
+}
+.pre-confirm,
+.confirm,
+.in-progress {
+    width: 70px;
+}
+h2, h3, th, td, a, p,
+span, div, option, input,
+button, select {
+    font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, "Microsoft YaHei", "微软雅黑", STXihei, "华文细黑", serif;
+}
