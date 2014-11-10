@@ -52,11 +52,11 @@
 <h4 id="file-name"></h4>
 <progress class="progress-bar hidden" value="10" max="100"></progress>
 
-<button id="add-file" class="button blue-button"><i class="fa fa-plus fa-fw"></i>  选择文件...</button>
-<button id="upload-file" class="button blue-button hidden"><i class="fa fa-upload fa-fw"></i>  开始上传</button>
-<button id="uploading-file" class="button blue-button hidden"><i class="fa fa-spinner fa-spin fa-fw"></i>  正在上传...</button>
-<button id="upload-success" class="button green-button hidden"><i class="fa fa-check fa-fw"></i>  安装成功</button>
-<button id="upload-fail" class="button red-button hidden"><i class="fa fa-close fa-fw"></i>  安装失败</button>
+<button id="add-file" class="button blue-button button-with-icon"><i class="fa fa-plus fa-fw"></i> 选择文件...</button>
+<button id="upload-file" class="button blue-button button-with-icon hidden"><i class="fa fa-upload fa-fw"></i> 开始上传</button>
+<button id="uploading-file" class="button blue-button button-with-icon disabled-button hidden"><i class="fa fa-spinner fa-spin fa-fw"></i> 正在上传...</button>
+<button id="upload-success" class="button green-button button-with-icon disabled-button hidden"><i class="fa fa-check fa-fw"></i> 安装成功</button>
+<button id="upload-fail" class="button red-button button-with-icon disabled-button hidden"><i class="fa fa-close fa-fw"></i> 安装失败</button>
 
 <form id="file-form" class="hidden" enctype="multipart/form-data">
     <input id="add-file-hidden" class="button blue-button" type="file" name="file" accept="application/zip"/>
