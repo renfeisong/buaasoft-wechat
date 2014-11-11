@@ -142,11 +142,13 @@ class MessageReceiver {
                     $input->latitude = $object->Latitude;
                     $input->longitude = $object->Longitude;
                     $input->precision = $object->Precision;
+                } else {
+                    $input->inputType = InputType::Unsupported; // Unsupported Event
                 }
                 break;
             default:
-                $this->error_msg = 'Invalid MsgType `'.$object->MsgType.'`. MsgType must be one of the following: text, voice, video, image, location, link, event.';
-                return false;
+                $input->inputType = InputType::Unsupported; // Unsupported MsgType
+                break;
         }
 
         return $input;
