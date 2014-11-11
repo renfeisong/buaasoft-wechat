@@ -30,4 +30,8 @@ class Bound extends BaseModule {
                     "• <a href=\"".$newBoundURL."\">在校生统一绑定通道</a>\n\n";
         return $formatter->textOutput($output);
     }
+
+    public function display_name() {
+        return "新用户绑定";
+    }
 }
