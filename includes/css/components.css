@@ -159,6 +159,8 @@ input[type="search"]::-webkit-search-results-decoration {
 
 input[type='text'].form-control,
 input[type='password'].form-control,
+input[type='email'].form-control,
+input[type='number'].form-control,
 input[type='search'].form-control,
 textarea.form-control,
 .editable-input input[type='text'],
@@ -185,6 +187,8 @@ textarea.form-control,
 
 input[type='text'].form-control.error,
 input[type='password'].form-control.error,
+input[type='email'].form-control.error,
+input[type='number'].form-control.error,
 input[type='search'].form-control.error,
 textarea.form-control.error {
     border-color: #ebccd1;
@@ -192,6 +196,8 @@ textarea.form-control.error {
 
 input[type='text'].form-control:focus,
 input[type='password'].form-control:focus,
+input[type='email'].form-control:focus,
+input[type='number'].form-control:focus,
 input[type='search'].form-control:focus,
 textarea.form-control:focus,
 .editable-input input[type='text']:focus,
@@ -202,6 +208,8 @@ textarea.form-control:focus,
 
 input[type='text'].form-control.error:focus,
 input[type='password'].form-control.error:focus,
+input[type='email'].form-control.error:focus,
+input[type='number'].form-control.error:focus,
 input[type='search'].form-control.error:focus,
 textarea.form-control.error:focus {
     border-color: #dca7b0;

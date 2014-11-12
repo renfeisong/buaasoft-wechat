@@ -1,6 +1,6 @@
 <?php
 /**
- * ajax page for contact query module.
+ * Ajax page for contact query module.
  *
  * @author Bingchen Qin
  * @since 2.0.0

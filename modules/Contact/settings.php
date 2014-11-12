@@ -58,7 +58,7 @@
                     "format": $("#text").val()
                 },
                 dataType: "json"
-            }).done(function() {
+            }).done(function(data) {
                 $("#submit").addClass("hidden");
                 $("#success").removeClass("hidden");
                 setTimeout(function() {

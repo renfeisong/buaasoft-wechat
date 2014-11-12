@@ -30,7 +30,7 @@ class Contact extends BaseModule {
 
     public function raw_output(UserInput $input) {
         global $wxdb;
-        $row = $wxdb->get_row("SELECT * FROM contact WHERE openid = '" . $this->name . "'", 0);
+        $row = $wxdb->get_row("SELECT * FROM contact WHERE openid = '" . $this->name . "'", ARRAY_A, 0);
         $formatter = new OutputFormatter($input->openid, $input->accountId);
         $output = get_value($this, "output_format");
         if (isset($row)) {
