@@ -8,8 +8,12 @@
 
 require_once dirname(dirname(__FILE__)) . '/config.php';
 
-global $wxdb;
-$row = $wxdb->get_row("SELECT phone_number, email FROM contact WHERE id = 12211014", ARRAY_A, 0);
+if (isset($_GET["openid"])) {
+    global $wxdb;
+    $row = $wxdb->get_row("SELECT phone_number, email FROM user NATURAL JOIN contact WHERE openid = '" . $_GET["openid"] . "'", ARRAY_A, 0);
+} else {
+    exit;
+}
 
 ?>
 
@@ -55,7 +59,7 @@ $row = $wxdb->get_row("SELECT phone_number, email FROM contact WHERE id = 122110
                 type: "POST",
                 data: {
                     action: "edit",
-                    id: "12211014",
+                    openid: $_GET["openid"],
                     mobile: $("#mobile").val(),
                     email: $("#email").val()
                 },
