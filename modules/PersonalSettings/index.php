@@ -6,7 +6,7 @@
  * @since 2.0.0
  */
 
-class PersonalSettings extends BaseModule {
+class Personal_Settings extends BaseModule {
 
     public function prepare() {
 
