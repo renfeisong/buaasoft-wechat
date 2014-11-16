@@ -25,7 +25,7 @@ class Personal_Settings extends BaseModule {
         global $wxdb;
         $row = $wxdb->get_row("SELECT * FROM user WHERE openid = '" . $input->openid . "'", ARRAY_A, 0);
         $formatter = new OutputFormatter($input->openid, $input->accountId);
-        $url = "http://www.test.com/modules/personal_settings/personal_settings.php?openid=" . $input->openid;
+        $url = "personal_settings.php?openid=" . $input->openid;
         $output = "<a href=\"" . $url . "\">点击进入个人设置页面</a>";
         return $formatter->textOutput($output);
     }

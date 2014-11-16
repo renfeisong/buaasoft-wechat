@@ -1,0 +1,107 @@
+body {
+    padding-top: 20px;
+    padding-left: 5px;
+    padding-right: 5px;
+
+    width:100%;
+    max-width:100%;
+    min-width:100%;
+}
+
+.form {
+    width:100%;
+    max-width:100%;
+    min-width:100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.form-group input {
+    display:block;
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 0;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e5e5e5;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    font-size: 24px;
+
+    transition-delay: 0s;
+    transition-duration: 0.15s;
+    transition-property: border-color;
+    transition-timing-function: ease-in-out;
+    -webkit-transition-delay: 0s;
+    -webkit-transition-duration: 0.15s;
+    -webkit-transition-property: border-color;
+    -webkit-transition-timing-function: ease-in-out;
+}
+
+.form-group input:focus {
+    border-color: #999999;
+}
+
+.warning {
+    margin-bottom: 10px;
+}
+
+.button {
+    padding: 9px 18px;
+    font-size: 20px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+    box-shadow: none;
+    transition: background-color ease .25s;
+    border-radius: 5px;
+    margin-top: 8px;
+}
+
+.green-button {
+    color: #ffffff;
+    background-color: #35aa47;
+}
+
+.green-button:active:not(.disabled-button) {
+    background-color: #2b8b3a;
+}
+
+.red-button {
+    color: #ffffff;
+    background-color: #d84a38;
+}
+
+.red-button:active:not(.disabled-button) {
+    background-color: #c13726;
+}
+
+.blue-button {
+    color: #ffffff;
+    background-color: #4b8df8;
+}
+
+.blue-button:active:not(.disabled-button) {
+    background-color: #2474f6;
+}
+
+.gray-button {
+    color: #333333;
+    background-color: #e5e5e5;
+}
+
+.gray-button:active:not(.disabled-button) {
+    background-color: #d1d1d1;
+}
+
+.button-with-icon:not(.xs-button) {
+    padding-left: 12px;
+}
