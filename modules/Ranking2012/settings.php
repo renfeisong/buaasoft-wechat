@@ -121,7 +121,7 @@ foreach ($ranking_list as $item)
     <div class="form-group">
         <div class="prompt">
             <label for="content">展示信息</label>
-            <p class="note">某张表的某类值表示如下：[1:savg]，表示id为1的表的算术平均分。可供选择的type有，<br><code>savg-算术平均分<br>sno-算术平均分大班排名<br>ssno-算术平均分小班排名<br>gavg-学分绩点和<br>gno-学分绩点和大班排名<br>gsno-学分绩点和小班排名<br>ctot-小班人数<br>gtot-大班人数</code><br>无需显示学生姓名。</p>
+            <p class="note">某张表的某类值表示如下：[1:savg]，表示id为1的表的算术平均分。可供选择的type有<code>:<br>savg-算术平均分<br>sno-算术平均分大班排名<br>ssno-算术平均分小班排名<br>gavg-学分绩点和<br>gno-学分绩点和大班排名<br>gsno-学分绩点和小班排名<br>ctot-小班人数<br>gtot-大班人数</code><br>无需显示学生姓名。</p>
         </div>
         <div class="control">
             <textarea class="form-control" name="content" rows="5" id="content" required><?=get_option("ranking_".$grade.'_content')?></textarea>
