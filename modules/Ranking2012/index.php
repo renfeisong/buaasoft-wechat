@@ -68,7 +68,7 @@ class Ranking2012 extends BaseModule {
         {
             $ranking_list = get_value($this, "ranking_".$this->grade);
             $output = $this->stuname.'，你的成绩如下：'."\n";
-            $statement = get_value($this, "ranking_".$this->grade.'_content');
+            $statement = get_value($this, "ranking_".$this->grade."_content");
             while (preg_match('/(?:\[)([^\[]*)(?:\])/', $statement, $matches) != 0)
             {
                 //取ID开头
@@ -101,7 +101,7 @@ class Ranking2012 extends BaseModule {
             return $formatter->textOutput($output);
         }
         else
-            return $formatter->textOutput("暂时没有成绩信息~");
+            return $formatter->textOutput(get_value($this, "ranking_".$this->grade."_content"));
     }
 
     public function display_name() {
