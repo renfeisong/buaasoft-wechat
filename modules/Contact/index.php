@@ -16,7 +16,7 @@ class Contact extends BaseModule {
 
     public function can_handle_input(UserInput $input) {
         global $wxdb;
-        $names = $wxdb->get_col("SELECT name FROM contact", 0);
+        $names = $wxdb->get_col("SELECT userName FROM user", 0);
         if ($input->inputType == InputType::Text) {
             foreach ($names as $name) {
                 if (substr_count($input->content, $name) > 0) {
@@ -30,20 +30,26 @@ class Contact extends BaseModule {
 
     public function raw_output(UserInput $input) {
         global $wxdb;
-        $row = $wxdb->get_row("SELECT * FROM contact WHERE openid = '" . $this->name . "'", ARRAY_A, 0);
+        $results = $wxdb->get_results("SELECT userId, phoneNumber, email FROM user WHERE userName = '" . $this->name . "'", ARRAY_A);
         $formatter = new OutputFormatter($input->openid, $input->accountId);
-        $output = get_value($this, "output_format");
-        if (isset($row)) {
-            if (isset($row["phone_number"])) {
-                str_replace("[phone_number]", $row["phone_number"], $output);
-            } else {
-                str_replace("[phone_number]", "[没有查询到手机号码]", $output);
+        $output_format = get_value($this, "output_format");
+        $return_text = "";
+        if (isset($results)) {
+            foreach ($results as $result) {
+                $return_text = $return_text . $output_format;
+                if (isset($result["phoneNumber"])) {
+                    str_replace("[phone_number]", $result["phoneNumber"], $return_text);
+                } else {
+                    str_replace("[phone_number]", "[没有查询到手机号码]", $return_text);
+                }
+                if (isset($result["email"])) {
+                    str_replace("[email]", $result["email"], $return_text);
+                } else {
+                    str_replace("[email]", "[没有查询到邮箱]", $return_text);
+                }
+                $return_text = $return_text . "\n";
             }
-            if (isset($row["email"])) {
-                str_replace("[email]", $row["email"], $output);
-            } else {
-                str_replace("[email]", "[没有查询到邮箱]", $output);
-            }
+            return $return_text;
         }
         return $formatter->textOutput("没有查询到相关信息");
     }

@@ -13,7 +13,7 @@ if (isset($_POST["action"])) {
 
     switch ($_POST["action"]) {
         case "edit": {
-            _set_value("Contact", "output_format", $_POST["format"]); //此处应有更好的解决方案
+            _set_value("Contact", "output_format", $_POST["format"]);
             $return_dict["code"] = 0;
             $return_dict["message"] = "success";
             echo json_encode($return_dict);
