@@ -12,8 +12,8 @@ if (isset($_GET["openid"])) {
     global $wxdb;
     $row = $wxdb->get_row("SELECT phoneNumber, email FROM user WHERE openid = '" . $_GET["openid"] . "'", ARRAY_A, 0);
 } else {
-    $row = array("phone_number"=>"15601600293", "email"=>"qinbingchen@me.com");
-    //exit;
+    echo "未获取openid";
+    exit;
 }
 
 ?>
