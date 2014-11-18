@@ -8,9 +8,10 @@
 
 class Ranking2012 extends BaseModule {
     private $grade, $stuid, $stuname;
+    private $start_year = '2012'; /* configurable */
 
     public function prepare() {
-        set_value($this, "grade", "2012");
+        set_value($this, "grade", $this->start_year);
         if (get_value($this, "ranking_".get_value($this, "grade")) == null)
             set_value($this, "ranking_".get_value($this, "grade"), array());
         if (get_value($this, "ranking_".get_value($this, "grade").'_content') == null)
@@ -21,8 +22,7 @@ class Ranking2012 extends BaseModule {
         global $wxdb;
         $row = $wxdb->get_row("SELECT * FROM `user` WHERE openid = '" . $input->openid . "'", ARRAY_A);
         $this->grade = $row['startYear'];
-        if ($input->inputType == InputType::Click && $input->eventKey == "RANKING" && $this->grade == get_value($this, "grade"))
-        {
+        if ($input->inputType == InputType::Click && $input->eventKey == "RANKING" && $this->grade == get_value($this, "grade")) {
             $this->stuid = $row['userId'];
             $this->stuname = $row['userName'];
             return true;
