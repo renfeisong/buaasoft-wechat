@@ -16,7 +16,7 @@ class Homework1221 extends BaseModule {
         if (!$wxdb->schema_exists($this->table_name)) {
             $sql = <<<SQL
 CREATE TABLE `{$this->table_name}` (
-  `homeworkId` int(11) NOT NULL,
+  `homeworkId` int(11) NOT NULL AUTO_INCREMENT,
   `subject` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
   `content` varchar(1000) COLLATE utf8_unicode_ci NOT NULL,
   `userName` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
