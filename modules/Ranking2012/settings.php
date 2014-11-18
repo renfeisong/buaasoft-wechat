@@ -121,13 +121,33 @@ foreach ($ranking_list as $item)
     <div class="form-group">
         <div class="prompt">
             <label for="content">展示信息</label>
-            <p class="note">某张表的某类值表示如下：[1:savg]，表示id为1的表的算术平均分。可供选择的type有<code>:<br>savg-算术平均分<br>sno-算术平均分大班排名<br>ssno-算术平均分小班排名<br>gavg-学分绩点和<br>gno-学分绩点和大班排名<br>gsno-学分绩点和小班排名<br>ctot-小班人数<br>gtot-大班人数</code><br>无需显示学生姓名。</p>
+            <p class="note">
+                例如，要显示序号为1的表的算术平均分，可使用如下记法：<code>[1:savg]</code>
+                <br>
+                <code>savg</code>：算术平均分
+                <br>
+                <code>sno</code>：算术平均分大班排名
+                <br>
+                <code>ssno</code>：算术平均分小班排名
+                <br>
+                <code>gavg</code>：学分绩点和
+                <br>
+                <code>gno</code>：学分绩点和大班排名
+                <br>
+                <code>gsno</code>：学分绩点和小班排名
+                <br>
+                <code>ctot</code>：小班人数
+                <br>
+                <code>gtot</code>：大班人数
+                <br>
+                无需显示学生姓名。
+            </p>
         </div>
         <div class="control">
-            <textarea class="form-control" name="content" rows="5" id="content" required><?=get_option("ranking_".$grade.'_content')?></textarea>
+            <textarea class="form-control" name="content" rows="10" id="content" required><?=get_option("ranking_".$grade.'_content')?></textarea>
         </div>
     </div>
-    <button type="submit" class="button submit-button green-button button-with-icon" name="modify-info"><i class="fa fa-plus"></i>修改</button>
+    <button type="submit" class="button submit-button green-button button-with-icon" name="modify-info"><i class="fa fa-edit"></i> 修改</button>
 </form>
 <hr>
 <h3>成绩表管理</h3>
@@ -167,12 +187,12 @@ foreach ($ranking_list as $item)
     </div>
     <div class="form-group">
         <div class="prompt">
-            <label for="uploadscore">上传成绩</label>
+            <label for="uploadscore">选择成绩表</label>
         </div>
         <div class="control">
             <input type="file" name="file" id="file" accept="text/csv" required/>
-            <p class="note">上传类型必须为csv，列向需严格按照如下顺序排列：学号，姓名，算术平均分，算术平均分大班排名，算数平均分小班排名，学分绩点和，学分绩点和大班排名，学分绩点和小班排名，小班人数，大班人数。若没有数据则留占位列。文本编码为UTF-8。</p>
+            <p class="note">注意：上传类型必须为csv，列向需严格按照如下顺序排列：学号，姓名，算术平均分，算术平均分大班排名，算数平均分小班排名，学分绩点和，学分绩点和大班排名，学分绩点和小班排名，小班人数，大班人数。若没有数据则留占位列。文本编码为UTF-8。</p>
         </div>
     </div>
-    <button type="submit" class="button submit-button green-button button-with-icon" name="add-score"><i class="fa fa-plus"></i>添加成绩</button>
+    <button type="submit" class="button submit-button green-button button-with-icon" name="add-score"><i class="fa fa-plus"></i> 添加成绩表</button>
 </form>
