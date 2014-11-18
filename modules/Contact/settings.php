@@ -36,11 +36,12 @@
     <li>输出格式中可带有占位符，目前可用的占位符有：</li>
     <ul class="list-2">
         <li><code>[name]</code> --- 姓名</li>
+        <li><code>[id]</code> --- 学号或职工号</li>
         <li><code>[phone_number]</code> --- 电话号码</li>
         <li><code>[email]</code> --- 邮箱</li>
     </ul>
     <li>换行请用 <code>\n</code></li>
-    <li>示例：<code>[name]</code>的个人信息如下：<code>\n</code>电话号码：<code>[phone_number]</code><code>\n</code>邮箱：<code>[email]</code></li>
+    <li>示例：<code>[id]</code> <code>[name]</code>的个人信息如下：<code>\n</code>电话号码：<code>[phone_number]</code> <code>\n</code>邮箱：<code>[email]</code></li>
 </ul>
 <button id="submit" class="button blue-button button-with-icon"><i class="fa fa-edit fa-fw"></i> 修改</button>
 <button id="success" class="button green-button button-with-icon hidden"><i class="fa fa-check fa-fw"></i> 修改成功</button>

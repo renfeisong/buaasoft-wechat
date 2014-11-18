@@ -37,19 +37,25 @@ class Contact extends BaseModule {
         if (isset($results)) {
             foreach ($results as $result) {
                 $return_text = $return_text . $output_format;
-                if (isset($result["phoneNumber"])) {
-                    str_replace("[phone_number]", $result["phoneNumber"], $return_text);
+                $return_text = str_replace("[name]", $this->name, $return_text);
+                if (isset($result["userId"]) && $result["userId"] != "") {
+                    $return_text = str_replace("[id]", $result["userId"], $return_text);
                 } else {
-                    str_replace("[phone_number]", "[没有查询到手机号码]", $return_text);
+                    $return_text = str_replace("[id]", "", $return_text);
                 }
-                if (isset($result["email"])) {
-                    str_replace("[email]", $result["email"], $return_text);
+                if (isset($result["phoneNumber"]) && $result["phoneNumber"] != "") {
+                    $return_text = str_replace("[phone_number]", $result["phoneNumber"], $return_text);
                 } else {
-                    str_replace("[email]", "[没有查询到邮箱]", $return_text);
+                    $return_text = str_replace("[phone_number]", "[没有查询到手机号码]", $return_text);
+                }
+                if (isset($result["email"]) && $result["email"] != "") {
+                    $return_text = str_replace("[email]", $result["email"], $return_text);
+                } else {
+                    $return_text = str_replace("[email]", "[没有查询到邮箱]", $return_text);
                 }
                 $return_text = $return_text . "\n";
             }
-            return $return_text;
+            return $formatter->textOutput($return_text);
         }
         return $formatter->textOutput("没有查询到相关信息");
     }
