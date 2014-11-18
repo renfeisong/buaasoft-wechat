@@ -31,7 +31,7 @@ SQL;
     }
 
     public function can_handle_input(UserInput $input) {
-        if ($input->inputType == InputType::Click && $input->EventKey == "HOME_WORK")
+        if ($input->inputType == InputType::Click && $input->eventKey == "HOMEWORK")
             if (substr($input->user['class'], 0, 4) == '1221')
                 return true;
         return false;
@@ -39,21 +39,31 @@ SQL;
 
     public function get_homework() {
         global $wxdb; /* @var $wxdb wxdb */
-        $today = time('c');
-        $sql = $wxdb->prepare("SELECT * FROM `" . $this->table_name . "` WHERE dueDate > '%s' ORDER BY publishDate ASC, subject ASC", $today);
+        $today = date('c');
+        $sql = $wxdb->prepare("SELECT * FROM `" . $this->table_name . "` WHERE `dueDate` = '' OR `dueDate` >= '%s' ORDER BY `publishDate` DESC, `subject` ASC", $today);
         $rows = $wxdb->get_results($sql, ARRAY_A);
         $homework = '';
         $last_date = '';
+        $last_subject = '';
         foreach ($rows as $row) {
             if ($row['publishDate'] != $last_date) {
                 $last_date = $row['publishDate'];
-                $homework .= "\n[" . $row['publishDate'] . "]\n";
+                $last_subject = '';
+                $homework .= "\n【" . $row['publishDate'] . "】";
             }
-            $homework .= $row['subject'] . '：' . $row['content'];
+            if ($row['subject'] != $last_subject) {
+                $last_subject =  $row['subject'];
+                $homework .= "\n" . $row['subject'] . '：';
+            }
+            $homework .= $row['content'];
+
             if ($row['dueDate'] != '') {
-                $homework .= '（' . $row['dueDate'] . '过期）';
+                $homework .= '（' . date('n/j',strtotime($row['dueDate'])) . '过期）';
             }
         }
+
+        if ($homework == '')
+            $homework = '暂时没有作业信息';
 
         return $homework;
     }

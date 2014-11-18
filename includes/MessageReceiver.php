@@ -84,7 +84,7 @@ class MessageReceiver {
 
         global $wxdb; /* @var $wxdb wxdb */
 
-        $sql = $wxdb->prepare("SELECT * FROM `user` WHERE `identifyId` = '%s'", $input->openid);
+        $sql = $wxdb->prepare("SELECT * FROM `user` WHERE `openid` = '%s'", $input->openid);
         $input->user = $wxdb->get_row($sql, ARRAY_A);
 
         switch (trim($object->MsgType)) {
