@@ -7,15 +7,15 @@
  */
 
 global $wxdb; /* @var $wxdb wxdb */
-
 $result = $wxdb->get_results('SELECT * FROM admin_user', ARRAY_A);
 
 global $global_options;
-global $modules;
+$modules = get_modules();
+
 $tags = $global_options;
 foreach ($modules as $module) {
-    if (has_settings_page($module)) {
-        $tags[get_class($module)] = $module->display_name();
+    if (has_settings_page($module["name"])) {
+        $tags[$module["name"]] = $module["name"];
     }
 }
 

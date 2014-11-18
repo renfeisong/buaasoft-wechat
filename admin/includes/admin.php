@@ -100,8 +100,12 @@ function register($username, $password) {
 
 // Pages and Items
 
-function has_settings_page(BaseModule $module) {
-    return file_exists(ABSPATH . 'modules/' . get_class($module) . '/settings.php');
+function has_settings_page($module) {
+    if (is_object($module)) {
+        return file_exists(ABSPATH . 'modules/' . get_class($module) . '/settings.php');
+    } else {
+        return file_exists(ABSPATH . 'modules/' . $module . '/settings.php');
+    }
 }
 
 function settings_page_url(BaseModule $module) {
