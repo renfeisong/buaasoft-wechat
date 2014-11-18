@@ -15,7 +15,11 @@ $modules = get_modules();
 $tags = $global_options;
 foreach ($modules as $module) {
     if (has_settings_page($module["name"])) {
-        $tags[$module["name"]] = $module["name"];
+        $display_name= _get_value("global", "display_name_" . $module["name"]);
+        if ($display_name == null) {
+            $display_name = $module["name"];
+        }
+        $tags[$module["name"]] = $display_name;
     }
 }
 

@@ -15,14 +15,18 @@ if (isset($_POST["action"])) {
         case "edit-permission": {
             $return_dict = array();
             global $global_options;
-            global $modules;
+            $modules = get_modules();
             $reverted_tags = array();
             foreach ($global_options as $name => $display_name) {
                 $reverted_tags[$display_name] = $name;
             }
             foreach ($modules as $module) {
-                if (has_settings_page($module)) {
-                    $reverted_tags[$module->display_name()] = get_class($module);
+                if (has_settings_page($module["name"])) {
+                    $display_name= _get_value("global", "display_name_" . $module["name"]);
+                    if ($display_name == null) {
+                        $display_name = $module["name"];
+                    }
+                    $reverted_tags[$display_name] = $module["name"];
                 }
             }
             $permission_list = array();
