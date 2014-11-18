@@ -240,7 +240,9 @@ function validate_date($date) {
             'aTargets': ['nosort']
         }]
     });
-    $(".x-editable-content").editable();
+    $(".x-editable-content").editable({
+        emptytext: "点击添加..."
+    });
     $(".x-editable-subject").editable({
         source: [
             <?php
@@ -250,8 +252,8 @@ function validate_date($date) {
             ?>
         ],
         select2: {
-            placeholder: "选择新科目..."
-        }
+            placeholder: "选择科目..."
+        },
     });
     $(".x-editable-date").editable({
         format: 'yyyy-mm-dd',
