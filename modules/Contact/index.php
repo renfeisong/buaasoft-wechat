@@ -15,7 +15,7 @@ class Contact extends BaseModule {
     }
 
     public function can_handle_input(UserInput $input) {
-        global $wxdb;
+        global $wxdb; /* @var $wxdb wxdb */
         $names = $wxdb->get_col("SELECT name FROM contact", 0);
         if ($input->inputType == InputType::Text) {
             foreach ($names as $name) {
@@ -29,7 +29,7 @@ class Contact extends BaseModule {
     }
 
     public function raw_output(UserInput $input) {
-        global $wxdb;
+        global $wxdb; /* @var $wxdb wxdb */
         $row = $wxdb->get_row("SELECT * FROM contact WHERE openid = '" . $this->name . "'", ARRAY_A, 0);
         $formatter = new OutputFormatter($input->openid, $input->accountId);
         $output = get_value($this, "output_format");
