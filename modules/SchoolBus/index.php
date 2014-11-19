@@ -132,11 +132,11 @@ SQL;
      */
     public function raw_output(UserInput $input) {
         $link = 'http://'.$_SERVER['HTTP_HOST'].ROOT_URL."/modules/SchoolBus/list.php";
-        $reply = '新学期班车时间维持不变！现在是'.date('n月j日G:i');
+        $reply = '现在是'.date('n月j日G:i');
         foreach($this->get_route() as $key=>$value) {
             $reply .= "\n\n".$value['from']."到".$value['to'].":\n".$this->get_school_bus($value);
         }
-        $reply .= "\n\n这是学校更新的最新信息，但是假期可能会临时调整。\n\n附：<a href=\"".$link."\">查看完整校车时刻表</a>";
+        $reply .= "\n\n附：<a href=\"".$link."\">查看完整校车时刻表</a>";
         $formatter = new OutputFormatter($input->openid, $input->accountId);
         return $formatter->textOutput($reply);
     }
