@@ -8,6 +8,17 @@
 
 require_once dirname(__FILE__) . "/config.php";
 
+global $wxdb;
+if (system_ready() == false) {
+    header('Location: admin/install.php');
+    exit;
+}
+
+if (isset($GLOBALS["HTTP_RAW_POST_DATA"]) == false) {
+    header('Location: admin/index.php');
+    exit;
+}
+
 $receiver = new MessageReceiver();
 
 $success = $receiver->receive();

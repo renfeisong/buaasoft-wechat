@@ -6,6 +6,28 @@
  * @since 2.0.0
  */
 
+function system_ready() {
+    $dbc = @new mysqli(DB_HOST, DB_USER, DB_PASSWORD);
+
+    if ($dbc->connect_errno)
+        return false;
+
+    $dbc->select_db(DB_NAME);
+
+    if ($dbc->errno)
+        return false;
+
+    // check if it's already installed
+    $tbl_user = $dbc->query("show tables like 'user'")->num_rows;
+    $tbl_admin = $dbc->query("show tables like 'admin_user'")->num_rows;
+    $tbl_configuration = $dbc->query("show tables like 'configuration'")->num_rows;
+    if ($tbl_user + $tbl_admin + $tbl_configuration == 3) {
+        return true;
+    }
+
+    return false;
+}
+
 /**
  * Start the micro-timer.
  *

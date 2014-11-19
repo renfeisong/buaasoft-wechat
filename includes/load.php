@@ -6,13 +6,14 @@
  * @since 2.0.0
  */
 
+require_once ABSPATH . 'includes/functions.php';
+require_once ABSPATH . 'includes/module.php';
+
 require_once ABSPATH . 'includes/InputType.php';
 require_once ABSPATH . 'includes/UserInput.php';
 require_once ABSPATH . 'includes/BaseModule.php';
 require_once ABSPATH . 'includes/OutputFormatter.php';
 require_once ABSPATH . 'includes/MessageReceiver.php';
-require_once ABSPATH . 'includes/module.php';
-require_once ABSPATH . 'includes/functions.php';
 require_once ABSPATH . 'includes/wxdb.php';
 
 // Constants
@@ -43,6 +44,9 @@ $time_start = 0.0;
 $time_end = 0.0;
 
 date_default_timezone_set('Asia/Shanghai');
-require_db();
-load_modules(get_modules());
 timer_start();
+
+if (system_ready()) {
+    require_db();
+    load_modules(get_modules());
+}

@@ -1,3 +1,3 @@
 <?php
 
-echo 'general';
+echo '暂无内容';

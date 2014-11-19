@@ -23,7 +23,7 @@ class SchoolCalendarQuery extends BaseModule {
      * @return bool
      */
     public function can_handle_input(UserInput $input) {
-        if ($input->inputType == InputType::Click && $input->eventKey == "....") {
+        if ($input->inputType == InputType::Click && $input->eventKey == "CALENDAR") {
             return true;
         } else {
             return false;
@@ -34,7 +34,7 @@ class SchoolCalendarQuery extends BaseModule {
         $formatter = new OutputFormatter($input->openid, $input->accountId);
         $date_str = date("Y年m月d日", time());
         $teaching_week = $this->get_teaching_week($this->first_day);
-        $formatter->textOutput("今天是{$date_str} 第{$teaching_week}教学周");
+        return $formatter->textOutput("今天是{$date_str}，第{$teaching_week}教学周");
     }
 
     public function display_name() {
