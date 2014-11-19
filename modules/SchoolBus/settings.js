@@ -75,10 +75,11 @@ $(".delete-item").click(function() {
         var _this = this;
         var _table = table;
         $.get('../modules/SchoolBus/ajax.php?action='+action+'&auth='+authKey+'&pk=' + $(this).data('pk'), function(data) {
+            console.log(data);
             if(data.status == 0) {
                 updateSelection();
                 //location.reload(true);
-                $("#schoolbus-bus-table tr[data-pk='" + $(_this).data('pk') + "']").addClass('to-delete');
+                $("#schoolbus-"+$(_this).data('name')+"-table tr[data-pk='" + $(_this).data('pk') + "']").addClass('to-delete');
                 _table.row('.to-delete').remove().draw(false);
             } else alert("服务器去火星玩了。。");
         });
@@ -91,7 +92,7 @@ $(".delete-item").click(function() {
             $this.removeClass('pre-confirm');
             $this.addClass('confirm');
             setTimeout(function() {
-                $this.attr('class', 'button red-button xs-button idle delete-bus transition');
+                $this.attr('class', 'button red-button xs-button idle delete-item transition');
             }, 3500)
         }, 200);
     }
@@ -101,15 +102,19 @@ function updateSelection() {
         routes = data.msg;
         try{
             $("#new-route-departure").children('option').remove();
+            var keys = [];
             for(var key in routes) {
+                keys.push(key);
                 var opt = $('<option value="'+key+'">'+key+'</option>');
                 $("#new-route-departure").append(opt);
             }
+            $("#new-route-departure").parent().find("span.select2-chosen").text(keys[0]);
             $("#new-route-destination").children('option').remove();
             var type = $("#new-route-departure").val();
             routes[type].forEach(function(d) {
                 $("#new-route-destination").append('<option value="'+d+'">'+d+'</option>')
             });
+            $("#new-route-destination").parent().find("span.select2-chosen").text(routes[type][0]);
         } catch(e) {
             console.log(e);
         }
@@ -181,7 +186,7 @@ function addBus() {
                         $this.removeClass('pre-confirm');
                         $this.addClass('confirm');
                         setTimeout(function() {
-                            $this.attr('class', 'button red-button xs-button idle delete-bus transition');
+                            $this.attr('class', 'button red-button xs-button idle delete-item transition');
                         }, 3500)
                     }, 200);
                 }
@@ -224,7 +229,7 @@ function addRoute() {
                         $this.removeClass('pre-confirm');
                         $this.addClass('confirm');
                         setTimeout(function() {
-                            $this.attr('class', 'button red-button xs-button idle delete-bus transition');
+                            $this.attr('class', 'button red-button xs-button idle delete-item transition');
                         }, 3500)
                     }, 200);
                 }
