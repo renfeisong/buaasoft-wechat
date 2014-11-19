@@ -14,7 +14,7 @@ $rows = $wxdb->get_results('select * from `user`', ARRAY_A);
 
 <!-- Tab panes -->
 <div class="tab-content">
-<!-- manual -->
+
 <div role="tabpanel" class="tab-pane fade in active" id="manual">
     <div class="send-panel">
         <div class="form-group">
@@ -103,7 +103,6 @@ $rows = $wxdb->get_results('select * from `user`', ARRAY_A);
     </script>
 </div>
 
-<!-- message -->
 <div role="tabpanel" class="tab-pane fade" id="message">
     <div class="send-panel">
         <div class="form-group">
@@ -202,7 +201,6 @@ $rows = $wxdb->get_results('select * from `user`', ARRAY_A);
     </script>
 </div>
 
-<!-- event -->
 <div role="tabpanel" class="tab-pane fade" id="event">
     <div class="send-panel">
         <div class="form-group">
@@ -325,7 +323,6 @@ $rows = $wxdb->get_results('select * from `user`', ARRAY_A);
     </script>
 </div>
 
-<!-- log -->
 <?php
 function add_row($key, $value) {
     echo '<tr><td>' . $key . '</td><td>' . $value . '</td></tr>';

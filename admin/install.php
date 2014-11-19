@@ -64,22 +64,22 @@ $dbc = @new mysqli(DB_HOST, DB_USER, DB_PASSWORD);
 if ($dbc->connect_errno) {
     $blocking_msg = '数据库服务器连接失败，请检查<code>config.php</code>中的配置是否正确。';
 } else {
-	$dbc->select_db(DB_NAME);
-	if ($dbc->errno) {
-    	$blocking_msg = '数据库服务器已连接，但名为<code>' . DB_NAME . '</code>的数据库不存在。你需要创建该数据库后才能安装（如要使用其他名称，请修改<code>config.php</code>中的配置）。';
+    $dbc->select_db(DB_NAME);
+    if ($dbc->errno) {
+        $blocking_msg = '数据库服务器已连接，但名为<code>' . DB_NAME . '</code>的数据库不存在。你需要创建该数据库后才能安装（如要使用其他名称，请修改<code>config.php</code>中的配置）。';
     } else {
-	    // check if it's already installed
-		$tbl_user = $dbc->query("show tables like 'user'")->num_rows;
-		$tbl_admin = $dbc->query("show tables like 'admin_user'")->num_rows;
-		$tbl_configuration = $dbc->query("show tables like 'configuration'")->num_rows;
-		$num_admin = $tbl_admin == 0 ? 0 : $dbc->query("select * from `admin_user`")->num_rows;
-		if ($tbl_user + $tbl_admin + $tbl_configuration + $num_admin >= 4) {
-			$blocking_msg = '系统似乎已经安装。如要重新安装，请删除整个数据库后重试。';
-		} else {
-			$dbc->query($sql1);
-			$dbc->query($sql2);
-			$dbc->query($sql3);
-		}
+        // check if it's already installed
+        $tbl_user = $dbc->query("show tables like 'user'")->num_rows;
+        $tbl_admin = $dbc->query("show tables like 'admin_user'")->num_rows;
+        $tbl_configuration = $dbc->query("show tables like 'configuration'")->num_rows;
+        $num_admin = $tbl_admin == 0 ? 0 : $dbc->query("select * from `admin_user`")->num_rows;
+        if ($tbl_user + $tbl_admin + $tbl_configuration + $num_admin >= 4) {
+            $blocking_msg = '系统似乎已经安装。如要重新安装，请删除数据库<code>' . DB_NAME . '</code>后重试。';
+        } else if ($tbl_user + $tbl_admin + $tbl_configuration != 3) {
+            $dbc->query($sql1);
+            $dbc->query($sql2);
+            $dbc->query($sql3);
+        }
     }
 }
 
