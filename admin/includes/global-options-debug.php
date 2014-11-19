@@ -22,7 +22,7 @@ $rows = $wxdb->get_results('select * from `user`', ARRAY_A);
                 <label for="postUrl-1">入口地址</label>
             </div>
             <div class="control">
-                <input class="form-control" type="text" name="postUrl-1" id="postUrl-1" value="http://<?php echo $_SERVER['SERVER_NAME'] ?>:<?php echo $_SERVER['SERVER_PORT']?>/index.php" required>
+                <input class="form-control" type="text" name="postUrl-1" id="postUrl-1" value="http://<?php echo $_SERVER['SERVER_NAME'] ?>:<?php echo $_SERVER['SERVER_PORT'] . ROOT_URL ?>index.php" required>
             </div>
         </div>
         <div class="form-group">
@@ -110,7 +110,7 @@ $rows = $wxdb->get_results('select * from `user`', ARRAY_A);
                 <label for="postUrl-2">入口地址</label>
             </div>
             <div class="control">
-                <input class="form-control" type="text" name="postUrl-2" id="postUrl-2" value="http://<?php echo $_SERVER['SERVER_NAME'] ?>:<?php echo $_SERVER['SERVER_PORT']?>/index.php" required>
+                <input class="form-control" type="text" name="postUrl-2" id="postUrl-2" value="http://<?php echo $_SERVER['SERVER_NAME'] ?>:<?php echo $_SERVER['SERVER_PORT'] . ROOT_URL ?>index.php" required>
             </div>
         </div>
         <div class="form-group">
@@ -208,7 +208,7 @@ $rows = $wxdb->get_results('select * from `user`', ARRAY_A);
                 <label for="postUrl-3">入口地址</label>
             </div>
             <div class="control">
-                <input class="form-control" type="text" name="postUrl-3" id="postUrl-3" value="http://<?php echo $_SERVER['SERVER_NAME'] ?>:<?php echo $_SERVER['SERVER_PORT']?>/index.php" required>
+                <input class="form-control" type="text" name="postUrl-3" id="postUrl-3" value="http://<?php echo $_SERVER['SERVER_NAME'] ?>:<?php echo $_SERVER['SERVER_PORT'] . ROOT_URL ?>index.php" required>
             </div>
         </div>
         <div class="form-group">
