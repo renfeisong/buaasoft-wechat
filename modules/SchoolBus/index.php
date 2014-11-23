@@ -78,7 +78,7 @@ SQL;
      */
     public function get_school_bus($route) {
         global $wxdb;
-        $day = (date('w') < 6 && date('w') > 0) ? 1 : 2;
+        $day = (date('w') < 6 && date('w') > 0) ? 1 : 0;
         $time = date('G:i:s');
         $sql = <<<SQL
 SELECT * FROM `{$this->table_name_bus}`
