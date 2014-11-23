@@ -5,6 +5,10 @@
  * @author Bingchen Qin
  * @since 2.0.0
  */
+
+require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
+$format = _get_value("Contact", "output_format");
+
 ?>
 
 <style>
@@ -30,7 +34,7 @@
 <h2>通讯信息查询管理</h2>
 <h3>展示信息管理</h3>
 
-<textarea id="text" class="form-control" rows="5" placeholder="请输入输出格式"></textarea>
+<textarea id="text" class="form-control" rows="5" placeholder="<?=$format?>"></textarea>
 <h4>提示</h4>
 <ul class="list-1">
     <li>输出格式中可带有占位符，目前可用的占位符有：</li>
