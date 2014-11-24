@@ -36,7 +36,7 @@ if (isset($_GET["openid"])) {
 <div class="form">
     <div class="form-group">
         <label><strong>手机号码</strong></label>
-        <input id="phone-number" type="number" class="form-control" value="<?=$row["phone_number"]?>">
+        <input id="phone-number" type="text" class="form-control" value="<?=$row["phoneNumber"]?>">
         <div class="warning" id="phone-number-warning"></div>
     </div>
 
@@ -83,7 +83,9 @@ if (isset($_GET["openid"])) {
                 switch (data["code"]) {
                     case 0: {
                         alert("修改成功");
+                        break;
                     }
+                    default: break;
                 }
             });
         });
