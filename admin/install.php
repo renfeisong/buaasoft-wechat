@@ -73,7 +73,7 @@ if ($dbc->connect_errno) {
         $tbl_admin = $dbc->query("show tables like 'admin_user'")->num_rows;
         $tbl_configuration = $dbc->query("show tables like 'configuration'")->num_rows;
         $num_admin = $tbl_admin == 0 ? 0 : $dbc->query("select * from `admin_user`")->num_rows;
-        if ($tbl_user + $tbl_admin + $tbl_configuration + $num_admin >= 4) {
+        if ($tbl_user + $tbl_admin + $tbl_configuration == 3 && $num_admin >= 1) {
             $blocking_msg = '系统似乎已经安装。如要重新安装，请删除数据库<code>' . DB_NAME . '</code>后重试。';
         } else if ($tbl_user + $tbl_admin + $tbl_configuration != 3) {
             $dbc->query($sql1);

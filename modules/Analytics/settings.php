@@ -44,7 +44,7 @@ global $wxdb; /* @var $wxdb wxdb */
     <tr><td>已绑定用户消息数</td><td><?php echo $bound_count = $wxdb->get_var("select count(*) from frontend_log where hitBy != 'Bound'") ?></td></tr>
     <tr><td>未绑定用户消息数</td><td><?php echo $wxdb->get_var("select count(*) from frontend_log where hitBy = 'Bound'") ?></td></tr>
     <tr><td>有效消息数（已绑定且被识别）</td><td><?php echo $valid_count = $wxdb->get_var("select count(*) from frontend_log where hitBy != 'Bound' and hitBy != ''") ?></td></tr>
-    <tr><td>消息有效率（有效消息数/已绑定用户消息数）</td><td><?php echo $valid_count / $bound_count ?></td></tr>
+    <tr><td>消息有效率（有效消息数/已绑定用户消息数）</td><td><?php echo $bound_count == 0 ? 'NaN' : sprintf("%.2f%%", ($valid_count / $bound_count) * 100); ?></td></tr>
     </tbody>
 </table>
 <h4>近100条消息记录</h4>

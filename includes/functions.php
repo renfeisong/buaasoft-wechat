@@ -21,7 +21,8 @@ function system_ready() {
     $tbl_user = $dbc->query("show tables like 'user'")->num_rows;
     $tbl_admin = $dbc->query("show tables like 'admin_user'")->num_rows;
     $tbl_configuration = $dbc->query("show tables like 'configuration'")->num_rows;
-    if ($tbl_user + $tbl_admin + $tbl_configuration == 3) {
+    $num_admin = $tbl_admin == 0 ? 0 : $dbc->query("select * from `admin_user`")->num_rows;
+    if ($tbl_user + $tbl_admin + $tbl_configuration == 3 && $num_admin >= 1) {
         return true;
     }
 
