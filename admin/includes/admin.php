@@ -40,8 +40,18 @@ function current_user_name() {
 
 function current_user_can_manage($page) {
     $user = current_user();
+    if ($user['isSuperAdmin'] == 1)
+        return true;
+
     $authorized_pages = json_decode($user['authorizedPages']);
     return in_array($page, $authorized_pages);
+}
+
+function admin_unauthorized_error() {
+    $html = <<<HTML
+<div>您的账户当前无权管理本模块。</div>
+HTML;
+    echo $html;
 }
 
 function is_super_admin() {
@@ -62,7 +72,7 @@ function log_in($username, $password, $remember) {
     $user = $wxdb->get_row($sql, ARRAY_A);
     if ($user) {
         $ip = $_SERVER['REMOTE_ADDR'];
-        $token = sha1(LOGIN_SALT . $ip) . sha1(strval(rand(1111111, 9999999)) . $user['userName']);
+        $token = sha1(LOGIN_SALT . $ip) . sha1(strval(rand(11111111, 99999999)) . $user['userName']);
         $wxdb->update('admin_user', array(
             'ip' => $ip,
             'loginToken' => $token
@@ -72,7 +82,7 @@ function log_in($username, $password, $remember) {
         if ($remember) {
             setcookie('login', $token, time() + 3600 * 24 * 30);
         } else {
-            setcookie('login', $token, 0);
+            setcookie('login', $token);
         }
         return true;
     }

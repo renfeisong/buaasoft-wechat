@@ -23,6 +23,8 @@ if (!isset($_GET['page'])) {
     exit;
 }
 
+    $page = $_GET['page'];
+
 // Handle Form Submission
 
 if (isset($_POST['wx_submit'])) {
@@ -101,7 +103,13 @@ ob_start();
     <div id="main" class="site-main">
         <div class="content-area">
             <div id="primary" class="site-content">
-                <?php include_settings($_GET['page']) ?>
+                <?php
+                    if (current_user_can_manage($page)) {
+                        include_settings($_GET['page']);
+                    } else {
+                        admin_unauthorized_error();
+                    }
+                 ?>
             </div>
         </div>
         <div id="secondary" class="site-sidebar">
