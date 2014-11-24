@@ -49,7 +49,7 @@ $format = _get_value("Contact", "output_format");
     <li>示例：<code>[id]</code> <code>[name]</code>的个人信息如下：<code>\n</code>电话号码：<code>[phone_number]</code> <code>\n</code>邮箱：<code>[email]</code></li>
 </ul>
 <button id="submit" class="button blue-button button-with-icon"><i class="fa fa-edit fa-fw"></i> 修改</button>
-<button id="submitting" class="button blue-button button-with-icon"><i class="fa fa-spinner fa-spin fa-fw"></i> 正在提交...</button>
+<button id="submitting" class="button blue-button button-with-icon hidden"><i class="fa fa-spinner fa-spin fa-fw"></i> 正在提交...</button>
 <button id="success" class="button green-button button-with-icon hidden"><i class="fa fa-check fa-fw"></i> 修改成功</button>
 
 <script>
