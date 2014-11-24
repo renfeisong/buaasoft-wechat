@@ -56,8 +56,6 @@ set_global_value('options_module_ajax', $ajax_key);
     <tr>
         <th>名称</th>
         <th>内部名称</th>
-        <th>总触发次数</th>
-        <th>近24小时触发次数</th>
         <th>权重</th>
         <th class="nosort">控制</th>
     </tr>
@@ -65,7 +63,7 @@ set_global_value('options_module_ajax', $ajax_key);
     <tbody>
     <?php
         foreach ($all_modules as $module) {
-            $template = '<tr><td>%s%s</td><td><code>%s</code></td><td>%s</td><td>%s</td><td><a href="#" data-type="text" data-pk="%s" data-url="includes/global-options-modules-ajax.php?auth=%s" data-name="priority" class="x-editable-field">%s</a></td><td><form method="POST">%s</form></td></tr>';
+            $template = '<tr><td>%s%s</td><td><code>%s</code></td><td><a href="#" data-type="text" data-pk="%s" data-url="includes/global-options-modules-ajax.php?auth=%s" data-name="priority" class="x-editable-field">%s</a></td><td><form method="POST">%s</form></td></tr>';
             if ($module['enabled']) {
                 $status = '<span class="label green-label">已启用</span>';
                 $button = '<button type="submit" class="button xs-button gray-button" name="disable" value="'.$module['name'].'">停用</button>';
@@ -74,7 +72,7 @@ set_global_value('options_module_ajax', $ajax_key);
                 $button = '<button type="submit" class="button xs-button gray-button" name="enable" value="'.$module['name'].'">启用</button>';
             }
 
-            echo sprintf($template, $module['display_name'], $status, $module['name'], 0, 0, $module['name'], sha1(AJAX_SALT . $ajax_key), $module['priority'], $button);
+            echo sprintf($template, $module['display_name'], $status, $module['name'], $module['name'], sha1(AJAX_SALT . $ajax_key), $module['priority'], $button);
         }
     ?>
     </tbody>

@@ -253,7 +253,7 @@ function validate_date($date) {
         ],
         select2: {
             placeholder: "选择科目..."
-        },
+        }
     });
     $(".x-editable-date").editable({
         format: 'yyyy-mm-dd',
