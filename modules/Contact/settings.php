@@ -13,6 +13,14 @@ $format = _get_value("Contact", "output_format");
 
 <style>
 
+    .error {
+        border-color: #a94442;
+    }
+
+    .error-message {
+        color: #a94442;
+    }
+
     .list-1 {
         list-style: disc inside;
         padding-left: inherit;
@@ -35,7 +43,8 @@ $format = _get_value("Contact", "output_format");
 <h2>通讯信息查询管理</h2>
 <h3>展示信息管理</h3>
 
-<textarea id="text" class="form-control" rows="5" placeholder="<?=$format?>"><?=$format?></textarea>
+<textarea id="format" class="form-control" rows="5" placeholder="<?=$format?>"><?=$format?></textarea>
+<label id="error-empty" class="error hidden">输入不能为空</label>
 <h4>提示</h4>
 <ul class="list-1">
     <li>输出格式中可带有占位符，目前可用的占位符有：</li>
@@ -59,12 +68,22 @@ $format = _get_value("Contact", "output_format");
         $("#submit").click(function() {
             $("#submit").addClass("hidden");
             $("#submitting").removeClass("hidden");
+            var format = $("#format").val();
+            if (format == "") {
+                $("#error-empty").removeClass("hidden");
+                $("#format").addClass("error");
+                $("#format").focus();
+                return;
+            } else {
+                $("#error-empty").addClass("hidden");
+                $("#format").removeClass("error");
+            }
             $.ajax({
                 url: "/modules/Contact/ajax.php",
                 type: "POST",
                 data: {
                     "action": "edit",
-                    "format": $("#text").val()
+                    "format": format
                 },
                 dataType: "json"
             }).done(function(data) {

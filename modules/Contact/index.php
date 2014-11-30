@@ -11,7 +11,10 @@ class Contact extends BaseModule {
     private $name;
 
     public function prepare() {
-
+        $format = _get_value("Contact", "output_format");
+        if ($format == null || $format == "") {
+            _set_value("Contact", "output_format", "[id] [name]的个人信息如下：\\n电话号码：[phone_number] \\n邮箱：[email]");
+        }
     }
 
     public function can_handle_input(UserInput $input) {
