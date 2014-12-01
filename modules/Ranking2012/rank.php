@@ -17,9 +17,13 @@ $grade = $row['startYear'];
 
 $ranking_list = _get_value("Ranking".$grade, "ranking_".$grade);
 $display_list = array();
+$flag = false;
 foreach ($ranking_list as $item) {
-    if (_get_value("Ranking".$grade, "display_".$item))
+    if (_get_value("Ranking".$grade, "display_".$item)) {
         array_push($display_list, $item);
+        $flag = true;
+    }
+
 }
 
 ?>
@@ -37,6 +41,9 @@ foreach ($ranking_list as $item) {
 <h2><?=$userName?>的成绩详情</h2>
 
 <?php
+if (!$flag) {
+    echo "暂无更多成绩信息~";
+}
 foreach ($display_list as $item) {
     $scoretype = substr($item, 13);
     $file = fopen(dirname(__FILE__).'/score/'.$item . '.csv','r');
