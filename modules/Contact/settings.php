@@ -43,7 +43,7 @@ $format = _get_value("Contact", "output_format");
 <h2>通讯信息查询管理</h2>
 <h3>展示信息管理</h3>
 
-<textarea id="format" class="form-control" rows="5" placeholder="<?=$format?>"><?=$format?></textarea>
+<textarea id="format" class="form-control" rows="5"><?php echo $format ?></textarea>
 <label id="error-empty" class="error hidden">输入不能为空</label>
 <h4>提示</h4>
 <ul class="list-1">
@@ -55,7 +55,11 @@ $format = _get_value("Contact", "output_format");
         <li><code>[email]</code> --- 邮箱</li>
     </ul>
     <li>换行请用 <code>\n</code></li>
-    <li>示例：<code>[id]</code> <code>[name]</code>的个人信息如下：<code>\n</code>电话号码：<code>[phone_number]</code> <code>\n</code>邮箱：<code>[email]</code></li>
+    <li>示例：
+<pre>[name]([id])：
+电话号码 [phone_number]
+邮箱 [email]</pre>
+    </li>
 </ul>
 <button id="submit" class="button blue-button button-with-icon"><i class="fa fa-edit fa-fw"></i> 修改</button>
 <button id="submitting" class="button blue-button button-with-icon hidden"><i class="fa fa-spinner fa-spin fa-fw"></i> 正在提交...</button>
@@ -66,8 +70,6 @@ $format = _get_value("Contact", "output_format");
     $(document).ready(function() {
 
         $("#submit").click(function() {
-            $("#submit").addClass("hidden");
-            $("#submitting").removeClass("hidden");
             var format = $("#format").val();
             if (format == "") {
                 $("#error-empty").removeClass("hidden");
@@ -78,6 +80,8 @@ $format = _get_value("Contact", "output_format");
                 $("#error-empty").addClass("hidden");
                 $("#format").removeClass("error");
             }
+            $("#submit").addClass("hidden");
+            $("#submitting").removeClass("hidden");
             $.ajax({
                 url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
                 type: "POST",
