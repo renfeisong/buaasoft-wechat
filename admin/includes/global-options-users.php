@@ -124,7 +124,9 @@ foreach ($modules as $module) {
             }
         });
 
-        $("#user-table").DataTable();
+        $("#user-table").DataTable({
+            "bPaginate": false
+        });
 
         $(".x-editable").editable({
             type: "select2",
