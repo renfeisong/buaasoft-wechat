@@ -16,6 +16,9 @@ class Ranking2012 extends BaseModule {
             set_value($this, "ranking_".get_value($this, "grade"), array());
         if (get_value($this, "ranking_".get_value($this, "grade").'_content') == null)
             set_value($this, "ranking_".get_value($this, "grade").'_content', "暂无成绩信息");
+        if (!file_exists(ABSPATH.'/modules/Ranking'.get_value($this, "grade").'/score/')) {
+            mkdir(ABSPATH.'/modules/Ranking'.get_value($this, "grade").'/score/');
+        }
     }
 
     public function can_handle_input(UserInput $input) {
