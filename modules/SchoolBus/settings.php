@@ -45,10 +45,10 @@ set_option('ajax_key', $ajax_key);
     <tbody>
     <?php foreach (get_bus() as $row): ?>
         <tr data-pk="<?=$row['id']?>">
-            <td><a href="#" data-type="select2" data-pk="<?=$row['id']?>" data-url="/modules/SchoolBus/ajax.php?action=editBus&auth=<?=$ajax_key?>" data-name="day" class="x-editable-day"><?=($row['day'] == 1 ? '周一至周五' : '周六、周日')?></a></td>
-            <td><a href="#" data-type="text" data-pk="<?=$row['id']?>" data-url="/modules/SchoolBus/ajax.php?action=editBus&auth=<?=$ajax_key?>" data-name="departure" class="x-editable-text"><?=$row['departure']?></a></td>
-            <td><a href="#" data-type="text" data-pk="<?=$row['id']?>" data-url="/modules/SchoolBus/ajax.php?action=editBus&auth=<?=$ajax_key?>" data-name="destination" class="x-editable-text"><?=$row['destination']?></a></td>
-            <td><a href="#" data-type="text" data-pk="<?=$row['id']?>" data-url="/modules/SchoolBus/ajax.php?action=editBus&auth=<?=$ajax_key?>" data-name="departureTime" class="x-editable-time"><?=substr($row['departureTime'], 0, -3)?></a></td>
+            <td><a href="#" data-type="select2" data-pk="<?=$row['id']?>" data-url="<?=ROOT_URL?>/modules/SchoolBus/ajax.php?action=editBus&auth=<?=$ajax_key?>" data-name="day" class="x-editable-day"><?=($row['day'] == 1 ? '周一至周五' : '周六、周日')?></a></td>
+            <td><a href="#" data-type="text" data-pk="<?=$row['id']?>" data-url="<?=ROOT_URL?>/modules/SchoolBus/ajax.php?action=editBus&auth=<?=$ajax_key?>" data-name="departure" class="x-editable-text"><?=$row['departure']?></a></td>
+            <td><a href="#" data-type="text" data-pk="<?=$row['id']?>" data-url="<?=ROOT_URL?>/modules/SchoolBus/ajax.php?action=editBus&auth=<?=$ajax_key?>" data-name="destination" class="x-editable-text"><?=$row['destination']?></a></td>
+            <td><a href="#" data-type="text" data-pk="<?=$row['id']?>" data-url="<?=ROOT_URL?>/modules/SchoolBus/ajax.php?action=editBus&auth=<?=$ajax_key?>" data-name="departureTime" class="x-editable-time"><?=substr($row['departureTime'], 0, -3)?></a></td>
             <td>
                 <button class="button red-button xs-button idle delete-item" data-name="bus" data-pk="<?=$row['id']?>">
                     <span class="idle-only" style="display: none"><i class="fa fa-trash-o"></i> 删除</span>
@@ -109,5 +109,6 @@ set_option('ajax_key', $ajax_key);
 </p></div>
 <script>
     var authKey = '<?=$ajax_key?>';
+    var rootUrl = '<?=ROOT_URL?>';
 </script>
 <script src="../modules/SchoolBus/settings.js"></script>

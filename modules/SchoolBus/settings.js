@@ -138,10 +138,10 @@ function addBus() {
         if(data.status == 0) {
             updateSelection();
             var newRow = busTable.row.add([
-                '<td><a href="#" data-type="select2" data-pk="'+data.msg+'" data-url="/modules/SchoolBus/ajax.php?action=editBus&auth='+authKey+'" data-name="day" class="x-editable-day">'+(day=='1'?'周一至周五':'周六、周日')+'</a></td>',
-                '<td><a href="#" data-type="text" data-pk="'+data.msg+'" data-url="/modules/SchoolBus/ajax.php?action=editBus&auth='+authKey+'" data-name="departure" class="x-editable-text">'+departure+'</a></td>',
-                '<td><a href="#" data-type="text" data-pk="'+data.msg+'" data-url="/modules/SchoolBus/ajax.php?action=editBus&auth='+authKey+'" data-name="destination" class="x-editable-text">'+destination+'</a></td>',
-                '<td><a href="#" data-type="text" data-pk="'+data.msg+'" data-url="/modules/SchoolBus/ajax.php?action=editBus&auth='+authKey+'" data-name="departureTime" class="x-editable-time">'+departureTime+'</a></td>',
+                '<td><a href="#" data-type="select2" data-pk="'+data.msg+'" data-url="'+rootUrl+'/modules/SchoolBus/ajax.php?action=editBus&auth='+authKey+'" data-name="day" class="x-editable-day">'+(day=='1'?'周一至周五':'周六、周日')+'</a></td>',
+                '<td><a href="#" data-type="text" data-pk="'+data.msg+'" data-url="'+rootUrl+'/modules/SchoolBus/ajax.php?action=editBus&auth='+authKey+'" data-name="departure" class="x-editable-text">'+departure+'</a></td>',
+                '<td><a href="#" data-type="text" data-pk="'+data.msg+'" data-url="'+rootUrl+'/modules/SchoolBus/ajax.php?action=editBus&auth='+authKey+'" data-name="destination" class="x-editable-text">'+destination+'</a></td>',
+                '<td><a href="#" data-type="text" data-pk="'+data.msg+'" data-url="'+rootUrl+'/modules/SchoolBus/ajax.php?action=editBus&auth='+authKey+'" data-name="departureTime" class="x-editable-time">'+departureTime+'</a></td>',
                 '<td><button class="button red-button xs-button idle delete-item" data-name="bus" data-pk="'+data.msg+'"><span class="idle-only" style="display: none"><i class="fa fa-trash-o"></i> 删除</span><span class="confirm-only" style="display: none">请确认</span><span class="in-progress-only" style="display: none"><i class="fa fa-spinner fa-spin"></i> 稍等..</span></button></td>'
             ]).draw().node();
             $(newRow).find(".x-editable-text").editable();
