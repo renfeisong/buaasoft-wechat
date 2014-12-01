@@ -11,12 +11,27 @@ require_once dirname(__FILE__) . '/includes/admin.php';
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
+    global $wxdb; /* @var $wxdb wxdb */
 
     if (empty($username) || empty($password)) {
         redirect('login.php?msgid=1&token=' . time());
     } else if (log_in($username, $password, isset($_POST['remember']))) {
+        $wxdb->insert('security_log', array(
+            'userName' => $username,
+            'opName' => 'User.login',
+            'opDetail' => 'Success',
+            'ip' => $_SERVER['REMOTE_ADDR'],
+            'agent' => $_SERVER['HTTP_USER_AGENT']
+        ));
         redirect('index.php');
     } else {
+        $wxdb->insert('security_log', array(
+            'userName' => $username,
+            'opName' => 'User.login',
+            'opDetail' => 'Failure: Invalid credentials',
+            'ip' => $_SERVER['REMOTE_ADDR'],
+            'agent' => $_SERVER['HTTP_USER_AGENT']
+        ));
         redirect('login.php?msgid=2&token=' . time());
     }
     exit;

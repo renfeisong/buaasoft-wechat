@@ -2,12 +2,28 @@
 
 if (isset($_POST['enable'])) {
     set_global_value('enabled_' . $_POST['enable'], true);
+    global $wxdb; /* @var $wxdb wxdb */
+    $wxdb->insert('security_log', array(
+        'userName' => current_user_name(),
+        'opName' => 'Module.enable',
+        'opDetail' => 'Success: Module [' . $_POST['enable'] . '] enabled',
+        'ip' => $_SERVER['REMOTE_ADDR'],
+        'agent' => $_SERVER['HTTP_USER_AGENT']
+    ));
     redirect_success('已成功启用模块。');
     exit;
 }
 
 if (isset($_POST['disable'])) {
     set_global_value('enabled_' . $_POST['disable'], false);
+    global $wxdb; /* @var $wxdb wxdb */
+    $wxdb->insert('security_log', array(
+        'userName' => current_user_name(),
+        'opName' => 'Module.disable',
+        'opDetail' => 'Success: Module [' . $_POST['disable'] . '] disabled',
+        'ip' => $_SERVER['REMOTE_ADDR'],
+        'agent' => $_SERVER['HTTP_USER_AGENT']
+    ));
     redirect_success('已经停用该模块。');
     exit;
 }

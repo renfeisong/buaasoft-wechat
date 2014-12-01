@@ -25,8 +25,29 @@ function current_user() {
     if ($user) {
         if ($_SERVER['REMOTE_ADDR'] == $user['ip']) {
             $wxdb->update('admin_user', array('lastActivity' => date('c')), array('userName' => $user['userName']));
+
+            $sql = $wxdb->prepare("select count(*) from `security_log` where `userName` = '%s' and `opName` = '%s' and `timestamp` > timestamp(DATE_SUB(NOW(), INTERVAL 20 MINUTE))", $user['userName'], 'User.startSession');
+            $count = $wxdb->get_var($sql);
+
+            if ($count == 0) {
+                $wxdb->insert('security_log', array(
+                    'userName' => $user['userName'],
+                    'opName' => 'User.startSession',
+                    'opDetail' => 'Success',
+                    'ip' => $_SERVER['REMOTE_ADDR'],
+                    'agent' => $_SERVER['HTTP_USER_AGENT']
+                ));
+            }
+
             return $user;
         } else {
+            $wxdb->insert('security_log', array(
+                'userName' => $user['userName'],
+                'opName' => 'User.forceLogout',
+                'opDetail' => 'Info: Client IP changed from ['. $user['ip'] .'] to ['. $_SERVER['REMOTE_ADDR'] .']',
+                'ip' => $_SERVER['REMOTE_ADDR'],
+                'agent' => $_SERVER['HTTP_USER_AGENT']
+            ));
             log_out();
         }
     }

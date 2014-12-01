@@ -27,19 +27,6 @@ SQL;
             $wxdb->query($sql);
         }
 
-        if (!$wxdb->schema_exists('backend_log')) {
-            $sql = <<<SQL
-CREATE TABLE `backend_log` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `userName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `opName` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `opDetail` varchar(800) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-SQL;
-            $wxdb->query($sql);
-        }
-
         // Register Hooks
         add_action('message_received', $this, 'add_frontend_log');
     }

@@ -8,7 +8,7 @@
 
 
 require_once dirname(__FILE__) . '/admin.php';
-global $wxdb;
+global $wxdb; /* @var $wxdb wxdb */
 
 if (isset($_POST["action"])) {
     switch ($_POST["action"]) {
@@ -33,11 +33,17 @@ if (isset($_POST["action"])) {
             foreach ($_POST["permission"] as $permission) {
                 array_push($permission_list, $reverted_tags[$permission]);
             }
-
             $result = $wxdb->update("admin_user", array("authorizedPages"=>json_encode($permission_list)), array("userName"=>$_POST["username"]));
             if (false !== $result) {
                 $return_dict["code"] = 0;
                 $return_dict["message"] = "success";
+                $wxdb->insert('security_log', array(
+                    'userName' => current_user_name(),
+                    'opName' => 'User.setPrivileges',
+                    'opDetail' => 'Success: Privileges for user [' . $_POST["username"] . '] set to [' . implode(', ', $_POST["permission"]) . ']',
+                    'ip' => $_SERVER['REMOTE_ADDR'],
+                    'agent' => $_SERVER['HTTP_USER_AGENT']
+                ));
             } else {
                 $return_dict["code"] = 1;
                 $return_dict["message"] = "error";
@@ -52,6 +58,13 @@ if (isset($_POST["action"])) {
                 if ($result != 0) {
                     $return_dict["code"] = 0;
                     $return_dict["message"] = "success";
+                    $wxdb->insert('security_log', array(
+                        'userName' => current_user_name(),
+                        'opName' => 'User.enable',
+                        'opDetail' => 'Success: User [' . $_POST["username"] . '] enabled',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'agent' => $_SERVER['HTTP_USER_AGENT']
+                    ));
                 } else {
                     $return_dict["code"] = 1;
                     $return_dict["message"] = "already enabled";
@@ -70,6 +83,13 @@ if (isset($_POST["action"])) {
                 if ($result != 0) {
                     $return_dict["code"] = 0;
                     $return_dict["message"] = "success";
+                    $wxdb->insert('security_log', array(
+                        'userName' => current_user_name(),
+                        'opName' => 'User.disable',
+                        'opDetail' => 'Success: User [' . $_POST["username"] . '] disabled',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'agent' => $_SERVER['HTTP_USER_AGENT']
+                    ));
                 } else {
                     $return_dict["code"] = 1;
                     $return_dict["message"] = "already disabled";
@@ -88,6 +108,13 @@ if (isset($_POST["action"])) {
                 if ($result != 0) {
                     $return_dict["code"] = 0;
                     $return_dict["message"] = "success";
+                    $wxdb->insert('security_log', array(
+                        'userName' => current_user_name(),
+                        'opName' => 'User.delete',
+                        'opDetail' => 'Success: User [' . $_POST["username"] . '] deleted',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'agent' => $_SERVER['HTTP_USER_AGENT']
+                    ));
                 } else {
                     $return_dict["code"] = 1;
                     $return_dict["message"] = "not exist or already deleted";

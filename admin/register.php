@@ -18,6 +18,14 @@ if (isset($_POST['submit'])) {
     } else if ($password1 != $password2) {
         redirect('register.php?msgid=2&token=' . time());
     } else if (register($username, $password1)) {
+        global $wxdb; /* @var $wxdb wxdb */
+        $wxdb->insert('security_log', array(
+            'userName' => current_user_name(),
+            'opName' => 'User.register',
+            'opDetail' => 'Success',
+            'ip' => $_SERVER['REMOTE_ADDR'],
+            'agent' => $_SERVER['HTTP_USER_AGENT']
+        ));
         log_in($username, $password1, false);
         redirect('index.php');
     } else {

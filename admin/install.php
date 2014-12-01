@@ -59,6 +59,18 @@ CREATE TABLE IF NOT EXISTS `configuration` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 SQL;
 
+$sql4 = <<<SQL
+CREATE TABLE `security_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `userName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `opName` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `opDetail` varchar(800) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `agent` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+SQL;
+
 $dbc = @new mysqli(DB_HOST, DB_USER, DB_PASSWORD);
 
 if ($dbc->connect_errno) {
@@ -72,13 +84,15 @@ if ($dbc->connect_errno) {
         $tbl_user = $dbc->query("show tables like 'user'")->num_rows;
         $tbl_admin = $dbc->query("show tables like 'admin_user'")->num_rows;
         $tbl_configuration = $dbc->query("show tables like 'configuration'")->num_rows;
+        $tbl_log = $dbc->query("show tables like 'security_log'")->num_rows;
         $num_admin = $tbl_admin == 0 ? 0 : $dbc->query("select * from `admin_user`")->num_rows;
-        if ($tbl_user + $tbl_admin + $tbl_configuration == 3 && $num_admin >= 1) {
+        if ($tbl_user + $tbl_admin + $tbl_configuration + $tbl_log == 4 && $num_admin >= 1) {
             $blocking_msg = '系统似乎已经安装。如要重新安装，请删除数据库<code>' . DB_NAME . '</code>后重试。';
-        } else if ($tbl_user + $tbl_admin + $tbl_configuration != 3) {
+        } else if ($tbl_user + $tbl_admin + $tbl_configuration + $tbl_log != 4) {
             $dbc->query($sql1);
             $dbc->query($sql2);
             $dbc->query($sql3);
+            $dbc->query($sql4);
         }
     }
 }
