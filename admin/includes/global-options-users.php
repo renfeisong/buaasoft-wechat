@@ -87,15 +87,17 @@ foreach ($modules as $module) {
         <?php endif;?>
         <td style="width: 132px; max-width: 132px; min-width: 132px;"><?=$row["joinDate"]?></td>
         <td style="width: 132px; max-width: 132px; min-width: 132px;"><?=$row["lastActivity"]?></td>
-        <?php if (current_user_name() != $row["userName"]):?>
-        <td style=" width: 186px; max-width: 186px; min-width: 186px;">
-            <button class="button blue-button xs-button enable-account <?=$row["isEnabled"] == 1 ? "hidden" : ""?>"><i class="fa fa-toggle-off fa-fw"></i>  启用账户</button>
-            <button class="button blue-button xs-button disable-account <?=$row["isEnabled"] == 0 ? "hidden" : ""?>"><i class="fa fa-toggle-on fa-fw"></i>  禁用账户</button>
-            <button class="button xs-button red-button delete-account"><i class="fa fa-trash fa-fw"></i>  删除账户</button>
-            <button class="button xs-button red-button delete-account-confirm hidden">请确认</button>
-        </td>
+        <?php if (current_user_name() == $row["userName"]):?>
+            <td>无法操作当前用户</td>
+        <?php elseif ($row["isSuperAdmin"] == 1):?>
+            <td>无法操作超级管理员</td>
         <?php else:?>
-        <td>无法操作当前用户</td>
+            <td style=" width: 186px; max-width: 186px; min-width: 186px;">
+                <button class="button blue-button xs-button enable-account <?=$row["isEnabled"] == 1 ? "hidden" : ""?>"><i class="fa fa-toggle-off fa-fw"></i>  启用账户</button>
+                <button class="button blue-button xs-button disable-account <?=$row["isEnabled"] == 0 ? "hidden" : ""?>"><i class="fa fa-toggle-on fa-fw"></i>  禁用账户</button>
+                <button class="button xs-button red-button delete-account"><i class="fa fa-trash fa-fw"></i>  删除账户</button>
+                <button class="button xs-button red-button delete-account-confirm hidden">请确认</button>
+            </td>
         <?php endif;?>
     </tr>
     <?php endforeach;?>
