@@ -54,7 +54,6 @@ $format = _get_value("Contact", "output_format");
         <li><code>[phone_number]</code> --- 电话号码</li>
         <li><code>[email]</code> --- 邮箱</li>
     </ul>
-    <li>换行请用 <code>\n</code></li>
     <li>示例：
 <pre>[name]([id])：
 电话号码 [phone_number]

@@ -24,6 +24,18 @@ a:hover {
     text-decoration: underline;
 }
 
+pre {
+    font-size: 14px;
+    margin: 12px 0;
+    background: #f6f6f6;
+    padding: 15px 20px;
+    border-radius: 8px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: Consolas, monospace;
+}
+
 .site-header {
     background-color: #1f1f1f;
     width: 100%;
