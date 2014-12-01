@@ -13,6 +13,8 @@ global $wxdb; /* @var $wxdb wxdb */
 if (isset($_POST["action"])) {
     switch ($_POST["action"]) {
         case "edit-permission": {
+            $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", $_POST['username']);
+            $original_permissions = $wxdb->get_var($sql);
             $return_dict = array();
             global $global_options;
             $modules = get_modules();
@@ -40,7 +42,7 @@ if (isset($_POST["action"])) {
                 $wxdb->insert('security_log', array(
                     'userName' => current_user_name(),
                     'opName' => 'User.setPrivileges',
-                    'opDetail' => 'Success: Privileges for user [' . $_POST["username"] . '] set to [' . implode(', ', $_POST["permission"]) . ']',
+                    'opDetail' => 'Success: Privileges for user [' . $_POST["username"] . '] set from ' . $original_permissions . ' to ' . json_encode($permission_list),
                     'ip' => $_SERVER['REMOTE_ADDR'],
                     'agent' => $_SERVER['HTTP_USER_AGENT']
                 ));
