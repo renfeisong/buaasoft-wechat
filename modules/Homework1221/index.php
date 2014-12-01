@@ -12,6 +12,7 @@ class Homework1221 extends BaseModule {
     public function prepare() {
         global $wxdb; /* @var $wxdb wxdb */
         set_value($this, 'table', $this->table_name);
+        set_value($this, 'module', get_class($this));
 
         if (!$wxdb->schema_exists($this->table_name)) {
             $sql = <<<SQL
@@ -49,7 +50,10 @@ SQL;
             if ($row['publishDate'] != $last_date) {
                 $last_date = $row['publishDate'];
                 $last_subject = '';
-                $homework .= "\n【" . $row['publishDate'] . "】";
+                if ($homework == '')
+                    $homework .= "【" . $row['publishDate'] . "】";
+                else
+                    $homework .= "\n【" . $row['publishDate'] . "】";
             }
             if ($row['subject'] != $last_subject) {
                 $last_subject =  $row['subject'];
@@ -64,6 +68,7 @@ SQL;
 
         if ($homework == '')
             $homework = '暂时没有作业信息';
+
 
         return $homework;
     }
