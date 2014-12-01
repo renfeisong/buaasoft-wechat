@@ -26,8 +26,8 @@ class Bound extends BaseModule {
     public function raw_output(UserInput $input) {
         $formatter = new OutputFormatter($input->openid, $input->accountId);
         $newBoundURL = ROOT_URL.'modules/Bound/bound.php?openid='.$input->openid;
-        $output = 	"欢迎关注北京航空航天大学软件学院微信公众账号，您需要先绑定才能使用：\n\n".
-                    "• <a href=\"".$newBoundURL."\">在校生统一绑定通道</a>\n\n";
+        $output = 	"你好！欢迎关注北京航空航天大学软件学院微信公众账号，需要先绑定才能使用：\n\n".
+                    "<a href=\"".$newBoundURL."\">在校生统一绑定通道</a>";
         return $formatter->textOutput($output);
     }
 

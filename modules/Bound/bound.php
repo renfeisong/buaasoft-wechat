@@ -75,10 +75,10 @@
                 var stuid = $("#stuid").val();
                 var identify = $("#identify").val();
                 if (stuid == "") {
-                    $("#stuidlabel").html("请输入学号~").css("color", "#ff6666");
+                    $("#stuidlabel").html("请输入学号").css("color", "#ff6666");
                 }
                 if (identify == "") {
-                    $("#identifylabel").html("请输入身份证号~").css("color", "#ff6666");
+                    $("#identifylabel").html("请输入身份证号").css("color", "#ff6666");
                 }
                 if(stuid != "" && identify != "") {
                     $.post("ajax.php", {
@@ -106,7 +106,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="alert alert-success" id="succeed" style="display:none;padding:8px 14px 8px 14px;">恭喜，绑定成功！我们推荐您返回查看用户手册（点击欢迎消息中的链接）。也请尽快完善自己的设定（点击菜单"其他" - "个人设定"）。</div>
+    <div class="alert alert-success" id="succeed" style="display:none;padding:8px 14px 8px 14px;">恭喜，绑定成功！建议您返回并点击自定义菜单的其他－个人设定，验证手机和邮箱是否正确。</div>
     <form class="form-signin" id="main-form">
         <h3 class="form-signin-heading">绑定账号</h3>
         <label id="stuidlabel">学号</label>
