@@ -20,7 +20,7 @@ if (isset($_POST['submit'])) {
     } else if (register($username, $password1)) {
         global $wxdb; /* @var $wxdb wxdb */
         $wxdb->insert('security_log', array(
-            'userName' => current_user_name(),
+            'userName' => $username,
             'opName' => 'User.register',
             'opDetail' => 'Success',
             'ip' => $_SERVER['REMOTE_ADDR'],
