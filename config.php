@@ -30,7 +30,10 @@ define('AJAX_SALT', 'unique string here');
 define('ROOT_URL', '/');
 
 // Define ABSPATH as this file's directory
-define('ABSPATH', dirname(__FILE__) . '/');
+
+if (!defined('ABSPATH')) {
+    define('ABSPATH', dirname(__FILE__) . '/');
+}
 
 // Sets which PHP errors are reported
 error_reporting(E_ALL);

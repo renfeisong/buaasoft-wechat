@@ -79,7 +79,7 @@ $format = _get_value("Contact", "output_format");
                 $("#format").removeClass("error");
             }
             $.ajax({
-                url: "/modules/Contact/ajax.php",
+                url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
                 type: "POST",
                 data: {
                     "action": "edit",
