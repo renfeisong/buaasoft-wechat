@@ -188,7 +188,7 @@ foreach ($modules as $module) {
                             $button.siblings(".disable-account").removeClass("hidden");
                             $button.parents("tr").removeClass("disabled");
                             $button.html("<i class=\"fa fa-toggle-off fa-fw\"></i>  启用账户");
-                        }, 2000);
+                        }, 1000);
                         break;
                     }
                     case 1: {
@@ -226,7 +226,7 @@ foreach ($modules as $module) {
                             $button.siblings(".enable-account").removeClass("hidden");
                             $button.parents("tr").addClass("disabled");
                             $button.html("<i class=\"fa fa-toggle-on fa-fw\"></i>  禁用账户");
-                        }, 2000);
+                        }, 1000);
                         break;
                     }
                     case 1: {
@@ -269,7 +269,7 @@ foreach ($modules as $module) {
                         $button.html("<i class=\"fa fa-check fa-fw\"></i>  已删除");
                         window.setTimeout(function() {
                             $button.parents("tr").fadeOut();
-                        }, 2000);
+                        }, 1000);
                         break;
                     }
                     case 1: {
