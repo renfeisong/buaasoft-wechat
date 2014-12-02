@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: timmyxu
- * Date: 14/11/8
- * Time: 下午11:56
+ * Bound page.
+ *
+ * @author TimmyXu
+ * @since 2.0.0
  */
 ?>
 <!DOCTYPE html>

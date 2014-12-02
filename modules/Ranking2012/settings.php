@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: timmyxu
- * Date: 14/11/10
- * Time: 下午3:16
+ * Ranking module settings.
+ *
+ * @author TimmyXu
+ * @since 2.0.0
  */
 header("Content-Type=text/html;charset=utf-8");
 $grade = get_option("grade");

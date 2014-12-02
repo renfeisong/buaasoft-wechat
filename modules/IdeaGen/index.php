@@ -1,8 +1,10 @@
 <?php
 
 /**
- * Class SayHello
- * Sample Module: Replies "你好" when user says "你好".
+ * IdeaGen module.
+ *
+ * @author TimmyXu
+ * @since 2.0.0
  */
 
 

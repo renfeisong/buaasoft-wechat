@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: timmyxu
- * Date: 14/11/9
- * Time: 下午1:41
+ * Ranking module.
+ *
+ * @author TimmyXu
+ * @since 2.0.0
  */
 
 class Ranking2012 extends BaseModule {

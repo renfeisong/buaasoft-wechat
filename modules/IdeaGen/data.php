@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: timmyxu
- * Date: 14/12/2
- * Time: 上午12:00
+ * IdeaGen data file.
+ *
+ * @author TimmyXu
+ * @since 2.0.0
  */
 class Data
 {

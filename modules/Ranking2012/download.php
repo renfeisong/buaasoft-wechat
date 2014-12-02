@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: timmyxu
- * Date: 14/11/11
- * Time: 下午2:07
+ * Score file download.
+ *
+ * @author TimmyXu
+ * @since 2.0.0
  */
 
 $grade = $_GET['grade'];
