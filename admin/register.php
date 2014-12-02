@@ -86,7 +86,7 @@ if (isset($_GET['msgid']) && (time() - $_GET['token']) < 3 && (time() - $_GET['t
             $msg = "密码长度须在 6~20 位之间。";
             break;
         case 5:
-            $msg = "该密码包含非法字符。，请重试";
+            $msg = "该密码包含非法字符，请重试";
             break;
         case 6:
             $msg = "该密码由于易受攻击，已被系统禁止使用。如有疑问，请联系管理员。";
