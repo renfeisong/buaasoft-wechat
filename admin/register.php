@@ -8,6 +8,40 @@
 
 require_once dirname(__FILE__) . '/includes/admin.php';
 
+function passwordDisallowed($password) {
+    // disallow passwords that only contain 1 kind of character
+    $platitude = true;
+    for ($i = 1; $i < strlen($password); ++$i) {
+        if ($password[$i] !== $password[0])
+            $platitude = false;
+    }
+    if ($platitude)
+        return true;
+
+    // disallow certain patterns
+    $disallowList = array(
+        "123456", "password", "qwerty"
+    );
+    foreach ($disallowList as $test)
+        if ($test === $password)
+            return true;
+
+    return false;
+}
+
+function validatePassword($password) {
+    if (strlen($password) < 6 || strlen($password) > 20)
+        return 4; // 密码长度必须在6~20位之间
+
+    if (preg_match("/[^A-Za-z0-9!@\#\$\%\^\&\*\_\-\+\=\(\)\[\]\{\}\<\>\|\\\?\,\.\;\:\'\"\/\~\`]/", $password))
+        return 5; // 密码包含非法字符
+
+    if (passwordDisallowed($password))
+        return 6; // 该密码已被系统禁止使用
+
+    return 0;
+}
+
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password1 = $_POST['password1'];
@@ -17,6 +51,8 @@ if (isset($_POST['submit'])) {
         redirect('register.php?msgid=1&token=' . time());
     } else if ($password1 != $password2) {
         redirect('register.php?msgid=2&token=' . time());
+    } else if (($p = validatePassword($password1)) != 0) {
+        redirect('register.php?msgid=' . $p . '&token=' . time());
     } else if (register($username, $password1)) {
         global $wxdb; /* @var $wxdb wxdb */
         $wxdb->insert('security_log', array(
@@ -29,6 +65,7 @@ if (isset($_POST['submit'])) {
         log_in($username, $password1, false);
         redirect('index.php');
     } else {
+        // 用户名已经被占用
         redirect('register.php?msgid=3&token=' . time());
     }
     exit;
@@ -46,7 +83,13 @@ if (isset($_GET['msgid']) && (time() - $_GET['token']) < 3 && (time() - $_GET['t
             $msg = "用户名已经被占用。";
             break;
         case 4:
-            $msg = "密码过于简单。";
+            $msg = "密码长度须在 6~20 位之间。";
+            break;
+        case 5:
+            $msg = "该密码包含非法字符。，请重试";
+            break;
+        case 6:
+            $msg = "该密码由于易受攻击，已被系统禁止使用。如有疑问，请联系管理员。";
             break;
     }
 }
