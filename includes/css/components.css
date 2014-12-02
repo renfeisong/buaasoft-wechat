@@ -12,6 +12,10 @@ Author: Renfei Song
     display: none !important;
 }
 
+strong {
+    font-weight: bold;
+}
+
 /**
  headings
  */
@@ -67,6 +71,7 @@ code {
     transition: background-color ease .25s;
     border-radius: 3px;
     margin: 0;
+    -webkit-appearance: none;
 }
 
 /* color variants */
@@ -176,6 +181,7 @@ textarea.form-control,
     transition: border-color ease-in-out .15s;
     width: 100%;
     box-sizing: border-box;
+    -webkit-appearance: none;
 }
 
 textarea.form-control,

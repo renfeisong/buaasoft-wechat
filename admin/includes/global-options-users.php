@@ -127,7 +127,8 @@ foreach ($modules as $module) {
         });
 
         $("#user-table").DataTable({
-            "bPaginate": false
+            "bPaginate": false,
+            "order": [[ 3, "desc" ]]
         });
 
         $(".x-editable").editable({

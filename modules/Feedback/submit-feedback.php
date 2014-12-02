@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=false">
     <link rel="stylesheet" href="../../includes/css/components.css" media="all">
     <link rel="stylesheet" href="../../includes/css/font-awesome.css" media="all">
     <script src="../../includes/plugins/jquery/jquery-2.1.1.min.js"></script>
