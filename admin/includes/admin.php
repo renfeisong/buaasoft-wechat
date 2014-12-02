@@ -71,6 +71,10 @@ function current_user_name() {
 }
 
 function current_user_can_manage($page) {
+    global $public_pages;
+    if (in_array($page, $public_pages))
+        return true;
+
     $user = current_user();
     if ($user['isSuperAdmin'] == 1)
         return true;

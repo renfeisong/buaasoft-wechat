@@ -45,6 +45,9 @@ $global_option_icons = array(
     'debug' => 'wrench',
     'personal' => 'lock'
 );
+$public_pages = array(
+    'personal'
+);
 $wxdb = null;
 $time_start = 0.0;
 $time_end = 0.0;
