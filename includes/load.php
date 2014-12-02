@@ -6,6 +6,12 @@
  * @since 2.0.0
  */
 
+if (defined('WX_DEBUG')) {
+    // Sets which PHP errors are reported
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+}
+
 require_once ABSPATH . 'includes/functions.php';
 require_once ABSPATH . 'includes/module.php';
 
@@ -42,6 +48,8 @@ $global_option_icons = array(
 $wxdb = null;
 $time_start = 0.0;
 $time_end = 0.0;
+$userChecked = false; // Flag to guarantee that user request is logged only once
+$adminUser = null; // Current admin user, for caching purpose
 
 date_default_timezone_set('Asia/Shanghai');
 timer_start();

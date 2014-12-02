@@ -26,6 +26,7 @@ class wxdb {
     public $last_error = '';
     public $charset;
     public $debug = false;
+    public $queryHistory = array();
 
     protected $result;
     protected $reconnect_retries = 5;
@@ -126,6 +127,7 @@ class wxdb {
     private function _do_query($query) {
         $this->result = @mysqli_query($this->dbh, $query);
         $this->num_queries++;
+        $this->queryHistory[] = $query;
     }
 
     public function check_connection() {

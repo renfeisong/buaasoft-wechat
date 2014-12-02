@@ -70,6 +70,13 @@ function queries_count() {
     return $wxdb->num_queries;
 }
 
+function listQueries() {
+    global $wxdb; /* @var $wxdb wxdb */
+    foreach ($wxdb->queryHistory as $q) {
+        echo $q . "\n";
+    }
+}
+
 /**
  * Instantiate the `$wxdb` global.
  *

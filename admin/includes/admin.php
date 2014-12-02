@@ -19,27 +19,38 @@ function current_user() {
         return null;
     }
 
+    global $adminUser;
+
+    if ($adminUser != null)
+        return $adminUser;
+
     global $wxdb; /* @var $wxdb wxdb */
+    global $userChecked;
+
     $sql = $wxdb->prepare("SELECT * FROM `admin_user` WHERE `loginToken` = '%s'", $_COOKIE['login']);
     $user = $wxdb->get_row($sql, ARRAY_A);
+
     if ($user) {
         if ($_SERVER['REMOTE_ADDR'] == $user['ip']) {
-            $wxdb->update('admin_user', array('lastActivity' => date('c')), array('userName' => $user['userName']));
+            if ($userChecked === false) {
+                $wxdb->update('admin_user', array('lastActivity' => date('c')), array('userName' => $user['userName']));
 
-            $sql = $wxdb->prepare("select count(*) from `security_log` where `userName` = '%s' and `opName` = '%s' and `timestamp` > timestamp(DATE_SUB(NOW(), INTERVAL 20 MINUTE))", $user['userName'], 'User.startSession');
-            $count = $wxdb->get_var($sql);
+                $sql = $wxdb->prepare("select count(*) from `security_log` where `userName` = '%s' and `opName` = '%s' and `timestamp` > timestamp(DATE_SUB(NOW(), INTERVAL 20 MINUTE))", $user['userName'], 'User.startSession');
+                $count = $wxdb->get_var($sql);
+                if ($count == 0) {
+                    $wxdb->insert('security_log', array(
+                        'userName' => $user['userName'],
+                        'opName' => 'User.startSession',
+                        'opDetail' => 'Success',
+                        'ip' => $_SERVER['REMOTE_ADDR'],
+                        'agent' => $_SERVER['HTTP_USER_AGENT']
+                    ));
+                }
 
-            if ($count == 0) {
-                $wxdb->insert('security_log', array(
-                    'userName' => $user['userName'],
-                    'opName' => 'User.startSession',
-                    'opDetail' => 'Success',
-                    'ip' => $_SERVER['REMOTE_ADDR'],
-                    'agent' => $_SERVER['HTTP_USER_AGENT']
-                ));
+                $userChecked = true;
             }
 
-            return $user;
+            return $adminUser = $user;
         } else {
             $wxdb->insert('security_log', array(
                 'userName' => $user['userName'],
@@ -52,7 +63,7 @@ function current_user() {
         }
     }
 
-    return null;
+    return $adminUser = null;
 }
 
 function current_user_name() {
@@ -111,8 +122,10 @@ function log_in($username, $password, $remember) {
 }
 
 function log_out() {
-    setcookie('login', "", 1);
+    setcookie('login', '', 1);
     unset($_COOKIE['login']);
+    global $adminUser;
+    $adminUser = null;
 }
 
 function register($username, $password) {

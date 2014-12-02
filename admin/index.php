@@ -123,7 +123,12 @@ ob_start();
     <footer id="colophon" class="site-footer">
         <?php echo queries_count() ?> queries processed in <?php echo timer_stop(6) * 1000 ?> μs.
     </footer>
-
+    <?php if (defined(WX_DEBUG)): ?>
+    <!--
+        Queries executed for this page:
+        <?php listQueries() ?>
+    -->
+    <?php endif; ?>
 <script>
     toastr.options = {
         "closeButton": true,

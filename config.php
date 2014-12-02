@@ -35,9 +35,8 @@ if (!defined('ABSPATH')) {
     define('ABSPATH', dirname(__FILE__) . '/');
 }
 
-// Sets which PHP errors are reported
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+// Enable debug on test environments
+define('WX_DEBUG', 'WX_DEBUG');
 
 // Sets up vars and included files
 require_once ABSPATH . 'includes/load.php';
