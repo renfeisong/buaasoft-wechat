@@ -143,7 +143,7 @@ function validate_date($date) {
 
 ?>
 
-<h2>Homework Mgmt. Panel</h2>
+<h2>作业管理面板</h2>
 
 <h3>添加作业</h3>
 <form method="POST" id="add-homework">

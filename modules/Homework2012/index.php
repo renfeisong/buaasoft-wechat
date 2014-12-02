@@ -1,13 +1,16 @@
 <?php
 /**
- * Class Homework1221
+ * Class Homework2012
  *
  * @author Renfei Song
  */
 
-class Homework1221 extends BaseModule {
+class Homework2012 extends BaseModule {
 
-    public $table_name = "homework";
+    /* configurable */
+    public $table_name = 'homework2012';
+    public $start_year = '2012';
+    public $dept = '21';
 
     public function prepare() {
         global $wxdb; /* @var $wxdb wxdb */
@@ -33,14 +36,14 @@ SQL;
 
     public function can_handle_input(UserInput $input) {
         if ($input->inputType == InputType::Click && $input->eventKey == "HOMEWORK")
-            if (substr($input->user['class'], 0, 4) == '1221')
+            if ($input->user['startYear'] == $this->start_year && $input->user['dept'] == $this->dept)
                 return true;
         return false;
     }
 
     public function get_homework() {
         global $wxdb; /* @var $wxdb wxdb */
-        $today = date('c');
+        $today = date('Y-m-d');
         $sql = $wxdb->prepare("SELECT * FROM `" . $this->table_name . "` WHERE `dueDate` = '' OR `dueDate` >= '%s' ORDER BY `publishDate` DESC, `subject` ASC", $today);
         $rows = $wxdb->get_results($sql, ARRAY_A);
         $homework = '';
@@ -62,7 +65,11 @@ SQL;
             $homework .= $row['content'];
 
             if ($row['dueDate'] != '') {
-                $homework .= '（' . date('n/j',strtotime($row['dueDate'])) . '过期）';
+                if (date('n/j') == date('n/j', strtotime($row['dueDate']))) {
+                    $homework .= '（今天过期）';
+                } else {
+                    $homework .= '（' . date('n/j', strtotime($row['dueDate'])) . '过期）';
+                }
             }
         }
 
@@ -79,6 +86,6 @@ SQL;
     }
 
     public function display_name() {
-        return '作业管理';
+        return '作业管理 ' . $this->start_year;
     }
 }
