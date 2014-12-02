@@ -8,6 +8,11 @@
 
 require_once dirname(__FILE__) . '/includes/admin.php';
 
+if (current_user() !== null) {
+    redirect(ROOT_URL . 'admin/index.php', 302);
+    exit;
+}
+
 function passwordDisallowed($password) {
     // disallow passwords that only contain 1 kind of character
     $platitude = true;

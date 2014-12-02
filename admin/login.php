@@ -8,6 +8,11 @@
 
 require_once dirname(__FILE__) . '/includes/admin.php';
 
+if (current_user() !== null) {
+    redirect(ROOT_URL . 'admin/index.php', 302);
+    exit;
+}
+
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
