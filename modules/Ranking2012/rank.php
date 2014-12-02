@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: timmyxu
- * Date: 14/11/10
- * Time: 下午11:24
+ * More ranking information page.
+ *
+ * @author TimmyXu
+ * @since 2.0.0
  */
 
 require_once dirname(dirname(dirname(__FILE__))) . '/config.php';

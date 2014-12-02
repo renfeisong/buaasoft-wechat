@@ -1,9 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: timmyxu
- * Date: 14/11/9
- * Time: 上午12:04
+ * Bound process.
+ *
+ * @author TimmyXu
+ * @since 2.0.0
  */
 require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
 global $wxdb;
