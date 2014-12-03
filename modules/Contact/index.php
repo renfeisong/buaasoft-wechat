@@ -8,21 +8,33 @@
 
 class Contact extends BaseModule {
 
+    private $source; //从contact表查询为1，user表为2
     private $name;
 
     public function prepare() {
         $format = _get_value("Contact", "output_format");
         if (empty($format)) {
-            _set_value("Contact", "output_format", "[name]([id])：\n电话号码 [phone_number]\n邮箱 [email]");
+            _set_value("Contact", "output_format", "[identity]\n电话号码 [phone_number]\n邮箱 [email]");
         }
     }
 
     public function can_handle_input(UserInput $input) {
         global $wxdb;
+        $names = $wxdb->get_col("SELECT userName FROM contact", 0);
+        if ($input->inputType == InputType::Text) {
+            foreach ($names as $name) {
+                if (substr_count($input->content, $name) > 0) {
+                    $this->source = 1;
+                    $this->name = $name;
+                    return true;
+                }
+            }
+        }
         $names = $wxdb->get_col("SELECT userName FROM user", 0);
         if ($input->inputType == InputType::Text) {
             foreach ($names as $name) {
                 if (substr_count($input->content, $name) > 0) {
+                    $this->source = 2;
                     $this->name = $name;
                     return true;
                 }
@@ -33,18 +45,26 @@ class Contact extends BaseModule {
 
     public function raw_output(UserInput $input) {
         global $wxdb;
-        $results = $wxdb->get_results("SELECT userId, phoneNumber, email FROM user WHERE userName = '" . $this->name . "'", ARRAY_A);
+        if ($this->source == 1) {
+            $results = $wxdb->get_results("SELECT userId, phoneNumber, email FROM contact WHERE userName = '" . $this->name . "'", ARRAY_A);
+        } else {
+            $results = $wxdb->get_results("SELECT userId, phoneNumber, email FROM user WHERE userName = '" . $this->name . "'", ARRAY_A);
+        }
         $formatter = new OutputFormatter($input->openid, $input->accountId);
         $output_format = get_value($this, "output_format");
         $return_text = "";
         if (isset($results)) {
             foreach ($results as $result) {
                 $return_text = $return_text . $output_format;
-                $return_text = str_replace("[name]", $this->name, $return_text);
-                if (isset($result["userId"]) && $result["userId"] != "") {
-                    $return_text = str_replace("[id]", $result["userId"], $return_text);
+                $return_text = str_replace("[identity]", $this->name, $return_text);
+                if (count($results) == 1) {
+                    $return_text = str_replace("[identity]", $this->name, $return_text);
                 } else {
-                    $return_text = str_replace("[id]", "", $return_text);
+                    if (isset($result["userId"]) && $result["userId"] != "") {
+                        $return_text = str_replace("[identity]", $result["userId"] . $this->name, $return_text);
+                    } else {
+                        $return_text = str_replace("[identity]", $this->name, $return_text);
+                    }
                 }
                 if (isset($result["phoneNumber"]) && $result["phoneNumber"] != "") {
                     $return_text = str_replace("[phone_number]", $result["phoneNumber"], $return_text);

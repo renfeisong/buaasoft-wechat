@@ -12,6 +12,9 @@ $format = _get_value("Contact", "output_format");
 ?>
 
 <style>
+    textarea {
+        font-family: Menlo, Courier, 'Liberation Mono', Consolas, Monaco, Lucida Console, monospace;
+    }
 
     .error {
         border-color: #a94442;
@@ -49,15 +52,15 @@ $format = _get_value("Contact", "output_format");
 <ul class="list-1">
     <li>输出格式中可带有占位符，目前可用的占位符有：</li>
     <ul class="list-2">
-        <li><code>[name]</code> --- 姓名</li>
-        <li><code>[id]</code> --- 学号或职工号</li>
+        <li><code>[identity]</code> --- 身份</li>
         <li><code>[phone_number]</code> --- 电话号码</li>
         <li><code>[email]</code> --- 邮箱</li>
     </ul>
-    <li>示例：
-<pre>[name]([id])：
-电话号码 [phone_number]
-邮箱 [email]</pre>
+    <li>
+        示例：<br/>
+        <pre>[identity]
+电话号码：[phone_number]
+邮箱：[email]</pre>
     </li>
 </ul>
 <button id="submit" class="button blue-button button-with-icon"><i class="fa fa-edit fa-fw"></i> 修改</button>

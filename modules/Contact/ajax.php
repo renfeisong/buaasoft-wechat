@@ -16,9 +16,13 @@ if (isset($_POST["action"])) {
             _set_value("Contact", "output_format", $_POST["format"]);
             $return_dict["code"] = 0;
             $return_dict["message"] = "success";
-            echo json_encode($return_dict);
             break;
         }
-        default: break;
+        default: {
+            $return_dict["code"] = 1;
+            $return_dict["message"] = "error";
+            break;
+        }
+        echo json_encode($return_dict);
     }
 }
