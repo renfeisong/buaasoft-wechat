@@ -223,6 +223,7 @@ foreach ($modules as $module) {
             var $button = $(this);
             $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在启用");
             $.ajax({
+                url: "includes/global-options-users-ajax.php",
                 type: "POST",
                 dataType: "json",
                 data: {
