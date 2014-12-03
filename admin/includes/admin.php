@@ -35,7 +35,7 @@ function current_user() {
             if ($userChecked === false) {
                 $wxdb->update('admin_user', array('lastActivity' => date('c')), array('userName' => $user['userName']));
 
-                $sql = $wxdb->prepare("select count(*) from `security_log` where `userName` = '%s' and `opName` = '%s' and `timestamp` > timestamp(DATE_SUB(NOW(), INTERVAL 20 MINUTE))", $user['userName'], 'User.startSession');
+                $sql = $wxdb->prepare("select count(*) from `security_log` where `userName` = '%s' and `opName` = '%s' and `timestamp` > timestamp(DATE_SUB(NOW(), INTERVAL 60 MINUTE))", $user['userName'], 'User.startSession');
                 $count = $wxdb->get_var($sql);
                 if ($count == 0) {
                     $wxdb->insert('security_log', array(

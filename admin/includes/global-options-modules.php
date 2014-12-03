@@ -105,7 +105,8 @@ set_global_value('options_module_ajax', $ajax_key);
 
 </style>
 
-<h3>模块管理</h3>
+<h2>模块管理</h2>
+<h3>现有模块管理</h3>
 <table id="modules-table" class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
@@ -133,7 +134,7 @@ set_global_value('options_module_ajax', $ajax_key);
     </tbody>
 </table>
 
-<h2>安装模块</h2>
+<h3>安装模块</h3>
 
 <h4 id="file-name"></h4>
 <progress class="progress-bar hidden" value="0" max="100"></progress>
@@ -165,6 +166,7 @@ set_global_value('options_module_ajax', $ajax_key);
 
     $('#modules-table').DataTable({
         paging: false,
+        order: [[ 2, "desc" ]],
         aoColumnDefs: [{
             bSortable: false,
             aTargets: ['nosort']

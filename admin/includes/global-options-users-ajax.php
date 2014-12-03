@@ -53,6 +53,25 @@ if (isset($_POST["action"])) {
             echo json_encode($return_dict);
             break;
         }
+        case "edit-note": {
+            $success = $wxdb->update('admin_user', array('note' => $_POST['note']), array('userName' => $_POST['username']));
+            if ($success !== false) {
+                $wxdb->insert('security_log', array(
+                    'userName' => current_user_name(),
+                    'opName' => 'User.editNote',
+                    'opDetail' => 'Success: User [' . $_POST["username"] . ']\'s note set to [' . $_POST['note'] . ']',
+                    'ip' => $_SERVER['REMOTE_ADDR'],
+                    'agent' => $_SERVER['HTTP_USER_AGENT']
+                ));
+                $return_dict["code"] = 0;
+                $return_dict["message"] = "success";
+            } else {
+                $return_dict["code"] = 1;
+                $return_dict["message"] = "error";
+            }
+            echo json_encode($return_dict);
+            break;
+        }
         case "enable": {
             $return_dict = array();
             $result = $wxdb->update("admin_user", array("isEnabled"=>"1"), array("userName"=>$_POST["username"]));

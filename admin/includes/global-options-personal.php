@@ -1,10 +1,10 @@
 <?php
 if (isset($_POST['submit'])) {
-    $username = $_POST['username'];
+    $username = current_user_name();
     $password1 = $_POST['password1'];
     $password2 = $_POST['password2'];
 
-    if (empty($username) || empty($password2) || empty($password2)) {
+    if (empty($password1) || empty($password2)) {
         redirect_failure('密码不能为空，请重试。');
     } else if ($password1 != $password2) {
         redirect_failure('两次输入的密码不相同，请重试。');
@@ -52,7 +52,6 @@ if (isset($_POST['submit'])) {
             <input class="form-control" type="password" name="password2" id="password2" required>
         </div>
     </div>
-    <input type="hidden" name="username" value="<?php echo current_user_name() ?>">
     <input type="submit" name="submit" class="button gray-button" value="修改密码">
 </form>
 <h3>操作历史</h3>
