@@ -87,7 +87,7 @@ echo json_encode($authorized_tags);
         <th class="nosort">可管理模块</th>
         <th style="width: 130px; min-width: 130px; max-width: 130px;">加入时间</th>
         <th style="width: 130px; min-width: 130px; max-width: 130px;">上次活动时间</th>
-        <th class="nosort" style="width: 140px; max-width: 140px; min-width: 140px;">操作</th>
+        <th class="nosort" style="width: 180px; max-width: 180px; min-width: 180px;">操作</th>
     </tr>
     </thead>
     <tbody>

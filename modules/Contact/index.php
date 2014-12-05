@@ -74,7 +74,7 @@ SQL;
                 }
             }
             $match = array();
-            if (preg_match("/^1[3|4|5|8][0-9]\\d{8}$/", $input->content, $match) == 1) {
+            if (preg_match("/^1[3|4|5|7|8]\\d{9}$/", $input->content, $match) == 1) {
                 $this->mode = SearchMode::PHONE_NUMBER_TO_NAME;
                 $this->phone_numeber = $match[0];
                 return true;

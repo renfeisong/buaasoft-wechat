@@ -61,7 +61,7 @@ if (isset($_GET["openid"])) {
                 $("#email-warning").html("<i class=\"fa fa-warning fa-fw\"></i>邮箱格式不准确");
                 check = false;
             }
-            if(!(/^1[3|4|5|8][0-9]\d{8}$/.test($("#phone-number").val()))){
+            if(!(/^1[3|4|5|7|8]\d{9}$/.test($("#phone-number").val()))){
                 $("#phone-number-warning").html("<i class=\"fa fa-warning fa-fw\"></i>手机号格式不准确");
                 check = false;
             }

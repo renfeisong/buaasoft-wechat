@@ -13,10 +13,43 @@ if (isset($_POST["action"])) {
     global $wxdb; /* @var $wxdb wxdb */
 
     switch ($_POST["action"]) {
-        case "edit": {
-            _set_value("Contact", "output_format", $_POST["format"]);
-            $return_dict["code"] = 0;
-            $return_dict["message"] = "success";
+        case "add-record": {
+            $result = $wxdb->insert("contact", array(
+                "userName"=>$_POST["user_name"],
+                "identity"=>$_POST["identity"],
+                "phoneNumber"=>$_POST["phone_number"],
+                "email"=>$_POST["email"]));
+            if ($result != false) {
+                if ($result != 0) {
+                    $return_dict["code"] = 0;
+                    $return_dict["message"] = "success";
+                    $return_dict["id"] = $wxdb->insert_id;
+                } else {
+                    $return_dict["code"] = 1;
+                    $return_dict["message"] = "already added";
+                }
+            } else {
+                echo $wxdb->last_query;
+                $return_dict["code"] = 2;
+                $return_dict["message"] = "error";
+            }
+            break;
+        }
+        case "delete-record": {
+            $result = $wxdb->delete("contact", array("id"=>$_POST["id"]));
+            if ($result != false) {
+                if ($result != 0) {
+                    $return_dict["code"] = 0;
+                    $return_dict["message"] = "success";
+                } else {
+                    $return_dict["code"] = 1;
+                    $return_dict["message"] = "already deleted";
+                }
+            } else {
+                echo $wxdb->last_query;
+                $return_dict["code"] = 2;
+                $return_dict["message"] = "error";
+            }
             break;
         }
         case "edit-user-name": {
@@ -57,6 +90,12 @@ if (isset($_POST["action"])) {
                 $return_dict["code"] = 1;
                 $return_dict["message"] = "error";
             }
+            break;
+        }
+        case "edit-format": {
+            _set_value("Contact", "output_format", $_POST["format"]);
+            $return_dict["code"] = 0;
+            $return_dict["message"] = "success";
             break;
         }
         default: {

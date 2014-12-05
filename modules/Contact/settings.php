@@ -15,6 +15,11 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
 ?>
 
 <style>
+
+    td .button {
+        min-width: 60px;
+    }
+
     textarea {
         font-family: Menlo, Courier, 'Liberation Mono', Consolas, Monaco, Lucida Console, monospace;
     }
@@ -56,6 +61,7 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
         <th>身份</th>
         <th>电话号码</th>
         <th>邮箱</th>
+        <th style="width: 100px; max-width: 100px; min-width: 100px;">操作</th>
     </tr>
     </thead>
     <tbody>
@@ -81,8 +87,29 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
                     <?php echo $row['email'] ?>
                 </a>
             </td>
+            <td>
+                <button class="button xs-button red-button delete-record"><i class="fa fa-trash fa-fw"></i>  删除</button>
+                <button class="button xs-button red-button delete-record-confirm hidden">请确认</button>
+            </td>
         </tr>
     <?php endforeach;?>
+    <tr id="add-record-row">
+        <td>
+            <input id="add-user-name" class="form-control" type="text" placeholder="例：吕云翔（必填）">
+        </td>
+        <td>
+            <input id="add-identity" class="form-control" type="text" placeholder="例：教师（可选）">
+        </td>
+        <td>
+            <input id="add-phone-number" class="form-control" type="text" placeholder="例：18688888888（可选）">
+        </td>
+        <td>
+            <input id="add-email" class="form-control" type="text" placeholder="例：lyx@example.com（可选）">
+        </td>
+        <td>
+            <button id="add-record" class="button blue-button xs-button"><i class="fa fa-plus fa-fw"></i>  添加</button>
+        </td>
+    </tr>
     </tbody>
 </table>
 
@@ -113,31 +140,187 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
 
 <script>
 
+function setup_x_editable() {
+
+    $(".x-editable").editable({
+        type: "text",
+        emptytext: "点击添加..."
+    });
+
+    $(".x-editable-user-name").on("save", function(e, params) {
+        $.ajax({
+            url: "../modules/Contact/ajax.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                "action": "edit-user-name",
+                "id": $(this).parents("tr").data("id"),
+                "user_name": params.newValue
+            }
+        }).done(function(data){
+            switch (data["code"]) {
+                case 0: {
+                    toastr.success("修改成功", "Success");
+                    break;
+                }
+                case 1: {
+                    toastr.error("系统错误", "Error");
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        });
+    });
+
+    $(".x-editable-identity").on("save", function(e, params) {
+        $.ajax({
+            url: "../modules/Contact/ajax.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                "action": "edit-identity",
+                "id": $(this).parents("tr").data("id"),
+                "identity": params.newValue
+            }
+        }).done(function(data){
+            switch (data["code"]) {
+                case 0: {
+                    toastr.success("修改成功", "Success");
+                    break;
+                }
+                case 1: {
+                    toastr.error("系统错误", "Error");
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        });
+    });
+
+    $(".x-editable-phone-number").on("save", function(e, params) {
+        $.ajax({
+            url: "../modules/Contact/ajax.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                "action": "edit-phone-number",
+                "id": $(this).parents("tr").data("id"),
+                "phone_number": params.newValue
+            }
+        }).done(function(data){
+            switch (data["code"]) {
+                case 0: {
+                    toastr.success("修改成功", "Success");
+                    break;
+                }
+                case 1: {
+                    toastr.error("系统错误", "Error");
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        });
+    });
+
+    $(".x-editable-email").on("save", function(e, params) {
+        $.ajax({
+            url: "../modules/Contact/ajax.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                "action": "edit-email",
+                "id": $(this).parents("tr").data("id"),
+                "email": params.newValue
+            }
+        }).done(function(data){
+            switch (data["code"]) {
+                case 0: {
+                    toastr.success("修改成功", "Success");
+                    break;
+                }
+                case 1: {
+                    toastr.error("系统错误", "Error");
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        });
+    });
+}
+
     $(document).ready(function() {
 
-        $(".x-editable").editable({
-            type: "text",
-            emptytext: "点击添加..."
+        setup_x_editable();
+
+        var is_deleting = false;
+
+        $(document).click(function() {
+            if (is_deleting == false) {
+                $(".delete-account-confirm").addClass("hidden");
+                $(".delete-account").removeClass("hidden");
+            }
         });
 
-        $(".x-editable-user-name").on("save", function(e, params) {
+        $("#add-record").click(function() {
+            var $button = $(this);
+            var user_name = $("#add-user-name").val();
+            var identity = $("#add-identity").val();
+            var phone_number = $("#add-phone-number").val();
+            var email = $("#add-email").val();
+            if (user_name == "") {
+                toastr.error("必须填写姓名", "Error");
+                $("#add-user-name").addClass("error");
+                $("#add-user-name").focus();
+                return;
+            }
+            $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在添加");
             $.ajax({
                 url: "../modules/Contact/ajax.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    "action": "edit-user-name",
-                    "id": $(this).parents("tr").data("id"),
-                    "user_name": params.newValue
+                    "action": "add-record",
+                    "user_name": user_name,
+                    "identity": identity,
+                    "phone_number": phone_number,
+                    "email": email
                 }
-            }).done(function(data){
+            }).done(function(data) {
                 switch (data["code"]) {
                     case 0: {
-                        toastr.success("修改成功", "Success");
+                        $button.html("<i class=\"fa fa-check fa-fw\"></i>  已添加");
+                        $("#add-record-row").before(
+                            "<tr data-id=\"" + data["id"] + "\">" +
+                            "<td><a href=\"#\" class=\"x-editable x-editable-user-name\">" + user_name + "</a></td>" +
+                            "<td><a href=\"#\" class=\"x-editable x-editable-identity\">" + identity + "</a></td>" +
+                            "<td><a href=\"#\" class=\"x-editable x-editable-phone-number\">" + phone_number + "</a></td>" +
+                            "<td><a href=\"#\" class=\"x-editable x-editable-email\">" + email + "</a></td>" +
+                            "<td>" +
+                            "<button class=\"button xs-button red-button delete-record\"><i class=\"fa fa-trash fa-fw\"></i>  删除</button>" +
+                            "<button class=\"button xs-button red-button delete-record-confirm hidden\">请确认</button>" +
+                            "</td>" +
+                            "</tr>"
+                        );
+                        setup_x_editable();
+                        window.setTimeout(function () {
+                            $button.html("<i class=\"fa fa-plusfa-fw\"></i>  添加");
+                        }, 1000);
                         break;
                     }
                     case 1: {
-                        toastr.error("系统错误", "Error");
+                        toastr.info("记录已添加，请勿重复提交", "Info");
+                        break;
+                    }
+                    case 2: {
+                        toastr.error("服务器出现未知错误", "Error");
                         break;
                     }
                     default: {
@@ -147,84 +330,48 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
             });
         });
 
-        $(".x-editable-identity").on("save", function(e, params) {
-            $.ajax({
-                url: "../modules/Contact/ajax.php",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    "action": "edit-identity",
-                    "id": $(this).parents("tr").data("id"),
-                    "identity": params.newValue
-                }
-            }).done(function(data){
-                switch (data["code"]) {
-                    case 0: {
-                        toastr.success("修改成功", "Success");
-                        break;
-                    }
-                    case 1: {
-                        toastr.error("系统错误", "Error");
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-            });
+        $(".delete-record").click(function(e) {
+            e.stopPropagation();
+            $(this).addClass("hidden");
+            $(this).siblings(".delete-record-confirm").removeClass("hidden");
         });
 
-        $(".x-editable-phone-number").on("save", function(e, params) {
+        $(".delete-record-confirm").click(function(e) {
+            e.stopPropagation();
+            is_deleting = true;
+            var $button = $(this);
+            $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在删除");
             $.ajax({
                 url: "../modules/Contact/ajax.php",
                 type: "POST",
                 dataType: "json",
                 data: {
-                    "action": "edit-phone-number",
-                    "id": $(this).parents("tr").data("id"),
-                    "phone_number": params.newValue
+                    "action": "delete-record",
+                    "id": $(this).parents("tr").data("id")
                 }
             }).done(function(data){
                 switch (data["code"]) {
                     case 0: {
-                        toastr.success("修改成功", "Success");
+                        $button.html("<i class=\"fa fa-check fa-fw\"></i>  已删除");
+                        window.setTimeout(function() {
+                            $button.parents("tr").fadeOut();
+                        }, 1000);
                         break;
                     }
                     case 1: {
-                        toastr.error("系统错误", "Error");
+                        toastr.info("记录已删除，请勿重复提交", "Info");
+                        break;
+                    }
+                    case 2: {
+                        toastr.error("服务器出现未知错误", "Error");
                         break;
                     }
                     default: {
                         break;
                     }
                 }
-            });
-        });
-
-        $(".x-editable-email").on("save", function(e, params) {
-            $.ajax({
-                url: "../modules/Contact/ajax.php",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    "action": "edit-email",
-                    "id": $(this).parents("tr").data("id"),
-                    "email": params.newValue
-                }
-            }).done(function(data){
-                switch (data["code"]) {
-                    case 0: {
-                        toastr.success("修改成功", "Success");
-                        break;
-                    }
-                    case 1: {
-                        toastr.error("系统错误", "Error");
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
+            }).always(function() {
+                is_deleting = false;
             });
         });
 
@@ -245,7 +392,7 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
                 url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
                 type: "POST",
                 data: {
-                    "action": "edit",
+                    "action": "edit-format",
                     "format": format
                 },
                 dataType: "json"
