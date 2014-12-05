@@ -3,6 +3,7 @@
  * This file is the user management page for the admin center.
  *
  * @author Bingchen Qin
+ * @author Renfei Song
  * @since 2.0.0
  */
 

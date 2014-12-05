@@ -3,6 +3,7 @@
  * This file provides ajax services for the user management page.
  *
  * @author Bingchen Qin
+ * @author Renfei Song
  * @since 2.0.0
  */
 
