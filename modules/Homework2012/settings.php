@@ -55,9 +55,15 @@ if (isset($_POST['add-homework'])) {
     $due_date = $_POST['dueDate'];
     $subject = $_POST['subject'];
     $content = $_POST['content'];
+    $forClass = $_POST['for-class'];
 
     if (empty($publish_date) || empty($subject) || empty($content)) {
         redirect_failure('请填写完整表格。');
+        exit;
+    }
+
+    if (!isset($forClass)) {
+        redirect_failure('请至少选择一个班级。');
         exit;
     }
 
@@ -106,6 +112,7 @@ if (isset($_POST['add-homework'])) {
         'userName' => current_user_name(),
         'publishDate' => $publish_date,
         'dueDate' => $due_date,
+        'forClass' => json_encode($forClass),
         'dateUpdated' => date('c')
     ));
 
@@ -170,9 +177,25 @@ function validate_date($date) {
         <div class="control">
             <select class="form-control" name="subject" data-placeholder="选择科目..." required>
                 <?php foreach ($subjects as $subject): ?>
-                <option value="<?php echo $subject ?>"><?php echo $subject ?></option>
+                    <option value="<?php echo $subject ?>"><?php echo $subject ?></option>
                 <?php endforeach; ?>
             </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="prompt">
+            <label>适用班级</label>
+        </div>
+        <div class="control">
+            <input name="for-class[]" value="1" type="checkbox" class="class-option" id="class-1" checked><label for="class-1">一班</label>&nbsp;&nbsp;
+            <input name="for-class[]" value="2" type="checkbox" class="class-option" id="class-2" checked><label for="class-2">二班</label>&nbsp;&nbsp;
+            <input name="for-class[]" value="3" type="checkbox" class="class-option" id="class-3" checked><label for="class-3">三班</label>&nbsp;&nbsp;
+            <input name="for-class[]" value="4" type="checkbox" class="class-option" id="class-4" checked><label for="class-4">四班</label>&nbsp;&nbsp;
+            <input name="for-class[]" value="5" type="checkbox" class="class-option" id="class-5" checked><label for="class-5">五班</label>
+            <div class="selection-buttons">
+                <span id="select-all" class="xs-button gray-button button"><i class="fa fa-check-square-o"></i> 全选</span>
+                <span id="clear-selection" class="xs-button gray-button button"><i class="fa fa-close"></i> 清除选择</span>
+            </div>
         </div>
     </div>
     <div class="form-group">
@@ -196,6 +219,12 @@ function validate_date($date) {
         todayHighlight: true
     });
     $('#add-homework').validate();
+    $('#select-all').click(function() {
+        $('.class-option').iCheck('check');
+    });
+    $('#clear-selection').click(function() {
+        $('.class-option').iCheck('uncheck');
+    });
 </script>
 
 <h3>作业管理</h3>
@@ -206,6 +235,7 @@ function validate_date($date) {
         <th>序号</th>
         <th>布置日期</th>
         <th>过期日期</th>
+        <th>适用班级</th>
         <th>添加人</th>
         <th>科目</th>
         <th class="nosort">内容</th>
@@ -214,23 +244,31 @@ function validate_date($date) {
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($rows as $row): ?>
-    <tr data-pk="<?php echo $row['homeworkId'] ?>">
-        <td><?php echo $row['homeworkId'] ?></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="<?php echo ROOT_URL ?>modules/<?php echo $module_name ?>/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="publishDate" class="x-editable-date"><?php echo $row['publishDate'] ?></a></td>
-        <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="<?php echo ROOT_URL ?>modules/<?php echo $module_name ?>/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="dueDate" class="x-editable-date"><?php echo $row['dueDate'] ?></a></td>
-        <td><?php echo $row['userName'] ?></td>
-        <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="<?php echo ROOT_URL ?>modules/<?php echo $module_name ?>/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="subject" class="x-editable-subject"><?php echo $row['subject'] ?></a></td>
-        <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="<?php echo ROOT_URL ?>modules/<?php echo $module_name ?>/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="content" class="x-editable-content"><?php echo $row['content'] ?></a></td>
-        <td><?php echo $row['dateUpdated'] ?></td>
-        <td>
-            <button class="button gray-button xs-button delete-homework idle" data-pk="<?php echo $row['homeworkId'] ?>">
-                <span class="idle-only" style="display: none"><i class="fa fa-trash-o"></i> 删除</span>
-                <span class="confirm-only" style="display: none">请确认</span>
-                <span class="in-progress-only" style="display: none"><i class="fa fa-spinner fa-spin"></i> 稍等..</span>
-            </button>
-        </td>
-    </tr>
+    <?php
+        foreach ($rows as $row):
+            $forClass = json_decode($row['forClass']);
+            if (count($forClass) == 5)
+                $forClass = '全体';
+            else
+                $forClass = implode(', ', $forClass) . ' 班';
+    ?>
+        <tr data-pk="<?php echo $row['homeworkId'] ?>">
+            <td><?php echo $row['homeworkId'] ?></td>
+            <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="<?php echo ROOT_URL ?>modules/<?php echo $module_name ?>/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="publishDate" class="x-editable-date"><?php echo $row['publishDate'] ?></a></td>
+            <td><a href="#" data-type="date" data-pk="<?php echo $row['homeworkId'] ?>" data-url="<?php echo ROOT_URL ?>modules/<?php echo $module_name ?>/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="dueDate" class="x-editable-date"><?php echo $row['dueDate'] ?></a></td>
+            <td><?php echo $forClass ?></td>
+            <td><?php echo $row['userName'] ?></td>
+            <td><a href="#" data-type="select2" data-pk="<?php echo $row['homeworkId'] ?>" data-url="<?php echo ROOT_URL ?>modules/<?php echo $module_name ?>/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="subject" class="x-editable-subject"><?php echo $row['subject'] ?></a></td>
+            <td><a href="#" data-type="textarea" data-pk="<?php echo $row['homeworkId'] ?>" data-url="<?php echo ROOT_URL ?>modules/<?php echo $module_name ?>/ajax.php?table=<?php echo $table_name ?>&m=<?php echo $_GET['page'] ?>&auth=<?php echo sha1(AJAX_SALT . $ajax_key) ?>" data-name="content" class="x-editable-content"><?php echo $row['content'] ?></a></td>
+            <td><?php echo $row['dateUpdated'] ?></td>
+            <td>
+                <button class="button gray-button xs-button delete-homework idle" data-pk="<?php echo $row['homeworkId'] ?>">
+                    <span class="idle-only" style="display: none"><i class="fa fa-trash-o"></i> 删除</span>
+                    <span class="confirm-only" style="display: none">请确认</span>
+                    <span class="in-progress-only" style="display: none"><i class="fa fa-spinner fa-spin"></i> 稍等..</span>
+                </button>
+            </td>
+        </tr>
     <?php endforeach; ?>
     </tbody>
 </table>
@@ -305,13 +343,17 @@ function validate_date($date) {
     .in-progress .in-progress-only {
         display: inline !important;
     }
-    .idle {
-        width: 55px;
-    }
+    .idle,
     .pre-confirm,
     .confirm,
     .in-progress {
-        width: 70px;
+        width: 65px;
+    }
+    .selection-buttons {
+        margin: 10px 0;
+    }
+    .selection-buttons .button {
+        margin-right: 6px;
     }
 </style>
 
@@ -325,17 +367,17 @@ function validate_date($date) {
     </thead>
     <tbody>
     <?php foreach ($subjects as $subject): ?>
-    <tr>
-        <td><?php echo $subject ?></td>
-        <td><?php echo $count = get_homework_count($subject) ?></td>
-        <td><?php if ($count == 0): ?>
-                <form method="POST">
-                    <input type="hidden" name="subject" value="<?php echo urlencode($subject) ?>">
-                    <button name="delete-subject" type="submit" class="button gray-button xs-button"><i class="fa fa-trash-o"></i> 删除</button>
-                </form>
-            <?php endif; ?>
-        </td>
-    </tr>
+        <tr>
+            <td><?php echo $subject ?></td>
+            <td><?php echo $count = get_homework_count($subject) ?></td>
+            <td><?php if ($count == 0): ?>
+                    <form method="POST">
+                        <input type="hidden" name="subject" value="<?php echo urlencode($subject) ?>">
+                        <button name="delete-subject" type="submit" class="button gray-button xs-button"><i class="fa fa-trash-o"></i> 删除</button>
+                    </form>
+                <?php endif; ?>
+            </td>
+        </tr>
     <?php endforeach; ?>
     </tbody>
 </table>
