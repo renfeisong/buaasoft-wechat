@@ -73,49 +73,17 @@ SQL;
                     }
                 }
             }
-            $phone_numbers = $wxdb->get_col("SELECT phoneNumber FROM contact", 0, 0);
-            if ($phone_numbers != null) {
+            $match = array();
+            if (preg_match("/^1[3|4|5|8][0-9]\\d{8}$/", $input->content, $match) == 1) {
                 $this->mode = SearchMode::PHONE_NUMBER_TO_NAME;
-                foreach ($phone_numbers as $phone_number) {
-                    if (substr_count($input->content, $phone_number) > 0) {
-                        $this->source = SearchSource::CONTACT;
-                        $this->phone_numeber = $phone_number;
-                        return true;
-                    }
-                }
+                $this->phone_numeber = $match[0];
+                return true;
             }
-            $phone_numbers = $wxdb->get_col("SELECT phoneNumber FROM user", 0, 0);
-            if ($phone_numbers != null) {
-                $this->mode = SearchMode::PHONE_NUMBER_TO_NAME;
-                foreach ($phone_numbers as $phone_number) {
-                    if (substr_count($input->content, $phone_number) > 0) {
-                        $this->source = SearchSource::USER;
-                        $this->phone_numeber = $phone_number;
-                        return true;
-                    }
-                }
-            }
-            $emails = $wxdb->get_col("SELECT email FROM contact", 0, 0);
-            if ($emails != null) {
+
+            if (preg_match("/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/", $input->content, $match) == 1) {
                 $this->mode = SearchMode::EMAIL_TO_NAME;
-                foreach ($emails as $email) {
-                    if (substr_count($input->content, $email) > 0) {
-                        $this->source = SearchSource::CONTACT;
-                        $this->email = $email;
-                        return true;
-                    }
-                }
-            }
-            $emails = $wxdb->get_col("SELECT email FROM user", 0, 0);
-            if ($emails != null) {
-                $this->mode = SearchMode::EMAIL_TO_NAME;
-                foreach ($emails as $email) {
-                    if (substr_count($input->content, $email) > 0) {
-                        $this->source = SearchSource::USER;
-                        $this->email = $email;
-                        return true;
-                    }
-                }
+                $this->email = $match[0];
+                return true;
             }
         }
         return false;
@@ -170,30 +138,42 @@ SQL;
                 break;
             }
             case SearchMode::PHONE_NUMBER_TO_NAME: {
-                if ($this->source == SearchSource::CONTACT) {
-                    $sql = $wxdb->prepare("SELECT userName FROM contact WHERE phoneNumber = '%s'", $this->phone_numeber);
-                } else {
-                    $sql = $wxdb->prepare("SELECT userName FROM user WHERE phoneNumber = '%s'", $this->phone_numeber);
-                }
+                $sql = $wxdb->prepare("SELECT userName FROM contact WHERE phoneNumber = '%s'", $this->phone_numeber);
                 $results = $wxdb->get_results($sql, ARRAY_A);
                 if (!empty($results)) {
                     foreach ($results as $result) {
                         $return_text = $return_text . $this->phone_numeber . "是" . $result["userName" ]. "的电话号码。\n";
                     }
                 }
+                $sql = $wxdb->prepare("SELECT userName FROM user WHERE phoneNumber = '%s'", $this->phone_numeber);
+                $results = $wxdb->get_results($sql, ARRAY_A);
+                if (!empty($results)) {
+                    foreach ($results as $result) {
+                        $return_text = $return_text . $this->phone_numeber . "是" . $result["userName" ]. "的电话号码。\n";
+                    }
+                }
+                if ($return_text == "") {
+                    $return_text = "没有查询到相关信息";
+                }
                 break;
             }
             case SearchMode::EMAIL_TO_NAME: {
-                if ($this->source == SearchSource::CONTACT) {
-                    $sql = $wxdb->prepare("SELECT userName FROM contact WHERE email = '%s'", $this->email);
-                } else {
-                    $sql = $wxdb->prepare("SELECT userName FROM user WHERE email = '%s'", $this->email);
-                }
+                $sql = $wxdb->prepare("SELECT userName FROM contact WHERE email = '%s'", $this->email);
                 $results = $wxdb->get_results($sql, ARRAY_A);
                 if (!empty($results)) {
                     foreach ($results as $result) {
                         $return_text = $return_text . $this->email . "是" . $result["userName" ]. "的邮箱。\n";
                     }
+                }
+                $sql = $wxdb->prepare("SELECT userName FROM user WHERE email = '%s'", $this->email);
+                $results = $wxdb->get_results($sql, ARRAY_A);
+                if (!empty($results)) {
+                    foreach ($results as $result) {
+                        $return_text = $return_text . $this->email . "是" . $result["userName" ]. "的邮箱。\n";
+                    }
+                }
+                if ($return_text == "") {
+                    $return_text = "没有查询到相关信息";
                 }
                 break;
             }
