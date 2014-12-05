@@ -8,21 +8,36 @@
  */
 
 global $wxdb; /* @var $wxdb wxdb */
-$result = $wxdb->get_results('SELECT * FROM admin_user', ARRAY_A);
+$results = $wxdb->get_results("SELECT * FROM admin_user", ARRAY_A);
 
 global $global_options;
-$modules = get_modules();
+echo json_encode($global_options);
+$all_modules = get_modules();
 
-$tags = $global_options;
-foreach ($modules as $module) {
+$all_tags = $global_options;
+foreach ($all_modules as $module) {
     if (has_settings_page($module["name"])) {
         $display_name= _get_value("global", "display_name_" . $module["name"]);
         if ($display_name == null) {
             $display_name = $module["name"];
         }
-        $tags[$module["name"]] = $display_name;
+        $all_tags[$module["name"]] = $display_name;
     }
 }
+
+$authorized_module_results = $wxdb->get_var("SELECT authorizedPages FROM admin_user WHERE userName = '" . current_user_name() . "'");
+$authorized_modules = json_decode($authorized_module_results);
+$authorized_tags = array();
+foreach ($authorized_modules as $module) {
+    if (has_settings_page($module)) {
+        $display_name= _get_value("global", "display_name_" . $module);
+        if ($display_name == null) {
+            $display_name = $module;
+        }
+        $authorized_tags[$module] = $display_name;
+    }
+}
+echo json_encode($authorized_tags);
 
 ?>
 
@@ -76,7 +91,7 @@ foreach ($modules as $module) {
     </tr>
     </thead>
     <tbody>
-    <?php foreach($result as $row):?>
+    <?php foreach($results as $row):?>
     <tr class="<?php echo $row["isEnabled"] == 1 ? "" : "disabled" ?>" data-username="<?php echo $row["userName"] ?>">
         <td>
             <i class="fa fa-user fa-fw <?php echo $row["isSuperAdmin"] == 1 ? "super-admin" : "admin" ?>" title="<?=$row["isSuperAdmin"] == 1 ? "超级管理员" : "管理员"?>"></i>
@@ -90,7 +105,7 @@ foreach ($modules as $module) {
                     $authorized_pages = json_decode($row["authorizedPages"]);
                     $i = 0;
                     foreach ($authorized_pages as $authorized_page) {
-                        echo $tags[$authorized_page];
+                        echo $all_tags[$authorized_page];
                         if ($i < count($authorized_pages) - 1) {
                             echo ", ";
                         }
@@ -155,7 +170,7 @@ foreach ($modules as $module) {
         $(".x-editable").editable({
             type: "select2",
             select2: {
-                tags: <?=json_encode(array_values($tags))?>,
+                tags: <?=json_encode(array_values($all_tags))?>,
                 createSearchChoice: null
             },
             emptytext: "点击添加..."
