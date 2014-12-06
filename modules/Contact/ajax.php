@@ -14,24 +14,30 @@ if (isset($_POST["action"])) {
 
     switch ($_POST["action"]) {
         case "add-record": {
-            $result = $wxdb->insert("contact", array(
-                "userName"=>$_POST["user_name"],
-                "identity"=>$_POST["identity"],
-                "phoneNumber"=>$_POST["phone_number"],
-                "email"=>$_POST["email"]));
-            if ($result != false) {
-                if ($result != 0) {
-                    $return_dict["code"] = 0;
-                    $return_dict["message"] = "success";
-                    $return_dict["id"] = $wxdb->insert_id;
-                } else {
-                    $return_dict["code"] = 1;
-                    $return_dict["message"] = "already added";
-                }
+            $results = $wxdb->get_results("SELECT * FROM contact WHERE userName = '" . $_POST["user_name"] . "'", ARRAY_A);
+            if ($results != null) {
+                $return_dict["code"] = 1;
+                $return_dict["message"] = "already exist";
+                break;
             } else {
-                echo $wxdb->last_query;
-                $return_dict["code"] = 2;
-                $return_dict["message"] = "error";
+                $result = $wxdb->insert("contact", array(
+                    "userName"=>$_POST["user_name"],
+                    "identity"=>$_POST["identity"],
+                    "phoneNumber"=>$_POST["phone_number"],
+                    "email"=>$_POST["email"]));
+                if ($result != false) {
+                    if ($result != 0) {
+                        $return_dict["code"] = 0;
+                        $return_dict["message"] = "success";
+                        $return_dict["id"] = $wxdb->insert_id;
+                    } else {
+                        $return_dict["code"] = 2;
+                        $return_dict["message"] = "already added";
+                    }
+                } else {
+                    $return_dict["code"] = 3;
+                    $return_dict["message"] = "error";
+                }
             }
             break;
         }
@@ -46,19 +52,25 @@ if (isset($_POST["action"])) {
                     $return_dict["message"] = "already deleted";
                 }
             } else {
-                echo $wxdb->last_query;
                 $return_dict["code"] = 2;
                 $return_dict["message"] = "error";
             }
             break;
         }
         case "edit-user-name": {
-            if ($wxdb->update("contact", array("userName"=>$_POST["user_name"]), array("id"=>$_POST["id"])) != false) {
-                $return_dict["code"] = 0;
-                $return_dict["message"] = "success";
-            } else {
+            $results = $wxdb->get_results("SELECT * FROM contact WHERE userName = '" . $_POST["user_name"] . "'", ARRAY_A);
+            if ($results != null) {
                 $return_dict["code"] = 1;
-                $return_dict["message"] = "error";
+                $return_dict["message"] = "already exist";
+                break;
+            } else {
+                if ($wxdb->update("contact", array("userName"=>$_POST["user_name"]), array("id"=>$_POST["id"])) != false) {
+                    $return_dict["code"] = 0;
+                    $return_dict["message"] = "success";
+                } else {
+                    $return_dict["code"] = 2;
+                    $return_dict["message"] = "error";
+                }
             }
             break;
         }

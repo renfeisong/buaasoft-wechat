@@ -112,12 +112,13 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
     </tr>
     </tbody>
 </table>
+<label id="user-table-error" class="error"></label>
 
 
 <h3>展示信息管理</h3>
 
 <textarea id="format" class="form-control" rows="5"><?php echo $format ?></textarea>
-<label id="error-empty" class="error hidden">输入不能为空</label>
+<label id="format-error" class="error"></label>
 <h4>提示</h4>
 <ul class="list-1">
     <li>输出格式中可带有占位符，目前可用的占位符有：</li>
@@ -144,17 +145,30 @@ function setup_x_editable() {
 
     $(".x-editable").editable({
         type: "text",
-        emptytext: "点击添加..."
+        emptytext: "点击添加...",
+    });
+
+    $(".x-editable-user-name").on("shown", function(e, params) {
+        $("#user-table").data("current-user-name", params.value);
+    });
+
+    $(".x-editable-phone-number").on("shown", function(e, params) {
+        $("#user-table").data("current-phone-number", params.value);
+    });
+
+    $(".x-editable-email").on("shown", function(e, params) {
+        $("#user-table").data("current-email", params.value);
     });
 
     $(".x-editable-user-name").on("save", function(e, params) {
+        var $field = $(this);
         $.ajax({
-            url: "../modules/Contact/ajax.php",
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
             type: "POST",
             dataType: "json",
             data: {
                 "action": "edit-user-name",
-                "id": $(this).parents("tr").data("id"),
+                "id": $field.parents("tr").data("id"),
                 "user_name": params.newValue
             }
         }).done(function(data){
@@ -164,7 +178,13 @@ function setup_x_editable() {
                     break;
                 }
                 case 1: {
+                    toastr.error("已存在姓名相同的记录", "Error");
+                    $field.editable("setValue", $("#user-table").data("current-user-name")).removeClass("editable-unsaved");
+                    break;
+                }
+                case 2: {
                     toastr.error("系统错误", "Error");
+                    $field.editable("setValue", $("#user-table").data("current-user-name")).removeClass("editable-unsaved");
                     break;
                 }
                 default: {
@@ -176,7 +196,7 @@ function setup_x_editable() {
 
     $(".x-editable-identity").on("save", function(e, params) {
         $.ajax({
-            url: "../modules/Contact/ajax.php",
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
             type: "POST",
             dataType: "json",
             data: {
@@ -203,7 +223,7 @@ function setup_x_editable() {
 
     $(".x-editable-phone-number").on("save", function(e, params) {
         $.ajax({
-            url: "../modules/Contact/ajax.php",
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
             type: "POST",
             dataType: "json",
             data: {
@@ -230,7 +250,7 @@ function setup_x_editable() {
 
     $(".x-editable-email").on("save", function(e, params) {
         $.ajax({
-            url: "../modules/Contact/ajax.php",
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
             type: "POST",
             dataType: "json",
             data: {
@@ -256,156 +276,193 @@ function setup_x_editable() {
     });
 }
 
-    $(document).ready(function() {
+$(document).ready(function() {
 
-        setup_x_editable();
+    var is_deleting = false;
 
-        var is_deleting = false;
+    setup_x_editable();
 
-        $(document).click(function() {
-            if (is_deleting == false) {
-                $(".delete-account-confirm").addClass("hidden");
-                $(".delete-account").removeClass("hidden");
-            }
-        });
-
-        $("#add-record").click(function() {
-            var $button = $(this);
-            var user_name = $("#add-user-name").val();
-            var identity = $("#add-identity").val();
-            var phone_number = $("#add-phone-number").val();
-            var email = $("#add-email").val();
-            if (user_name == "") {
-                toastr.error("必须填写姓名", "Error");
-                $("#add-user-name").addClass("error");
-                $("#add-user-name").focus();
-                return;
-            }
-            $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在添加");
-            $.ajax({
-                url: "../modules/Contact/ajax.php",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    "action": "add-record",
-                    "user_name": user_name,
-                    "identity": identity,
-                    "phone_number": phone_number,
-                    "email": email
-                }
-            }).done(function(data) {
-                switch (data["code"]) {
-                    case 0: {
-                        $button.html("<i class=\"fa fa-check fa-fw\"></i>  已添加");
-                        $("#add-record-row").before(
-                            "<tr data-id=\"" + data["id"] + "\">" +
-                            "<td><a href=\"#\" class=\"x-editable x-editable-user-name\">" + user_name + "</a></td>" +
-                            "<td><a href=\"#\" class=\"x-editable x-editable-identity\">" + identity + "</a></td>" +
-                            "<td><a href=\"#\" class=\"x-editable x-editable-phone-number\">" + phone_number + "</a></td>" +
-                            "<td><a href=\"#\" class=\"x-editable x-editable-email\">" + email + "</a></td>" +
-                            "<td>" +
-                            "<button class=\"button xs-button red-button delete-record\"><i class=\"fa fa-trash fa-fw\"></i>  删除</button>" +
-                            "<button class=\"button xs-button red-button delete-record-confirm hidden\">请确认</button>" +
-                            "</td>" +
-                            "</tr>"
-                        );
-                        setup_x_editable();
-                        window.setTimeout(function () {
-                            $button.html("<i class=\"fa fa-plusfa-fw\"></i>  添加");
-                        }, 1000);
-                        break;
-                    }
-                    case 1: {
-                        toastr.info("记录已添加，请勿重复提交", "Info");
-                        break;
-                    }
-                    case 2: {
-                        toastr.error("服务器出现未知错误", "Error");
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-            });
-        });
-
-        $(".delete-record").click(function(e) {
-            e.stopPropagation();
-            $(this).addClass("hidden");
-            $(this).siblings(".delete-record-confirm").removeClass("hidden");
-        });
-
-        $(".delete-record-confirm").click(function(e) {
-            e.stopPropagation();
-            is_deleting = true;
-            var $button = $(this);
-            $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在删除");
-            $.ajax({
-                url: "../modules/Contact/ajax.php",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    "action": "delete-record",
-                    "id": $(this).parents("tr").data("id")
-                }
-            }).done(function(data){
-                switch (data["code"]) {
-                    case 0: {
-                        $button.html("<i class=\"fa fa-check fa-fw\"></i>  已删除");
-                        window.setTimeout(function() {
-                            $button.parents("tr").fadeOut();
-                        }, 1000);
-                        break;
-                    }
-                    case 1: {
-                        toastr.info("记录已删除，请勿重复提交", "Info");
-                        break;
-                    }
-                    case 2: {
-                        toastr.error("服务器出现未知错误", "Error");
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-            }).always(function() {
-                is_deleting = false;
-            });
-        });
-
-        $("#submit").click(function() {
-            var format = $("#format").val();
-            if (format == "") {
-                $("#error-empty").removeClass("hidden");
-                $("#format").addClass("error");
-                $("#format").focus();
-                return;
-            } else {
-                $("#error-empty").addClass("hidden");
-                $("#format").removeClass("error");
-            }
-            $("#submit").addClass("hidden");
-            $("#submitting").removeClass("hidden");
-            $.ajax({
-                url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
-                type: "POST",
-                data: {
-                    "action": "edit-format",
-                    "format": format
-                },
-                dataType: "json"
-            }).done(function(data) {
-                $("#submitting").addClass("hidden");
-                $("#success").removeClass("hidden");
-                setTimeout(function() {
-                    $("#submit").removeClass("hidden");
-                    $("#success").addClass("hidden");
-                }, 2000);
-            });
-        });
-
+    $(document).click(function() {
+        if (is_deleting == false) {
+            $(".delete-account-confirm").addClass("hidden");
+            $(".delete-account").removeClass("hidden");
+        }
     });
+
+    $("#add-record").click(function() {
+        var $button = $(this);
+        var user_name = $("#add-user-name").val();
+        var identity = $("#add-identity").val();
+        var phone_number = $("#add-phone-number").val();
+        var email = $("#add-email").val();
+
+        var error = false;
+        var error_message = "";
+        var error_focus = "";
+        $("#add-record-row input").removeClass("error");
+        if (user_name == "") {
+            error = true;
+            error_message = error_message + "姓名不能为空<br/>";
+            $("#add-user-name").addClass("error");
+            error_focus = error_focus == "" ? "user-name" : error_focus;
+        }
+        if(!(/^1[3|4|5|7|8]\d{9}$/.test(phone_number))) {
+            error = true;
+            error_message = error_message + "手机号格式不正确<br/>";
+            $("#user-table-error .error").html("手机号格式不正确");
+            $("#add-phone-number").addClass("error");
+            error_focus = error_focus == "" ? "phone-number" : error_focus;
+        }
+        if(!(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email))) {
+            error = true;
+            error_message = error_message + "邮箱格式不正确<br/>";
+            $("#add-email").addClass("error");
+            error_focus = error_focus == "" ? "email" : error_focus;
+        }
+        if (error) {
+            $("#user-table-error").html(error_message);
+            var error_focus_selector = "#add-" + error_focus;
+            $(error_focus_selector).focus();
+            return;
+        }
+        $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在添加");
+        $.ajax({
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                "action": "add-record",
+                "user_name": user_name,
+                "identity": identity,
+                "phone_number": phone_number,
+                "email": email
+            }
+        }).done(function(data) {
+            switch (data["code"]) {
+                case 0: {
+                    $("#add-record-row").before(
+                        "<tr data-id=\"" + data["id"] + "\">" +
+                        "<td><a href=\"#\" class=\"x-editable x-editable-user-name\">" + user_name + "</a></td>" +
+                        "<td><a href=\"#\" class=\"x-editable x-editable-identity\">" + identity + "</a></td>" +
+                        "<td><a href=\"#\" class=\"x-editable x-editable-phone-number\">" + phone_number + "</a></td>" +
+                        "<td><a href=\"#\" class=\"x-editable x-editable-email\">" + email + "</a></td>" +
+                        "<td>" +
+                        "<button class=\"button xs-button red-button delete-record\"><i class=\"fa fa-trash fa-fw\"></i>  删除</button>" +
+                        "<button class=\"button xs-button red-button delete-record-confirm hidden\">请确认</button>" +
+                        "</td>" +
+                        "</tr>"
+                    );
+                    setup_x_editable();
+                    $button.html("<i class=\"fa fa-check fa-fw\"></i>  已添加");
+                    $("#add-record-row input").val("");
+                    window.setTimeout(function () {
+                        $button.html("<i class=\"fa fa-plus fa-fw\"></i>  添加");
+                    }, 1000);
+                    break;
+                }
+                case 1: {
+                    toastr.error("已存在姓名相同的记录", "Error");
+                    $button.html("<i class=\"fa fa-plus fa-fw\"></i>  添加");
+                    break;
+                }
+                case 2: {
+                    toastr.info("记录已添加，请勿重复提交", "Info");
+                    $button.html("<i class=\"fa fa-plus fa-fw\"></i>  添加");
+                    break;
+                }
+                case 3: {
+                    toastr.error("服务器出现未知错误", "Error");
+                    $button.html("<i class=\"fa fa-plus fa-fw\"></i>  添加");
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        });
+    });
+
+    $("#user-table").on("click", ".delete-record", function(e) {
+        e.stopPropagation();
+        $(this).addClass("hidden");
+        $(this).siblings(".delete-record-confirm").removeClass("hidden");
+    });
+
+    $("#user-table").on("click", ".delete-record-confirm", function(e) {
+        e.stopPropagation();
+        is_deleting = true;
+        var $button = $(this);
+        $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在删除");
+        $.ajax({
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
+            type: "POST",
+            dataType: "json",
+            data: {
+                "action": "delete-record",
+                "id": $(this).parents("tr").data("id")
+            }
+        }).done(function(data){
+            switch (data["code"]) {
+                case 0: {
+                    $button.html("<i class=\"fa fa-check fa-fw\"></i>  已删除");
+                    window.setTimeout(function() {
+                        $button.parents("tr").fadeOut();
+                    }, 1000);
+                    break;
+                }
+                case 1: {
+                    toastr.info("记录已删除，请勿重复提交", "Info");
+                    $button.addClass("hidden");
+                    $button.siblings(".delete-record").removeClass("hidden");
+                    break;
+                }
+                case 2: {
+                    toastr.error("服务器出现未知错误", "Error");
+                    $button.addClass("hidden");
+                    $button.siblings(".delete-record").removeClass("hidden");
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }).always(function() {
+            is_deleting = false;
+        });
+    });
+
+    $("#submit").click(function() {
+        var format = $("#format").val();
+        $("#format-error").html();
+        if (format == "") {
+            $("#format-error").html("输入不能为空");
+            $("#format").addClass("error");
+            $("#format").focus();
+            return;
+        } else {
+            $("#format-error .error").addClass("hidden");
+            $("#format").removeClass("error");
+        }
+        $("#submit").addClass("hidden");
+        $("#submitting").removeClass("hidden");
+        $.ajax({
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
+            type: "POST",
+            data: {
+                "action": "edit-format",
+                "format": format
+            },
+            dataType: "json"
+        }).done(function(data) {
+            $("#submitting").addClass("hidden");
+            $("#success").removeClass("hidden");
+            setTimeout(function() {
+                $("#submit").removeClass("hidden");
+                $("#success").addClass("hidden");
+            }, 2000);
+        });
+    });
+
+});
 
 </script>

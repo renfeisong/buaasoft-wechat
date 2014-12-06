@@ -33,7 +33,7 @@ class Contact extends BaseModule {
         if (!$wxdb->schema_exists($this->table_name)) {
             $sql = <<<SQL
 CREATE TABLE `{$this->table_name}` (
-`id` int(11) NOT NULL,
+  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   `userName` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `identity` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `phoneNumber` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,

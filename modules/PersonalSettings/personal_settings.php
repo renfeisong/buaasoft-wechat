@@ -57,11 +57,11 @@ if (isset($_GET["openid"])) {
 
         $("#submit").click(function () {
             var check = true;
-            if(!(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test($("#email").val()))){
+            if(!(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test($("#email").val()))) {
                 $("#email-warning").html("<i class=\"fa fa-warning fa-fw\"></i>邮箱格式不准确");
                 check = false;
             }
-            if(!(/^1[3|4|5|7|8]\d{9}$/.test($("#phone-number").val()))){
+            if(!(/^1[3|4|5|7|8]\d{9}$/.test($("#phone-number").val()))) {
                 $("#phone-number-warning").html("<i class=\"fa fa-warning fa-fw\"></i>手机号格式不准确");
                 check = false;
             }
