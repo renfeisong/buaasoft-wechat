@@ -7,16 +7,13 @@
  * @since 2.0.0
  */
 
-
 require_once dirname(__FILE__) . '/admin.php';
 global $wxdb; /* @var $wxdb wxdb */
 
 if (isset($_POST["action"])) {
+    $return_dict = array();
     switch ($_POST["action"]) {
         case "edit-permission": {
-            $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", $_POST['username']);
-            $original_permissions = $wxdb->get_var($sql);
-            $return_dict = array();
             global $global_options;
             $modules = get_modules();
             $reverted_tags = array();
@@ -32,10 +29,41 @@ if (isset($_POST["action"])) {
                     $reverted_tags[$display_name] = $module["name"];
                 }
             }
+            global $public_pages;
+            foreach ($public_pages as $public_page) {
+                unset($reverted_tags[array_search($public_page, $reverted_tags)]);
+            }
             $permission_list = array();
             foreach ($_POST["permission"] as $permission) {
                 array_push($permission_list, $reverted_tags[$permission]);
             }
+
+            $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", current_user_name());
+            $operator_permissions = json_decode($wxdb->get_var($sql));
+            $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", $_POST['username']);
+            $original_permissions = json_decode($wxdb->get_var($sql));
+            $error = false;
+            foreach ($_POST["permission"] as $permission) {
+                if (in_array($reverted_tags[$permission], $original_permissions, true) == false
+                    && in_array($reverted_tags[$permission], $operator_permissions, true) == false) {
+                    $return_dict["code"] = 1;
+                    $return_dict["message"] = "beyond authority";
+                    $error = true;
+                    break;
+                }
+            }
+            foreach (array_diff($original_permissions, $operator_permissions) as $permission) {
+                if (in_array($permission, $permission_list, true) == false) {
+                    $return_dict["code"] = 2;
+                    $return_dict["message"] = "delete original";
+                    $error = true;
+                    break;
+                }
+            }
+            if ($error) {
+                break;
+            }
+
             $result = $wxdb->update("admin_user", array("authorizedPages"=>json_encode($permission_list)), array("userName"=>$_POST["username"]));
             if (false !== $result) {
                 $return_dict["code"] = 0;
@@ -43,15 +71,14 @@ if (isset($_POST["action"])) {
                 $wxdb->insert('security_log', array(
                     'userName' => current_user_name(),
                     'opName' => 'User.setPrivileges',
-                    'opDetail' => 'Success: Privileges for user [' . $_POST["username"] . '] set from ' . $original_permissions . ' to ' . json_encode($permission_list),
+                    'opDetail' => 'Success: Privileges for user [' . $_POST["username"] . '] set from ' . json_encode($original_permissions) . ' to ' . json_encode($permission_list),
                     'ip' => $_SERVER['REMOTE_ADDR'],
                     'agent' => $_SERVER['HTTP_USER_AGENT']
                 ));
             } else {
-                $return_dict["code"] = 1;
+                $return_dict["code"] = 3;
                 $return_dict["message"] = "error";
             }
-            echo json_encode($return_dict);
             break;
         }
         case "edit-note": {
@@ -70,11 +97,9 @@ if (isset($_POST["action"])) {
                 $return_dict["code"] = 1;
                 $return_dict["message"] = "error";
             }
-            echo json_encode($return_dict);
             break;
         }
         case "enable": {
-            $return_dict = array();
             $result = $wxdb->update("admin_user", array("isEnabled"=>"1"), array("userName"=>$_POST["username"]));
             if (false !== $result) {
                 if ($result != 0) {
@@ -95,11 +120,9 @@ if (isset($_POST["action"])) {
                 $return_dict["code"] = 2;
                 $return_dict["message"] = "error";
             }
-            echo json_encode($return_dict);
             break;
         }
         case "disable": {
-            $return_dict = array();
             $result = $wxdb->update("admin_user", array("isEnabled"=>"0"), array("userName"=>$_POST["username"]));
             if (false !== $result) {
                 if ($result != 0) {
@@ -120,11 +143,9 @@ if (isset($_POST["action"])) {
                 $return_dict["code"] = 2;
                 $return_dict["message"] = "error";
             }
-            echo json_encode($return_dict);
             break;
         }
         case "delete": {
-            $return_dict = array();
             $result = $wxdb->delete("admin_user", array("userName"=>$_POST["username"]));
             if (false !== $result) {
                 if ($result != 0) {
@@ -145,13 +166,13 @@ if (isset($_POST["action"])) {
                 $return_dict["code"] = 2;
                 $return_dict["message"] = "error";
             }
-            echo json_encode($return_dict);
             break;
         }
         default: {
-        break;
+            break;
         }
     }
+    echo json_encode($return_dict);
 }
 
 ?>

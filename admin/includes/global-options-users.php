@@ -11,7 +11,6 @@ global $wxdb; /* @var $wxdb wxdb */
 $results = $wxdb->get_results("SELECT * FROM admin_user", ARRAY_A);
 
 global $global_options;
-echo json_encode($global_options);
 $all_modules = get_modules();
 
 $all_tags = $global_options;
@@ -24,20 +23,17 @@ foreach ($all_modules as $module) {
         $all_tags[$module["name"]] = $display_name;
     }
 }
+global $public_pages;
+foreach ($public_pages as $public_page) {
+    unset($all_tags[$public_page]);
+}
 
 $authorized_module_results = $wxdb->get_var("SELECT authorizedPages FROM admin_user WHERE userName = '" . current_user_name() . "'");
 $authorized_modules = json_decode($authorized_module_results);
 $authorized_tags = array();
 foreach ($authorized_modules as $module) {
-    if (has_settings_page($module)) {
-        $display_name= _get_value("global", "display_name_" . $module);
-        if ($display_name == null) {
-            $display_name = $module;
-        }
-        $authorized_tags[$module] = $display_name;
-    }
+    $authorized_tags[$module] = $all_tags[$module];
 }
-echo json_encode($authorized_tags);
 
 ?>
 
@@ -170,13 +166,18 @@ echo json_encode($authorized_tags);
         $(".x-editable").editable({
             type: "select2",
             select2: {
-                tags: <?=json_encode(array_values($all_tags))?>,
+                tags: <?=is_super_admin() ? json_encode(array_values($all_tags)) : json_encode(array_values($authorized_tags))?>,
                 createSearchChoice: null
             },
             emptytext: "点击添加..."
         });
 
+        $(".x-editable").on("shown", function(e, params) {
+            $("#user-table").data("current-permission-value", params.value);
+        });
+
         $(".x-editable").on("save", function(e, params) {
+            var $field = $(this);
             $.ajax({
                 url: "includes/global-options-users-ajax.php",
                 type: "POST",
@@ -193,10 +194,23 @@ echo json_encode($authorized_tags);
                         break;
                     }
                     case 1: {
+                        toastr.error("无法添加当前用户没有的权限", "Error");
+                        $field.editable("setValue", $("#user-table").data("current-permission-value")).removeClass("editable-unsaved");
+                        break;
+                    }
+                    case 2: {
+                        toastr.error("无法删除当前用户没有的权限", "Error");
+                        $field.editable("setValue", $("#user-table").data("current-permission-value")).removeClass("editable-unsaved");
+                        break;
+                    }
+                    case 3: {
                         toastr.error("系统错误", "Error");
+                        $field.editable("setValue", $("#user-table").data("current-permission-value")).removeClass("editable-unsaved");
                         break;
                     }
                     default: {
+                        toastr.error("系统错误", "Error");
+                        $field.editable("setValue", $("#user-table").data("current-permission-value")).removeClass("editable-unsaved");
                         break;
                     }
                 }
@@ -229,6 +243,7 @@ echo json_encode($authorized_tags);
                         break;
                     }
                     default: {
+                        toastr.error("系统错误", "Error");
                         break;
                     }
                 }
@@ -267,6 +282,7 @@ echo json_encode($authorized_tags);
                         break;
                     }
                     default: {
+                        toastr.error("出现未知错误", "Error");
                         break;
                     }
                 }
@@ -305,6 +321,7 @@ echo json_encode($authorized_tags);
                         break;
                     }
                     default: {
+                        toastr.error("出现未知错误", "Error");
                         break;
                     }
                 }
@@ -348,6 +365,7 @@ echo json_encode($authorized_tags);
                         break;
                     }
                     default: {
+                        toastr.error("出现未知错误", "Error");
                         break;
                     }
                 }

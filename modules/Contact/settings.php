@@ -188,6 +188,8 @@ function setup_x_editable() {
                     break;
                 }
                 default: {
+                    toastr.error("系统错误", "Error");
+                    $field.editable("setValue", $("#user-table").data("current-user-name")).removeClass("editable-unsaved");
                     break;
                 }
             }
@@ -215,6 +217,7 @@ function setup_x_editable() {
                     break;
                 }
                 default: {
+                    toastr.error("系统错误", "Error");
                     break;
                 }
             }
@@ -242,6 +245,7 @@ function setup_x_editable() {
                     break;
                 }
                 default: {
+                    toastr.error("系统错误", "Error");
                     break;
                 }
             }
@@ -269,6 +273,7 @@ function setup_x_editable() {
                     break;
                 }
                 default: {
+                    toastr.error("系统错误", "Error");
                     break;
                 }
             }
@@ -376,6 +381,8 @@ $(document).ready(function() {
                     break;
                 }
                 default: {
+                    toastr.error("出现未知错误", "Error");
+                    $button.html("<i class=\"fa fa-plus fa-fw\"></i>  添加");
                     break;
                 }
             }
@@ -423,6 +430,9 @@ $(document).ready(function() {
                     break;
                 }
                 default: {
+                    toastr.error("出现未知错误", "Error");
+                    $button.addClass("hidden");
+                    $button.siblings(".delete-record").removeClass("hidden");
                     break;
                 }
             }
