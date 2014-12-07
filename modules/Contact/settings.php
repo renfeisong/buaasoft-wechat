@@ -66,24 +66,24 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
     </thead>
     <tbody>
     <?php foreach($results as $row):?>
-        <tr data-id="<?php echo $row["id"] ?>">
+        <tr data-id="<?php echo $row["id"] ?>" data-pk="<?php echo $row["id"] ?>">
             <td>
-                <a href="#" class="x-editable x-editable-user-name">
+                <a href="#" class="x-editable x-editable-user-name" data-url="<?php echo ROOT_URL ?>modules/Contact/ajax.php?action=edit-user-name" data-name="user_name" data-pk="<?php echo $row["id"] ?>">
                     <?php echo $row["userName"] ?>
                 </a>
             </td>
             <td>
-                <a href="#" class="x-editable x-editable-identity">
+                <a href="#" class="x-editable x-editable-identity" data-url="<?php echo ROOT_URL ?>modules/Contact/ajax.php?action=edit-identity" data-name="identity" data-pk="<?php echo $row["id"] ?>">
                     <?php echo $row['identity'] ?>
                 </a>
             </td>
             <td>
-                <a href="#" class="x-editable x-editable-phone-number">
+                <a href="#" class="x-editable x-editable-phone-number" data-url="<?php echo ROOT_URL ?>modules/Contact/ajax.php?action=edit-phone-number" data-name="phone_number" data-pk="<?php echo $row["id"] ?>">
                     <?php echo $row['phoneNumber'] ?>
                 </a>
             </td>
             <td>
-                <a href="#" class="x-editable x-editable-email">
+                <a href="#" class="x-editable x-editable-email" data-url="<?php echo ROOT_URL ?>modules/Contact/ajax.php?action=edit-email" data-name="email" data-pk="<?php echo $row["id"] ?>">
                     <?php echo $row['email'] ?>
                 </a>
             </td>
@@ -141,151 +141,14 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
 
 <script>
 
-function setup_x_editable() {
+$(document).ready(function() {
+
+    var is_deleting = false;
 
     $(".x-editable").editable({
         type: "text",
         emptytext: "点击添加...",
     });
-
-    $(".x-editable-user-name").on("shown", function(e, params) {
-        $("#user-table").data("current-user-name", params.value);
-    });
-
-    $(".x-editable-phone-number").on("shown", function(e, params) {
-        $("#user-table").data("current-phone-number", params.value);
-    });
-
-    $(".x-editable-email").on("shown", function(e, params) {
-        $("#user-table").data("current-email", params.value);
-    });
-
-    $(".x-editable-user-name").on("save", function(e, params) {
-        var $field = $(this);
-        $.ajax({
-            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-                "action": "edit-user-name",
-                "id": $field.parents("tr").data("id"),
-                "user_name": params.newValue
-            }
-        }).done(function(data){
-            switch (data["code"]) {
-                case 0: {
-                    toastr.success("修改成功", "Success");
-                    break;
-                }
-                case 1: {
-                    toastr.error("已存在姓名相同的记录", "Error");
-                    $field.editable("setValue", $("#user-table").data("current-user-name")).removeClass("editable-unsaved");
-                    break;
-                }
-                case 2: {
-                    toastr.error("系统错误", "Error");
-                    $field.editable("setValue", $("#user-table").data("current-user-name")).removeClass("editable-unsaved");
-                    break;
-                }
-                default: {
-                    toastr.error("系统错误", "Error");
-                    $field.editable("setValue", $("#user-table").data("current-user-name")).removeClass("editable-unsaved");
-                    break;
-                }
-            }
-        });
-    });
-
-    $(".x-editable-identity").on("save", function(e, params) {
-        $.ajax({
-            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-                "action": "edit-identity",
-                "id": $(this).parents("tr").data("id"),
-                "identity": params.newValue
-            }
-        }).done(function(data){
-            switch (data["code"]) {
-                case 0: {
-                    toastr.success("修改成功", "Success");
-                    break;
-                }
-                case 1: {
-                    toastr.error("系统错误", "Error");
-                    break;
-                }
-                default: {
-                    toastr.error("系统错误", "Error");
-                    break;
-                }
-            }
-        });
-    });
-
-    $(".x-editable-phone-number").on("save", function(e, params) {
-        $.ajax({
-            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-                "action": "edit-phone-number",
-                "id": $(this).parents("tr").data("id"),
-                "phone_number": params.newValue
-            }
-        }).done(function(data){
-            switch (data["code"]) {
-                case 0: {
-                    toastr.success("修改成功", "Success");
-                    break;
-                }
-                case 1: {
-                    toastr.error("系统错误", "Error");
-                    break;
-                }
-                default: {
-                    toastr.error("系统错误", "Error");
-                    break;
-                }
-            }
-        });
-    });
-
-    $(".x-editable-email").on("save", function(e, params) {
-        $.ajax({
-            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
-            type: "POST",
-            dataType: "json",
-            data: {
-                "action": "edit-email",
-                "id": $(this).parents("tr").data("id"),
-                "email": params.newValue
-            }
-        }).done(function(data){
-            switch (data["code"]) {
-                case 0: {
-                    toastr.success("修改成功", "Success");
-                    break;
-                }
-                case 1: {
-                    toastr.error("系统错误", "Error");
-                    break;
-                }
-                default: {
-                    toastr.error("系统错误", "Error");
-                    break;
-                }
-            }
-        });
-    });
-}
-
-$(document).ready(function() {
-
-    var is_deleting = false;
-
-    setup_x_editable();
 
     $(document).click(function() {
         if (is_deleting == false) {
@@ -311,14 +174,14 @@ $(document).ready(function() {
             $("#add-user-name").addClass("error");
             error_focus = error_focus == "" ? "user-name" : error_focus;
         }
-        if(!(/^1[3|4|5|7|8]\d{9}$/.test(phone_number))) {
+        if(phone_number != "" && !(/^1[3|4|5|7|8]\d{9}$/.test(phone_number))) {
             error = true;
             error_message = error_message + "手机号格式不正确<br/>";
             $("#user-table-error .error").html("手机号格式不正确");
             $("#add-phone-number").addClass("error");
             error_focus = error_focus == "" ? "phone-number" : error_focus;
         }
-        if(!(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email))) {
+        if(email != "" && !(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email))) {
             error = true;
             error_message = error_message + "邮箱格式不正确<br/>";
             $("#add-email").addClass("error");
@@ -332,7 +195,7 @@ $(document).ready(function() {
         }
         $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在添加");
         $.ajax({
-            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php?action=add-record",
             type: "POST",
             dataType: "json",
             data: {
@@ -357,7 +220,10 @@ $(document).ready(function() {
                         "</td>" +
                         "</tr>"
                     );
-                    setup_x_editable();
+                    $(".x-editable").editable({
+                        type: "text",
+                        emptytext: "点击添加...",
+                    });
                     $button.html("<i class=\"fa fa-check fa-fw\"></i>  已添加");
                     $("#add-record-row input").val("");
                     window.setTimeout(function () {
@@ -401,7 +267,7 @@ $(document).ready(function() {
         var $button = $(this);
         $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在删除");
         $.ajax({
-            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php?action=delete-record",
             type: "POST",
             dataType: "json",
             data: {
@@ -456,7 +322,7 @@ $(document).ready(function() {
         $("#submit").addClass("hidden");
         $("#submitting").removeClass("hidden");
         $.ajax({
-            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php",
+            url: "<?php echo ROOT_URL ?>modules/Contact/ajax.php?action=edit-format",
             type: "POST",
             data: {
                 "action": "edit-format",
