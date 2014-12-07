@@ -213,13 +213,17 @@ function include_settings($page_or_module_name) {
         require_once ABSPATH . 'modules/' . $page_or_module_name . '/settings.php';
 }
 
+function include_welcome_page() {
+    require_once ABSPATH . 'admin/includes/welcome.php';
+}
+
 function list_global_setting_items() {
     global $global_options;
     global $global_option_icons;
     foreach ($global_options as $slug_name => $display_name) {
         if (current_user_can_manage($slug_name)) {
             $icon_name = $global_option_icons[$slug_name];
-            $class = $_GET['page'] == $slug_name ? 'current' : '';
+            $class = @$_GET['page'] == $slug_name ? 'current' : '';
             $template = '<li class="module-navigation-item %s"><a href="%s"><i class="fa fa-lg fa-fw fa-%s"></i>&nbsp; %s</a></li>';
             echo sprintf($template, $class, ROOT_URL . 'admin/index.php?page=' . $slug_name, $icon_name, $display_name);
         }
@@ -231,7 +235,7 @@ function list_module_setting_items() {
     foreach ($modules as $module) {
         if (has_settings_page($module) && current_user_can_manage(get_class($module))) {
             /* @var $module BaseModule */
-            $class = $_GET['page'] == get_class($module) ? 'current' : '';
+            $class = @$_GET['page'] == get_class($module) ? 'current' : '';
             $template = '<li class="module-navigation-item %s"><a href="%s">%s</a></li>';
             echo sprintf($template, $class, ROOT_URL . 'admin/index.php?page=' . get_class($module), $module->display_name());
         }

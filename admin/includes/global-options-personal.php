@@ -1,10 +1,15 @@
 <?php
 if (isset($_POST['submit'])) {
-    $username = current_user_name();
+    $user = current_user();
+    $username = $user['userName'];
+    $originalPassword = $user['hashedPassword'];
+    $password0 = $_POST['password0'];
     $password1 = $_POST['password1'];
     $password2 = $_POST['password2'];
 
-    if (empty($password1) || empty($password2)) {
+    if (sha1($password0) != $originalPassword) {
+        redirect_failure('原密码输入错误。');
+    } else if (empty($password1) || empty($password2)) {
         redirect_failure('密码不能为空，请重试。');
     } else if ($password1 != $password2) {
         redirect_failure('两次输入的密码不相同，请重试。');
@@ -36,6 +41,14 @@ if (isset($_POST['submit'])) {
 <h2>安全选项</h2>
 <h3>修改密码</h3>
 <form method="post" id="change-password-form" style="max-width: 450px">
+    <div class="form-group">
+        <div class="prompt">
+            <label for="password0">原密码</label>
+        </div>
+        <div class="control">
+            <input class="form-control" type="password" name="password0" id="password0" required>
+        </div>
+    </div>
     <div class="form-group">
         <div class="prompt">
             <label for="password1">新密码</label>

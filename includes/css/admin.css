@@ -24,6 +24,10 @@ a:hover {
     text-decoration: underline;
 }
 
+p {
+    margin-bottom: 1em;
+}
+
 pre {
     font-size: 14px;
     margin: 12px 0;
@@ -44,12 +48,21 @@ pre {
 }
 
 .site-title {
-    color: #fff;
     line-height: 46px;
     font-size: 18px;
     padding: 0 15px;
-    font-weight: 300;
     display: inline-block;
+}
+
+.site-title-link {
+    color: #fff;
+    font-weight: 400;
+    transition: color .4s ease;
+    text-decoration: none !important;
+}
+
+.site-title-link:hover {
+    color: #aaa;
 }
 
 .log-out {

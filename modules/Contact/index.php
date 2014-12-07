@@ -3,6 +3,7 @@
  * Contact query module.
  *
  * @author Bingchen Qin
+ * @author Renfei Song
  * @since 2.0.0
  */
 
@@ -27,7 +28,7 @@ class Contact extends BaseModule {
     private $mode = -1;
     private $source = SearchSource::NOT_SET;
     private $name;
-    private $phone_numeber;
+    private $phone_number;
     private $email;
 
     public function prepare() {
@@ -79,7 +80,7 @@ SQL;
             $match = array();
             if (preg_match("/^1[3|4|5|7|8]\\d{9}$/", $input->content, $match) == 1) {
                 $this->mode = SearchMode::PHONE_NUMBER_TO_NAME;
-                $this->phone_numeber = $match[0];
+                $this->phone_number = $match[0];
                 return true;
             }
 
@@ -110,7 +111,7 @@ SQL;
                                 $return_text = str_replace("[identity]", $this->name, $return_text);
                             } else {
                                 if (!empty($result["identity"])) {
-                                    $return_text = str_replace("[identity]", $result["identity"] . $this->name, $return_text);
+                                    $return_text = str_replace("[identity]", $this->name . ' (' . $result["identity"] . ')', $return_text);
                                 } else {
                                     $return_text = str_replace("[identity]", $this->name, $return_text);
                                 }
@@ -139,7 +140,7 @@ SQL;
                                 $return_text = str_replace("[identity]", $this->name, $return_text);
                             } else {
                                 if (!empty($result["userId"])) {
-                                    $return_text = str_replace("[identity]", $result["userId"] . $this->name, $return_text);
+                                    $return_text = str_replace("[identity]", $this->name . ' (' . $result["userId"] . ')', $return_text);
                                 } else {
                                     $return_text = str_replace("[identity]", $this->name, $return_text);
                                 }
@@ -162,22 +163,22 @@ SQL;
                 break;
             }
             case SearchMode::PHONE_NUMBER_TO_NAME: {
-                $sql = $wxdb->prepare("SELECT userName FROM contact WHERE phoneNumber = '%s'", $this->phone_numeber);
+                $sql = $wxdb->prepare("SELECT userName FROM contact WHERE phoneNumber = '%s'", $this->phone_number);
                 $results = $wxdb->get_results($sql, ARRAY_A);
                 if (!empty($results)) {
                     foreach ($results as $result) {
-                        $return_text = $return_text . $this->phone_numeber . "是" . $result["userName" ]. "的电话号码。\n";
+                        $return_text = $return_text . $this->phone_number . "是" . $result["userName" ]. "的电话号码。\n";
                     }
                 }
-                $sql = $wxdb->prepare("SELECT userName FROM user WHERE phoneNumber = '%s'", $this->phone_numeber);
+                $sql = $wxdb->prepare("SELECT userName FROM user WHERE phoneNumber = '%s'", $this->phone_number);
                 $results = $wxdb->get_results($sql, ARRAY_A);
                 if (!empty($results)) {
                     foreach ($results as $result) {
-                        $return_text = $return_text . $this->phone_numeber . "是" . $result["userName" ]. "的电话号码。\n";
+                        $return_text = $return_text . $this->phone_number . "是" . $result["userName" ]. "的电话号码。\n";
                     }
                 }
                 if ($return_text == "") {
-                    $return_text = "没有查询到相关信息";
+                    $return_text = "没有查询到电话为 {$this->phone_number} 的用户";
                 }
                 break;
             }
@@ -197,7 +198,7 @@ SQL;
                     }
                 }
                 if ($return_text == "") {
-                    $return_text = "没有查询到相关信息";
+                    $return_text = "没有查询到邮箱为 {$this->email} 的用户";
                 }
                 break;
             }
