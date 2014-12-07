@@ -99,7 +99,7 @@ SQL;
         switch ($this->mode) {
             case SearchMode::NAME_TO_INFO: {
                 $output_format = get_value($this, "output_format");
-                $results = array();
+                //$results = array();
                 if ($this->source == SearchSource::CONTACT || $this->source == SearchSource::BOTH) {
                     $sql = $wxdb->prepare("SELECT identity, phoneNumber, email FROM contact WHERE userName = '%s'", $this->name);
                     $results = $wxdb->get_results($sql, ARRAY_A);
@@ -114,6 +114,16 @@ SQL;
                                 } else {
                                     $return_text = str_replace("[identity]", $this->name, $return_text);
                                 }
+                            }
+                            if (!empty($result["phoneNumber"])) {
+                                $return_text = str_replace("[phone_number]", $result["phoneNumber"], $return_text);
+                            } else {
+                                $return_text = str_replace("[phone_number]", "[未填写]", $return_text);
+                            }
+                            if (!empty($result["email"])) {
+                                $return_text = str_replace("[email]", $result["email"], $return_text);
+                            } else {
+                                $return_text = str_replace("[email]", "[未填写]", $return_text);
                             }
                             $return_text = $return_text . "\n";
                         }
@@ -135,21 +145,20 @@ SQL;
                                 }
 
                             }
+                            if (!empty($result["phoneNumber"])) {
+                                $return_text = str_replace("[phone_number]", $result["phoneNumber"], $return_text);
+                            } else {
+                                $return_text = str_replace("[phone_number]", "[未填写]", $return_text);
+                            }
+                            if (!empty($result["email"])) {
+                                $return_text = str_replace("[email]", $result["email"], $return_text);
+                            } else {
+                                $return_text = str_replace("[email]", "[未填写]", $return_text);
+                            }
                             $return_text = $return_text . "\n";
                         }
                     }
                 }
-                if (!empty($result["phoneNumber"])) {
-                    $return_text = str_replace("[phone_number]", $result["phoneNumber"], $return_text);
-                } else {
-                    $return_text = str_replace("[phone_number]", "[未填写]", $return_text);
-                }
-                if (!empty($result["email"])) {
-                    $return_text = str_replace("[email]", $result["email"], $return_text);
-                } else {
-                    $return_text = str_replace("[email]", "[未填写]", $return_text);
-                }
-                $return_text = $return_text . "\n";
                 break;
             }
             case SearchMode::PHONE_NUMBER_TO_NAME: {
