@@ -10,9 +10,9 @@
 require_once dirname(__FILE__) . '/admin.php';
 global $wxdb; /* @var $wxdb wxdb */
 
-if (isset($_POST["action"])) {
+if (isset($_GET["action"])) {
     $return_dict = array();
-    switch ($_POST["action"]) {
+    switch ($_GET["action"]) {
         case "edit-permission": {
             global $global_options;
             $modules = get_modules();
@@ -34,7 +34,7 @@ if (isset($_POST["action"])) {
                 unset($reverted_tags[array_search($public_page, $reverted_tags)]);
             }
             $permission_list = array();
-            foreach ($_POST["permission"] as $permission) {
+            foreach ($_POST["value"] as $permission) {
                 array_push($permission_list, $reverted_tags[$permission]);
             }
 
@@ -44,28 +44,22 @@ if (isset($_POST["action"])) {
                 $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", current_user_name());
                 $operator_permissions = json_decode($wxdb->get_var($sql));
             }
-            $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", $_POST['username']);
+            $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", $_POST['pk']);
             $original_permissions = json_decode($wxdb->get_var($sql));
-            $error = false;
-            foreach ($_POST["permission"] as $permission) {
+            foreach ($_POST["value"] as $permission) {
                 if (in_array($reverted_tags[$permission], $original_permissions, true) == false
                     && in_array($reverted_tags[$permission], $operator_permissions, true) == false) {
-                    $return_dict["code"] = 1;
-                    $return_dict["message"] = "beyond authority";
-                    $error = true;
-                    break;
+                    header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
+                    echo " 无法添加当前用户没有的权限";
+                    exit;
                 }
             }
             foreach (array_diff($original_permissions, $operator_permissions) as $permission) {
                 if (in_array($permission, $permission_list, true) == false) {
-                    $return_dict["code"] = 2;
-                    $return_dict["message"] = "delete original";
-                    $error = true;
-                    break;
+                    header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
+                    echo " 无法删除当前用户没有的权限";
+                    exit;
                 }
-            }
-            if ($error) {
-                break;
             }
 
             $result = $wxdb->update("admin_user", array("authorizedPages"=>json_encode($permission_list)), array("userName"=>$_POST["username"]));

@@ -96,7 +96,9 @@ foreach ($authorized_modules as $module) {
         <td><a href="#" class="x-editable-note"><?php echo $row['note'] ?></a></td>
         <?php if ($row["isSuperAdmin"] == 0): ?>
             <td>
-                <?php if (current_user_name() != $row["userName"]): ?><a href="#" class="x-editable"><?php endif; ?>
+                <?php if (current_user_name() != $row["userName"]): ?>
+                <a href="#" class="x-editable" data-url="<?php echo ROOT_URL ?>admin/includes/global-options-users-ajax.php?action=edit-permission" data-name="permission" data-pk="<?php echo $row["userName"] ?>">
+                    <?php endif; ?>
                     <?php
                     $authorized_pages = json_decode($row["authorizedPages"]);
                     $i = 0;
@@ -172,51 +174,6 @@ foreach ($authorized_modules as $module) {
             emptytext: "点击添加..."
         });
 
-        $(".x-editable").on("shown", function(e, params) {
-            $("#user-table").data("current-permission-value", params.value);
-        });
-
-        $(".x-editable").on("save", function(e, params) {
-            var $field = $(this);
-            $.ajax({
-                url: "includes/global-options-users-ajax.php",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    "action": "edit-permission",
-                    "username": $(this).parents("tr").data("username"),
-                    "permission": params.newValue
-                }
-            }).done(function(data){
-                switch (data["code"]) {
-                    case 0: {
-                        toastr.success("修改权限成功", "Success");
-                        break;
-                    }
-                    case 1: {
-                        toastr.error("无法添加当前用户没有的权限", "Error");
-                        $field.editable("setValue", $("#user-table").data("current-permission-value")).removeClass("editable-unsaved");
-                        break;
-                    }
-                    case 2: {
-                        toastr.error("无法删除当前用户没有的权限", "Error");
-                        $field.editable("setValue", $("#user-table").data("current-permission-value")).removeClass("editable-unsaved");
-                        break;
-                    }
-                    case 3: {
-                        toastr.error("系统错误", "Error");
-                        $field.editable("setValue", $("#user-table").data("current-permission-value")).removeClass("editable-unsaved");
-                        break;
-                    }
-                    default: {
-                        toastr.error("系统错误", "Error");
-                        $field.editable("setValue", $("#user-table").data("current-permission-value")).removeClass("editable-unsaved");
-                        break;
-                    }
-                }
-            });
-        });
-
         $(".x-editable-note").editable({
             type: "text",
             emptytext: "点击编辑..."
@@ -224,7 +181,7 @@ foreach ($authorized_modules as $module) {
 
         $(".x-editable-note").on("save", function(e, params) {
             $.ajax({
-                url: "includes/global-options-users-ajax.php",
+                url: "includes/global-options-users-ajax.php?action=edit-note",
                 type: "POST",
                 dataType: "json",
                 data: {
@@ -254,7 +211,7 @@ foreach ($authorized_modules as $module) {
             var $button = $(this);
             $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在启用");
             $.ajax({
-                url: "includes/global-options-users-ajax.php",
+                url: "includes/global-options-users-ajax.php?action=enable",
                 type: "POST",
                 dataType: "json",
                 data: {
@@ -293,7 +250,7 @@ foreach ($authorized_modules as $module) {
             var $button = $(this);
             $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在禁用");
             $.ajax({
-                url: "includes/global-options-users-ajax.php",
+                url: "includes/global-options-users-ajax.php?action=disable",
                 type: "POST",
                 dataType: "json",
                 data: {
@@ -340,7 +297,7 @@ foreach ($authorized_modules as $module) {
             var $button = $(this);
             $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在删除");
             $.ajax({
-                url: "includes/global-options-users-ajax.php",
+                url: "includes/global-options-users-ajax.php?action=delete",
                 type: "POST",
                 dataType: "json",
                 data: {
