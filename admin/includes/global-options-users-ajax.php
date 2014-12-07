@@ -50,14 +50,14 @@ if (isset($_GET["action"])) {
                 if (in_array($reverted_tags[$permission], $original_permissions, true) == false
                     && in_array($reverted_tags[$permission], $operator_permissions, true) == false) {
                     header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
-                    echo " 无法添加当前用户没有的权限";
+                    echo " 您无法为其他用户添加您没有的权限。";
                     exit;
                 }
             }
             foreach (array_diff($original_permissions, $operator_permissions) as $permission) {
                 if (in_array($permission, $permission_list, true) == false) {
                     header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
-                    echo " 无法删除当前用户没有的权限";
+                    echo " 您无法删除不在您可管理范围之内的模块。";
                     exit;
                 }
             }
