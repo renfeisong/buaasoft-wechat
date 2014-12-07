@@ -62,14 +62,14 @@ if (isset($_GET["action"])) {
                 }
             }
 
-            $result = $wxdb->update("admin_user", array("authorizedPages"=>json_encode($permission_list)), array("userName"=>$_POST["username"]));
+            $result = $wxdb->update("admin_user", array("authorizedPages"=>json_encode($permission_list)), array("userName"=>$_POST["pk"]));
             if (false !== $result) {
                 $return_dict["code"] = 0;
                 $return_dict["message"] = "success";
                 $wxdb->insert('security_log', array(
                     'userName' => current_user_name(),
                     'opName' => 'User.setPrivileges',
-                    'opDetail' => 'Success: Privileges for user [' . $_POST["username"] . '] set from ' . json_encode($original_permissions) . ' to ' . json_encode($permission_list),
+                    'opDetail' => 'Success: Privileges for user [' . $_POST["pk"] . '] set from ' . json_encode($original_permissions) . ' to ' . json_encode($permission_list),
                     'ip' => $_SERVER['REMOTE_ADDR'],
                     'agent' => $_SERVER['HTTP_USER_AGENT']
                 ));
@@ -80,20 +80,21 @@ if (isset($_GET["action"])) {
             break;
         }
         case "edit-note": {
-            $success = $wxdb->update('admin_user', array('note' => $_POST['note']), array('userName' => $_POST['username']));
+            $success = $wxdb->update('admin_user', array('note' => $_POST['value']), array('userName' => $_POST['pk']));
             if ($success !== false) {
                 $wxdb->insert('security_log', array(
                     'userName' => current_user_name(),
                     'opName' => 'User.editNote',
-                    'opDetail' => 'Success: User [' . $_POST["username"] . ']\'s note set to [' . $_POST['note'] . ']',
+                    'opDetail' => 'Success: User [' . $_POST["pk"] . ']\'s note set to [' . $_POST['value'] . ']',
                     'ip' => $_SERVER['REMOTE_ADDR'],
                     'agent' => $_SERVER['HTTP_USER_AGENT']
                 ));
                 $return_dict["code"] = 0;
                 $return_dict["message"] = "success";
             } else {
-                $return_dict["code"] = 1;
-                $return_dict["message"] = "error";
+                header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
+                echo " 系统错误";
+                exit;
             }
             break;
         }

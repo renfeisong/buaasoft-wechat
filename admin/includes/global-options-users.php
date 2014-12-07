@@ -93,7 +93,11 @@ foreach ($authorized_modules as $module) {
             <i class="fa fa-user fa-fw <?php echo $row["isSuperAdmin"] == 1 ? "super-admin" : "admin" ?>" title="<?=$row["isSuperAdmin"] == 1 ? "超级管理员" : "管理员"?>"></i>
             <?php echo $row["userName"] ?>
         </td>
-        <td><a href="#" class="x-editable-note"><?php echo $row['note'] ?></a></td>
+        <td>
+            <a href="#" class="x-editable-note" data-url="<?php echo ROOT_URL ?>admin/includes/global-options-users-ajax.php?action=edit-note" data-name="note" data-pk="<?php echo $row["userName"] ?>">
+                <?php echo $row["note"] ?>
+            </a>
+        </td>
         <?php if ($row["isSuperAdmin"] == 0): ?>
             <td>
                 <?php if (current_user_name() != $row["userName"]): ?>
@@ -177,34 +181,6 @@ foreach ($authorized_modules as $module) {
         $(".x-editable-note").editable({
             type: "text",
             emptytext: "点击编辑..."
-        });
-
-        $(".x-editable-note").on("save", function(e, params) {
-            $.ajax({
-                url: "includes/global-options-users-ajax.php?action=edit-note",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    "action": "edit-note",
-                    "username": $(this).parents("tr").data("username"),
-                    "note": params.newValue
-                }
-            }).done(function(data){
-                switch (data["code"]) {
-                    case 0: {
-                        toastr.success("修改成功", "Success");
-                        break;
-                    }
-                    case 1: {
-                        toastr.error("系统错误", "Error");
-                        break;
-                    }
-                    default: {
-                        toastr.error("系统错误", "Error");
-                        break;
-                    }
-                }
-            });
         });
 
         $(".enable-account").click(function() {
