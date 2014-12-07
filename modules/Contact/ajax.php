@@ -14,30 +14,23 @@ if (isset($_GET["action"])) {
 
     switch ($_GET["action"]) {
         case "add-record": {
-            $results = $wxdb->get_results("SELECT * FROM contact WHERE userName = '" . $_POST["user_name"] . "'", ARRAY_A);
-            if ($results != null) {
-                $return_dict["code"] = 1;
-                $return_dict["message"] = "already exist";
-                break;
-            } else {
-                $result = $wxdb->insert("contact", array(
-                    "userName"=>$_POST["user_name"],
-                    "identity"=>$_POST["identity"],
-                    "phoneNumber"=>$_POST["phone_number"],
-                    "email"=>$_POST["email"]));
-                if ($result != false) {
-                    if ($result != 0) {
-                        $return_dict["code"] = 0;
-                        $return_dict["message"] = "success";
-                        $return_dict["id"] = $wxdb->insert_id;
-                    } else {
-                        $return_dict["code"] = 2;
-                        $return_dict["message"] = "already added";
-                    }
+            $result = $wxdb->insert("contact", array(
+                "userName"=>$_POST["user_name"],
+                "identity"=>$_POST["identity"],
+                "phoneNumber"=>$_POST["phone_number"],
+                "email"=>$_POST["email"]));
+            if ($result != false) {
+                if ($result != 0) {
+                    $return_dict["code"] = 0;
+                    $return_dict["message"] = "success";
+                    $return_dict["id"] = $wxdb->insert_id;
                 } else {
-                    $return_dict["code"] = 3;
-                    $return_dict["message"] = "error";
+                    $return_dict["code"] = 1;
+                    $return_dict["message"] = "already added";
                 }
+            } else {
+                $return_dict["code"] = 2;
+                $return_dict["message"] = "error";
             }
             break;
         }
@@ -63,17 +56,10 @@ if (isset($_GET["action"])) {
                 echo " 姓名不能为空";
                 exit;
             }
-            $results = $wxdb->get_results("SELECT * FROM contact WHERE userName = '" . $_POST["value"] . "'", ARRAY_A);
-            if ($results != null) {
+            if ($wxdb->update("contact", array("userName"=>$_POST["value"]), array("id"=>$_POST["pk"])) == false) {
                 header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
-                echo " 已存在姓名相同的记录";
+                echo " 出现未知错误";
                 exit;
-            } else {
-                if ($wxdb->update("contact", array("userName"=>$_POST["value"]), array("id"=>$_POST["pk"])) == false) {
-                    header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
-                    echo " 出现未知错误";
-                    exit;
-                }
             }
             break;
         }

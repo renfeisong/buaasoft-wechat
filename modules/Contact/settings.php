@@ -234,16 +234,11 @@ $(document).ready(function() {
                     break;
                 }
                 case 1: {
-                    toastr.error("已存在姓名相同的记录", "Error");
-                    $button.html("<i class=\"fa fa-plus fa-fw\"></i>  添加");
-                    break;
-                }
-                case 2: {
                     toastr.info("记录已添加，请勿重复提交", "Info");
                     $button.html("<i class=\"fa fa-plus fa-fw\"></i>  添加");
                     break;
                 }
-                case 3: {
+                case 2: {
                     toastr.error("服务器出现未知错误", "Error");
                     $button.html("<i class=\"fa fa-plus fa-fw\"></i>  添加");
                     break;
