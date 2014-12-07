@@ -53,7 +53,7 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
 
 <h2>通讯信息查询管理</h2>
 
-<h3>Contact表管理</h3>
+<h3>通讯录管理</h3>
 <table id="user-table" class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
@@ -113,6 +113,8 @@ $results = $wxdb->get_results("SELECT * FROM contact", ARRAY_A);
     </tbody>
 </table>
 <label id="user-table-error" class="error"></label>
+<h4>提示</h4>
+<label>这个表是用户表的补充</label>
 
 
 <h3>展示信息管理</h3>

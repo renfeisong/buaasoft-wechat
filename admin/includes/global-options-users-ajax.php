@@ -38,8 +38,12 @@ if (isset($_POST["action"])) {
                 array_push($permission_list, $reverted_tags[$permission]);
             }
 
-            $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", current_user_name());
-            $operator_permissions = json_decode($wxdb->get_var($sql));
+            if (is_super_admin()) {
+                $operator_permissions = array_values($reverted_tags);
+            } else {
+                $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", current_user_name());
+                $operator_permissions = json_decode($wxdb->get_var($sql));
+            }
             $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", $_POST['username']);
             $original_permissions = json_decode($wxdb->get_var($sql));
             $error = false;

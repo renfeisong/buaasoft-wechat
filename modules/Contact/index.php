@@ -15,15 +15,17 @@ abstract class SearchMode
 
 abstract class SearchSource
 {
-    const CONTACT = 0;
-    const USER = 1;
+    const NOT_SET = 0;
+    const CONTACT = 1; //0b01
+    const USER = 2; //0b10
+    const BOTH = 3; //0b11
 }
 
 class Contact extends BaseModule {
 
     private $table_name = "contact";
     private $mode = -1;
-    private $source = -1;
+    private $source = SearchSource::NOT_SET;
     private $name;
     private $phone_numeber;
     private $email;
@@ -56,9 +58,8 @@ SQL;
                 $this->mode = SearchMode::NAME_TO_INFO;
                 foreach ($names as $name) {
                     if (substr_count($input->content, $name) > 0) {
-                        $this->source = SearchSource::CONTACT;
+                        $this->source = $this->source | SearchSource::CONTACT;
                         $this->name = $name;
-                        return true;
                     }
                 }
             }
@@ -67,11 +68,13 @@ SQL;
                 $this->mode = SearchMode::NAME_TO_INFO;
                 foreach ($names as $name) {
                     if (substr_count($input->content, $name) > 0) {
-                        $this->source = SearchSource::USER;
+                        $this->source = $this->source | SearchSource::USER;
                         $this->name = $name;
-                        return true;
                     }
                 }
+            }
+            if ($this->source != SearchSource::NOT_SET) {
+                return true;
             }
             $match = array();
             if (preg_match("/^1[3|4|5|7|8]\\d{9}$/", $input->content, $match) == 1) {
@@ -96,45 +99,57 @@ SQL;
         switch ($this->mode) {
             case SearchMode::NAME_TO_INFO: {
                 $output_format = get_value($this, "output_format");
-                if ($this->source == SearchSource::CONTACT) {
+                $results = array();
+                if ($this->source == SearchSource::CONTACT || $this->source == SearchSource::BOTH) {
                     $sql = $wxdb->prepare("SELECT identity, phoneNumber, email FROM contact WHERE userName = '%s'", $this->name);
-                } else {
-                    $sql = $wxdb->prepare("SELECT userId, phoneNumber, email FROM user WHERE userName = '%s'", $this->name);
-                }
-                $results = $wxdb->get_results($sql, ARRAY_A);
-                if (!empty($results)) {
-                    foreach ($results as $result) {
-                        $return_text = $return_text . $output_format;
-                        if (count($results) == 1) {
-                            $return_text = str_replace("[identity]", $this->name, $return_text);
-                        } else {
-                            if ($this->source == SearchSource::CONTACT) {
+                    $results = $wxdb->get_results($sql, ARRAY_A);
+                    if (!empty($results)) {
+                        foreach ($results as $result) {
+                            $return_text = $return_text . $output_format;
+                            if (count($results) == 1 && $this->source != SearchSource::BOTH) {
+                                $return_text = str_replace("[identity]", $this->name, $return_text);
+                            } else {
                                 if (!empty($result["identity"])) {
                                     $return_text = str_replace("[identity]", $result["identity"] . $this->name, $return_text);
                                 } else {
                                     $return_text = str_replace("[identity]", $this->name, $return_text);
                                 }
+                            }
+                            $return_text = $return_text . "\n";
+                        }
+                    }
+                }
+                if ($this->source == SearchSource::USER || $this->source == SearchSource::BOTH) {
+                    $sql = $wxdb->prepare("SELECT userId, phoneNumber, email FROM user WHERE userName = '%s'", $this->name);
+                    $results = $wxdb->get_results($sql, ARRAY_A);
+                    if (!empty($results)) {
+                        foreach ($results as $result) {
+                            $return_text = $return_text . $output_format;
+                            if (count($results) == 1 && $this->source != SearchSource::BOTH) {
+                                $return_text = str_replace("[identity]", $this->name, $return_text);
                             } else {
                                 if (!empty($result["userId"])) {
                                     $return_text = str_replace("[identity]", $result["userId"] . $this->name, $return_text);
                                 } else {
                                     $return_text = str_replace("[identity]", $this->name, $return_text);
                                 }
+
                             }
+                            $return_text = $return_text . "\n";
                         }
-                        if (!empty($result["phoneNumber"])) {
-                            $return_text = str_replace("[phone_number]", $result["phoneNumber"], $return_text);
-                        } else {
-                            $return_text = str_replace("[phone_number]", "[未填写]", $return_text);
-                        }
-                        if (!empty($result["email"])) {
-                            $return_text = str_replace("[email]", $result["email"], $return_text);
-                        } else {
-                            $return_text = str_replace("[email]", "[未填写]", $return_text);
-                        }
-                        $return_text = $return_text . "\n";
                     }
                 }
+                if (!empty($result["phoneNumber"])) {
+                    $return_text = str_replace("[phone_number]", $result["phoneNumber"], $return_text);
+                } else {
+                    $return_text = str_replace("[phone_number]", "[未填写]", $return_text);
+                }
+                if (!empty($result["email"])) {
+                    $return_text = str_replace("[email]", $result["email"], $return_text);
+                } else {
+                    $return_text = str_replace("[email]", "[未填写]", $return_text);
+                }
+                $return_text = $return_text . "\n";
                 break;
             }
             case SearchMode::PHONE_NUMBER_TO_NAME: {
