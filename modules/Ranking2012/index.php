@@ -7,8 +7,11 @@
  */
 
 class Ranking2012 extends BaseModule {
+    /* configurable */
+    private $start_year = '2012';
+    private $dept = '21';
+
     private $grade, $stuid, $stuname;
-    private $start_year = '2012'; /* configurable */
 
     public function prepare() {
         set_value($this, "grade", $this->start_year);
@@ -25,7 +28,7 @@ class Ranking2012 extends BaseModule {
         global $wxdb;
         $row = $wxdb->get_row("SELECT * FROM `user` WHERE openid = '" . $input->openid . "'", ARRAY_A);
         $this->grade = $row['startYear'];
-        if ($input->inputType == InputType::Click && $input->eventKey == "RANKING" && $this->grade == get_value($this, "grade")) {
+        if ($input->inputType == InputType::Click && $input->eventKey == "RANKING" && $this->grade == get_value($this, "grade") && $row['dept'] == $this->dept) {
             $this->stuid = $row['userId'];
             $this->stuname = $row['userName'];
             return true;
@@ -108,6 +111,6 @@ class Ranking2012 extends BaseModule {
     }
 
     public function display_name() {
-        return get_value($this, "grade")."级成绩管理";
+        return "成绩管理 " . get_value($this, "grade");
     }
 }

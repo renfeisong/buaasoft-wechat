@@ -35,15 +35,18 @@ $global_options = array(
     'general' => '通用设置',
     'users' => '用户管理',
     'modules' => '模块管理',
-    'install_module' => '安装模块',
-    'debug' => '系统调试'
+    'debug' => '系统调试',
+    'personal' => '安全选项'
 );
 $global_option_icons = array(
     'general' => 'dashboard',
-    'users' => 'user',
+    'users' => 'users',
     'modules' => 'plug',
-    'install_module' => 'plus',
-    'debug' => 'wrench'
+    'debug' => 'wrench',
+    'personal' => 'lock'
+);
+$public_pages = array(
+    'personal'
 );
 $wxdb = null;
 $time_start = 0.0;

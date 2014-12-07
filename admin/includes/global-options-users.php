@@ -3,24 +3,36 @@
  * This file is the user management page for the admin center.
  *
  * @author Bingchen Qin
+ * @author Renfei Song
  * @since 2.0.0
  */
 
 global $wxdb; /* @var $wxdb wxdb */
-$result = $wxdb->get_results('SELECT * FROM admin_user', ARRAY_A);
+$results = $wxdb->get_results("SELECT * FROM admin_user", ARRAY_A);
 
 global $global_options;
-$modules = get_modules();
+$all_modules = get_modules();
 
-$tags = $global_options;
-foreach ($modules as $module) {
+$all_tags = $global_options;
+foreach ($all_modules as $module) {
     if (has_settings_page($module["name"])) {
         $display_name= _get_value("global", "display_name_" . $module["name"]);
         if ($display_name == null) {
             $display_name = $module["name"];
         }
-        $tags[$module["name"]] = $display_name;
+        $all_tags[$module["name"]] = $display_name;
     }
+}
+global $public_pages;
+foreach ($public_pages as $public_page) {
+    unset($all_tags[$public_page]);
+}
+
+$authorized_module_results = $wxdb->get_var("SELECT authorizedPages FROM admin_user WHERE userName = '" . current_user_name() . "'");
+$authorized_modules = json_decode($authorized_module_results);
+$authorized_tags = array();
+foreach ($authorized_modules as $module) {
+    $authorized_tags[$module] = $all_tags[$module];
 }
 
 ?>
@@ -35,7 +47,7 @@ foreach ($modules as $module) {
     }
 
     td .button {
-        min-width: 83px;
+        min-width: 60px;
         margin-right: 8px;
     }
 
@@ -45,6 +57,20 @@ foreach ($modules as $module) {
         border-bottom-color: #aaaaaa !important;
     }
 
+    .editable-container.popover,
+    .editable-container.editable-popup {
+        max-width: 750px !important;
+    }
+
+    .editable-buttons {
+        display: block !important;
+        margin: 15px 0 0;
+    }
+
+    button.btn.blue.editable-submit {
+        margin-left: 0 !important;
+    }
+
 </style>
 
 <h2>用户管理</h2>
@@ -52,50 +78,58 @@ foreach ($modules as $module) {
 <table id="user-table" class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
-        <th>用户名</th>
-        <th>可管理模块</th>
-        <th>加入时间</th>
-        <th>上次活动时间</th>
-        <th>操作</th>
+        <th style="min-width: 100px;">用户名</th>
+        <th class="nosort" style="min-width: 150px;">备注</th>
+        <th class="nosort">可管理模块</th>
+        <th style="width: 130px; min-width: 130px; max-width: 130px;">加入时间</th>
+        <th style="width: 130px; min-width: 130px; max-width: 130px;">上次活动时间</th>
+        <th class="nosort" style="width: 180px; max-width: 180px; min-width: 180px;">操作</th>
     </tr>
     </thead>
     <tbody>
-    <?php foreach($result as $row):?>
-    <tr class="<?=$row["isEnabled"] == 1 ? "" : "disabled"?>" data-username="<?=$row["userName"]?>">
+    <?php foreach($results as $row):?>
+    <tr class="<?php echo $row["isEnabled"] == 1 ? "" : "disabled" ?>" data-username="<?php echo $row["userName"] ?>">
         <td>
-            <i class="fa fa-user fa-fw <?=$row["isSuperAdmin"] == 1 ? "super-admin" : "admin"?>" title="<?=$row["isSuperAdmin"] == 1 ? "超级管理员" : "管理员"?>"></i>
-            <?=$row["userName"]?>
+            <i class="fa fa-user fa-fw <?php echo $row["isSuperAdmin"] == 1 ? "super-admin" : "admin" ?>" title="<?=$row["isSuperAdmin"] == 1 ? "超级管理员" : "管理员"?>"></i>
+            <?php echo $row["userName"] ?>
         </td>
-        <?php if ($row["isSuperAdmin"] == 0):?>
+        <td>
+            <a href="#" class="x-editable-note" data-url="<?php echo ROOT_URL ?>admin/includes/global-options-users-ajax.php?action=edit-note" data-name="note" data-pk="<?php echo $row["userName"] ?>">
+                <?php echo $row["note"] ?>
+            </a>
+        </td>
+        <?php if ($row["isSuperAdmin"] == 0): ?>
             <td>
-                <?php if (current_user_name() != $row["userName"]):?><a href="#" class="x-editable"><?php endif;?>
+                <?php if (current_user_name() != $row["userName"]): ?>
+                <a href="#" class="x-editable" data-url="<?php echo ROOT_URL ?>admin/includes/global-options-users-ajax.php?action=edit-permission" data-name="permission" data-pk="<?php echo $row["userName"] ?>">
+                    <?php endif; ?>
                     <?php
                     $authorized_pages = json_decode($row["authorizedPages"]);
                     $i = 0;
                     foreach ($authorized_pages as $authorized_page) {
-                        echo $tags[$authorized_page];
+                        echo $all_tags[$authorized_page];
                         if ($i < count($authorized_pages) - 1) {
                             echo ", ";
                         }
                         $i++;
                     }
                     ?>
-                <?php if (current_user_name() != $row["userName"]):?></a><?php endif;?>
+                <?php if (current_user_name() != $row["userName"]): ?></a><?php endif; ?>
             </td>
         <?php else:?>
             <td>所有模块</td>
         <?php endif;?>
-        <td style="width: 132px; max-width: 132px; min-width: 132px;"><?=$row["joinDate"]?></td>
-        <td style="width: 132px; max-width: 132px; min-width: 132px;"><?=$row["lastActivity"]?></td>
+        <td><?=$row["joinDate"]?></td>
+        <td><?=$row["lastActivity"]?></td>
         <?php if (current_user_name() == $row["userName"]):?>
             <td>无法操作当前用户</td>
         <?php elseif ($row["isSuperAdmin"] == 1):?>
             <td>无法操作超级管理员</td>
         <?php else:?>
-            <td style=" width: 186px; max-width: 186px; min-width: 186px;">
-                <button class="button blue-button xs-button enable-account <?=$row["isEnabled"] == 1 ? "hidden" : ""?>"><i class="fa fa-toggle-off fa-fw"></i>  启用账户</button>
-                <button class="button blue-button xs-button disable-account <?=$row["isEnabled"] == 0 ? "hidden" : ""?>"><i class="fa fa-toggle-on fa-fw"></i>  禁用账户</button>
-                <button class="button xs-button red-button delete-account"><i class="fa fa-trash fa-fw"></i>  删除账户</button>
+            <td>
+                <button class="button blue-button xs-button enable-account <?=$row["isEnabled"] == 1 ? "hidden" : ""?>"><i class="fa fa-toggle-off fa-fw"></i>  启用</button>
+                <button class="button blue-button xs-button disable-account <?=$row["isEnabled"] == 0 ? "hidden" : ""?>"><i class="fa fa-toggle-on fa-fw"></i>  禁用</button>
+                <button class="button xs-button red-button delete-account"><i class="fa fa-trash fa-fw"></i>  删除</button>
                 <button class="button xs-button red-button delete-account-confirm hidden">请确认</button>
             </td>
         <?php endif;?>
@@ -111,8 +145,8 @@ foreach ($modules as $module) {
         $button.siblings(".enable-account").removeClass("hidden");
         $button.siblings(".disable-account").removeClass("hidden");
         //reset buttons
-        $(".enable-account").html("<i class=\"fa fa-toggle-off fa-fw\"></i>  启用账户");
-        $(".disable-account").html("<i class=\"fa fa-toggle-on fa-fw\"></i>  禁用账户");
+        $(".enable-account").html("<i class=\"fa fa-toggle-off fa-fw\"></i>  启用");
+        $(".disable-account").html("<i class=\"fa fa-toggle-on fa-fw\"></i>  禁用");
     }
 
     $(document).ready(function() {
@@ -127,52 +161,33 @@ foreach ($modules as $module) {
         });
 
         $("#user-table").DataTable({
-            "bPaginate": false
+            bPaginate: false,
+            order: [[ 4, "desc" ]],
+            aoColumnDefs: [{
+                bSortable: false,
+                aTargets: ['nosort']
+            }]
         });
 
         $(".x-editable").editable({
             type: "select2",
             select2: {
-                tags: <?=json_encode(array_values($tags))?>,
+                tags: <?=is_super_admin() ? json_encode(array_values($all_tags)) : json_encode(array_values($authorized_tags))?>,
                 createSearchChoice: null
             },
             emptytext: "点击添加..."
         });
 
-        $(".x-editable").on("save", function(e, params) {
-            console.log('Saved value: ' + params.newValue);
-            $.ajax({
-                url: "includes/global-options-users-ajax.php",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    "action": "edit-permission",
-                    "username": $(this).parents("tr").data("username"),
-                    "permission": params.newValue
-                }
-            }).done(function(data){
-                console.log(data);
-                switch (data["code"]) {
-                    case 0: {
-                        toastr.success("修改权限成功", "Success");
-                        break;
-                    }
-                    case 1: {
-                        toastr.error("服务器出现未知错误", "Error");
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-            });
+        $(".x-editable-note").editable({
+            type: "text",
+            emptytext: "点击编辑..."
         });
 
         $(".enable-account").click(function() {
             var $button = $(this);
             $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在启用");
             $.ajax({
-                url: "includes/global-options-users-ajax.php",
+                url: "includes/global-options-users-ajax.php?action=enable",
                 type: "POST",
                 dataType: "json",
                 data: {
@@ -183,16 +198,16 @@ foreach ($modules as $module) {
                 switch (data["code"]) {
                     case 0: {
                         $button.html("<i class=\"fa fa-check fa-fw\"></i>  已启用");
+                        $button.parents("tr").removeClass("disabled");
                         window.setTimeout(function () {
                             $button.addClass("hidden");
                             $button.siblings(".disable-account").removeClass("hidden");
-                            $button.parents("tr").removeClass("disabled");
-                            $button.html("<i class=\"fa fa-toggle-off fa-fw\"></i>  启用账户");
+                            $button.html("<i class=\"fa fa-toggle-off fa-fw\"></i>  启用");
                         }, 1000);
                         break;
                     }
                     case 1: {
-                        toastr.success("账户已启用，请勿重复提交", "Info");
+                        toastr.info("账户已启用，请勿重复提交", "Info");
                         break;
                     }
                     case 2: {
@@ -200,6 +215,7 @@ foreach ($modules as $module) {
                         break;
                     }
                     default: {
+                        toastr.error("出现未知错误", "Error");
                         break;
                     }
                 }
@@ -210,7 +226,7 @@ foreach ($modules as $module) {
             var $button = $(this);
             $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在禁用");
             $.ajax({
-                url: "includes/global-options-users-ajax.php",
+                url: "includes/global-options-users-ajax.php?action=disable",
                 type: "POST",
                 dataType: "json",
                 data: {
@@ -221,16 +237,16 @@ foreach ($modules as $module) {
                 switch (data["code"]) {
                     case 0: {
                         $button.html("<i class=\"fa fa-check fa-fw\"></i>  已禁用");
+                        $button.parents("tr").addClass("disabled");
                         window.setTimeout(function () {
                             $button.addClass("hidden");
                             $button.siblings(".enable-account").removeClass("hidden");
-                            $button.parents("tr").addClass("disabled");
-                            $button.html("<i class=\"fa fa-toggle-on fa-fw\"></i>  禁用账户");
+                            $button.html("<i class=\"fa fa-toggle-on fa-fw\"></i>  禁用");
                         }, 1000);
                         break;
                     }
                     case 1: {
-                        toastr.success("未找到账户，或是账户已删除，请勿重复提交", "Info");
+                        toastr.info("未找到账户，或是账户已禁用，请勿重复提交", "Info");
                         break;
                     }
                     case 2: {
@@ -238,6 +254,7 @@ foreach ($modules as $module) {
                         break;
                     }
                     default: {
+                        toastr.error("出现未知错误", "Error");
                         break;
                     }
                 }
@@ -256,7 +273,7 @@ foreach ($modules as $module) {
             var $button = $(this);
             $button.html("<i class=\"fa fa-spinner fa-spin fa-fw\"></i>  正在删除");
             $.ajax({
-                url: "includes/global-options-users-ajax.php",
+                url: "includes/global-options-users-ajax.php?action=delete",
                 type: "POST",
                 dataType: "json",
                 data: {
@@ -273,7 +290,7 @@ foreach ($modules as $module) {
                         break;
                     }
                     case 1: {
-                        toastr.success("账户已删除，请勿重复提交", "Info");
+                        toastr.info("账户已删除，请勿重复提交", "Info");
                         break;
                     }
                     case 2: {
@@ -281,6 +298,7 @@ foreach ($modules as $module) {
                         break;
                     }
                     default: {
+                        toastr.error("出现未知错误", "Error");
                         break;
                     }
                 }

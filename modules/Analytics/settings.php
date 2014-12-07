@@ -67,11 +67,10 @@ global $wxdb; /* @var $wxdb wxdb */
         $rawXml = simplexml_load_string($row['rawXml'], 'SimpleXMLElement', LIBXML_NOCDATA);
         $responseXml = simplexml_load_string($row['responseXml'], 'SimpleXMLElement', LIBXML_NOCDATA);
         $msgType = $rawXml->MsgType;
-        $msgContent = @$rawXml->Content;
+        $msgContent = $msgType == 'event' ? ($rawXml->Event . ' / ' . $rawXml->EventKey) : @$rawXml->Content;
         $responseType = @$responseXml->MsgType;
         $responseContent = @$responseXml->Content;
-        $time = $row['time'];
-        echo "<tr><td>{$row['msgid']}</td><td>$time</td><td>{$row['userName']}</td><td>$msgType</td><td>$msgContent</td><td>$responseType</td><td>$responseContent</td></tr>";
+        echo "<tr><td>{$row['msgid']}</td><td>{$row['time']}</td><td>{$row['userName']}</td><td>$msgType</td><td>$msgContent</td><td>$responseType</td><td>$responseContent</td></tr>";
     }
     ?>
     </tbody>
@@ -105,10 +104,11 @@ global $wxdb; /* @var $wxdb wxdb */
 
 <script>
     $('#module-stat').DataTable({
-        paging: false
+        "paging": false,
+        "order": [[ 2, "desc" ]]
     });
     $('#recent-msg').DataTable({
-        "order": [[ 1, "desc" ]]
+        "order": [[ 0, "desc" ]]
     });
     $('#user-stat').DataTable({
         "order": [[ 2, "desc" ]],

@@ -35,7 +35,7 @@ function current_user() {
             if ($userChecked === false) {
                 $wxdb->update('admin_user', array('lastActivity' => date('c')), array('userName' => $user['userName']));
 
-                $sql = $wxdb->prepare("select count(*) from `security_log` where `userName` = '%s' and `opName` = '%s' and `timestamp` > timestamp(DATE_SUB(NOW(), INTERVAL 20 MINUTE))", $user['userName'], 'User.startSession');
+                $sql = $wxdb->prepare("select count(*) from `security_log` where `userName` = '%s' and `opName` = '%s' and `timestamp` > timestamp(DATE_SUB(NOW(), INTERVAL 60 MINUTE))", $user['userName'], 'User.startSession');
                 $count = $wxdb->get_var($sql);
                 if ($count == 0) {
                     $wxdb->insert('security_log', array(
@@ -71,6 +71,10 @@ function current_user_name() {
 }
 
 function current_user_can_manage($page) {
+    global $public_pages;
+    if (in_array($page, $public_pages))
+        return true;
+
     $user = current_user();
     if ($user['isSuperAdmin'] == 1)
         return true;
@@ -142,6 +146,51 @@ function register($username, $password) {
     return false != $success;
 }
 
+function changePassword($username, $password) {
+    global $wxdb;  /* @var $wxdb wxdb */
+    $success = $wxdb->update('admin_user', array(
+        'hashedPassword' => sha1($password)
+    ), array(
+        'userName' => $username
+    ));
+
+    return false !== $success;
+}
+
+function passwordDisallowed($password) {
+    // disallow passwords that only contain 1 kind of character
+    $platitude = true;
+    for ($i = 1; $i < strlen($password); ++$i) {
+        if ($password[$i] !== $password[0])
+            $platitude = false;
+    }
+    if ($platitude)
+        return true;
+
+    // disallow certain patterns
+    $disallowList = array(
+        "123456", "password", "qwerty"
+    );
+    foreach ($disallowList as $test)
+        if ($test === $password)
+            return true;
+
+    return false;
+}
+
+function validatePassword($password) {
+    if (strlen($password) < 6 || strlen($password) > 20)
+        return 4; // 密码长度必须在6~20位之间
+
+    if (preg_match("/[^A-Za-z0-9!@\#\$\%\^\&\*\_\-\+\=\(\)\[\]\{\}\<\>\|\\\?\,\.\;\:\'\"\/\~\`]/", $password))
+        return 5; // 密码包含非法字符
+
+    if (passwordDisallowed($password))
+        return 6; // 该密码已被系统禁止使用
+
+    return 0;
+}
+
 // Pages and Items
 
 function has_settings_page($module) {
@@ -164,13 +213,17 @@ function include_settings($page_or_module_name) {
         require_once ABSPATH . 'modules/' . $page_or_module_name . '/settings.php';
 }
 
+function include_welcome_page() {
+    require_once ABSPATH . 'admin/includes/welcome.php';
+}
+
 function list_global_setting_items() {
     global $global_options;
     global $global_option_icons;
     foreach ($global_options as $slug_name => $display_name) {
         if (current_user_can_manage($slug_name)) {
             $icon_name = $global_option_icons[$slug_name];
-            $class = $_GET['page'] == $slug_name ? 'current' : '';
+            $class = @$_GET['page'] == $slug_name ? 'current' : '';
             $template = '<li class="module-navigation-item %s"><a href="%s"><i class="fa fa-lg fa-fw fa-%s"></i>&nbsp; %s</a></li>';
             echo sprintf($template, $class, ROOT_URL . 'admin/index.php?page=' . $slug_name, $icon_name, $display_name);
         }
@@ -182,12 +235,13 @@ function list_module_setting_items() {
     foreach ($modules as $module) {
         if (has_settings_page($module) && current_user_can_manage(get_class($module))) {
             /* @var $module BaseModule */
-            $class = $_GET['page'] == get_class($module) ? 'current' : '';
+            $class = @$_GET['page'] == get_class($module) ? 'current' : '';
             $template = '<li class="module-navigation-item %s"><a href="%s">%s</a></li>';
             echo sprintf($template, $class, ROOT_URL . 'admin/index.php?page=' . get_class($module), $module->display_name());
         }
     }
 }
+
 
 // Misc.
 

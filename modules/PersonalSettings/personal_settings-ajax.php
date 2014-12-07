@@ -19,7 +19,7 @@ if (isset($_POST["action"])) {
                 $return_dict["message"] = "wrong email";
                 goto complete;
             }
-            if (!preg_match("/^1[3|4|5|8][0-9]\\d{8}$/", $_POST["phone_number"])) {
+            if (!preg_match("/^1[3|4|5|7|8]\\d{9}$/", $_POST["phone_number"])) {
                 $return_dict["code"] = 2;
                 $return_dict["message"] = "wrong phone number";
                 goto complete;

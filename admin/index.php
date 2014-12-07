@@ -18,12 +18,7 @@ if (!is_enabled()) {
     exit;
 }
 
-if (!isset($_GET['page'])) {
-    redirect('index.php?page=general');
-    exit;
-}
-
-    $page = $_GET['page'];
+$page = @$_GET['page'];
 
 // Handle Form Submission
 
@@ -96,7 +91,7 @@ ob_start();
 
     <header id="masthead" class="site-header">
         <div class="inner">
-            <h1 class="site-title">Admin<span>Center</span></h1>
+            <h1 class="site-title"><a class="site-title-link" href="<?php echo ROOT_URL . 'admin/' ?>">AdminCenter</a></h1>
             <a href="logout.php" class="log-out" title="Log Out"><i class="fa fa-sign-out"></i> 登出</a>
         </div>
     </header>
@@ -104,10 +99,14 @@ ob_start();
         <div class="content-area">
             <div id="primary" class="site-content">
                 <?php
-                    if (current_user_can_manage($page)) {
-                        include_settings($_GET['page']);
+                    if (isset($page)) {
+                        if (current_user_can_manage($page)) {
+                            include_settings($_GET['page']);
+                        } else {
+                            admin_unauthorized_error();
+                        }
                     } else {
-                        admin_unauthorized_error();
+                        include_welcome_page();
                     }
                  ?>
             </div>

@@ -20,8 +20,8 @@ CREATE TABLE `frontend_log` (
   `rawXml` varchar(1000) COLLATE utf8_unicode_ci NOT NULL,
   `isHit` int(11) NOT NULL,
   `hitBy` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `responseXml` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `responseXml` varchar(1000) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 SQL;
             $wxdb->query($sql);

@@ -27,7 +27,7 @@ define('MESSAGE_SALT', 'unique string here');
 define('AJAX_SALT', 'unique string here');
 
 // Website root URL
-define('ROOT_URL', '/');
+define('ROOT_URL', 'http://localhost/');
 
 // Define ABSPATH as this file's directory
 

@@ -24,16 +24,18 @@ a:hover {
     text-decoration: underline;
 }
 
+p {
+    margin-bottom: 1em;
+}
+
 pre {
     font-size: 14px;
     margin: 12px 0;
-    background: #f6f6f6;
+    background: #f0f0f0;
     padding: 15px 20px;
-    border-radius: 8px;
     overflow: auto;
     white-space: pre-wrap;
-    word-break: break-word;
-    font-family: Consolas, monospace;
+    font-family: Menlo, Courier, 'Liberation Mono', Consolas, Monaco, Lucida Console, monospace;
 }
 
 .site-header {
@@ -46,12 +48,21 @@ pre {
 }
 
 .site-title {
-    color: #fff;
     line-height: 46px;
     font-size: 18px;
     padding: 0 15px;
-    font-weight: 300;
     display: inline-block;
+}
+
+.site-title-link {
+    color: #fff;
+    font-weight: 400;
+    transition: color .4s ease;
+    text-decoration: none !important;
+}
+
+.site-title-link:hover {
+    color: #aaa;
 }
 
 .log-out {

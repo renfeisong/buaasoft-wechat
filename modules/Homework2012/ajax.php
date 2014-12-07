@@ -82,6 +82,14 @@ else: // Update homework
         }
     }
 
+    if ($name == 'subject' || $name == 'content') {
+        if (empty($value)) {
+            header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
+            echo ' 不能为空。';
+            exit;
+        }
+    }
+
     $wxdb->update($table, array($name => $value, 'dateUpdated' => date('c')), array('homeworkId' => $pk));
 
 endif;

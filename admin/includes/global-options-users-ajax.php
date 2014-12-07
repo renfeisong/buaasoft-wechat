@@ -3,19 +3,17 @@
  * This file provides ajax services for the user management page.
  *
  * @author Bingchen Qin
+ * @author Renfei Song
  * @since 2.0.0
  */
-
 
 require_once dirname(__FILE__) . '/admin.php';
 global $wxdb; /* @var $wxdb wxdb */
 
-if (isset($_POST["action"])) {
-    switch ($_POST["action"]) {
+if (isset($_GET["action"])) {
+    $return_dict = array();
+    switch ($_GET["action"]) {
         case "edit-permission": {
-            $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", $_POST['username']);
-            $original_permissions = $wxdb->get_var($sql);
-            $return_dict = array();
             global $global_options;
             $modules = get_modules();
             $reverted_tags = array();
@@ -31,30 +29,76 @@ if (isset($_POST["action"])) {
                     $reverted_tags[$display_name] = $module["name"];
                 }
             }
+            global $public_pages;
+            foreach ($public_pages as $public_page) {
+                unset($reverted_tags[array_search($public_page, $reverted_tags)]);
+            }
             $permission_list = array();
-            foreach ($_POST["permission"] as $permission) {
+            foreach ($_POST["value"] as $permission) {
                 array_push($permission_list, $reverted_tags[$permission]);
             }
-            $result = $wxdb->update("admin_user", array("authorizedPages"=>json_encode($permission_list)), array("userName"=>$_POST["username"]));
+
+            if (is_super_admin()) {
+                $operator_permissions = array_values($reverted_tags);
+            } else {
+                $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", current_user_name());
+                $operator_permissions = json_decode($wxdb->get_var($sql));
+            }
+            $sql = $wxdb->prepare("select authorizedPages from admin_user where userName = '%s'", $_POST['pk']);
+            $original_permissions = json_decode($wxdb->get_var($sql));
+            foreach ($_POST["value"] as $permission) {
+                if (in_array($reverted_tags[$permission], $original_permissions, true) == false
+                    && in_array($reverted_tags[$permission], $operator_permissions, true) == false) {
+                    header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
+                    echo " 您无法为其他用户添加您没有的权限。";
+                    exit;
+                }
+            }
+            foreach (array_diff($original_permissions, $operator_permissions) as $permission) {
+                if (in_array($permission, $permission_list, true) == false) {
+                    header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
+                    echo " 您无法删除不在您可管理范围之内的模块。";
+                    exit;
+                }
+            }
+
+            $result = $wxdb->update("admin_user", array("authorizedPages"=>json_encode($permission_list)), array("userName"=>$_POST["pk"]));
             if (false !== $result) {
                 $return_dict["code"] = 0;
                 $return_dict["message"] = "success";
                 $wxdb->insert('security_log', array(
                     'userName' => current_user_name(),
                     'opName' => 'User.setPrivileges',
-                    'opDetail' => 'Success: Privileges for user [' . $_POST["username"] . '] set from ' . $original_permissions . ' to ' . json_encode($permission_list),
+                    'opDetail' => 'Success: Privileges for user [' . $_POST["pk"] . '] set from ' . json_encode($original_permissions) . ' to ' . json_encode($permission_list),
                     'ip' => $_SERVER['REMOTE_ADDR'],
                     'agent' => $_SERVER['HTTP_USER_AGENT']
                 ));
             } else {
-                $return_dict["code"] = 1;
+                $return_dict["code"] = 3;
                 $return_dict["message"] = "error";
             }
-            echo json_encode($return_dict);
+            break;
+        }
+        case "edit-note": {
+            $success = $wxdb->update('admin_user', array('note' => $_POST['value']), array('userName' => $_POST['pk']));
+            if ($success !== false) {
+                $wxdb->insert('security_log', array(
+                    'userName' => current_user_name(),
+                    'opName' => 'User.editNote',
+                    'opDetail' => 'Success: User [' . $_POST["pk"] . ']\'s note set to [' . $_POST['value'] . ']',
+                    'ip' => $_SERVER['REMOTE_ADDR'],
+                    'agent' => $_SERVER['HTTP_USER_AGENT']
+                ));
+                $return_dict["code"] = 0;
+                $return_dict["message"] = "success";
+            } else {
+                header($_SERVER['SERVER_PROTOCOL'] . " 403 Forbidden");
+                echo " 系统错误";
+                exit;
+            }
             break;
         }
         case "enable": {
-            $return_dict = array();
             $result = $wxdb->update("admin_user", array("isEnabled"=>"1"), array("userName"=>$_POST["username"]));
             if (false !== $result) {
                 if ($result != 0) {
@@ -75,11 +119,9 @@ if (isset($_POST["action"])) {
                 $return_dict["code"] = 2;
                 $return_dict["message"] = "error";
             }
-            echo json_encode($return_dict);
             break;
         }
         case "disable": {
-            $return_dict = array();
             $result = $wxdb->update("admin_user", array("isEnabled"=>"0"), array("userName"=>$_POST["username"]));
             if (false !== $result) {
                 if ($result != 0) {
@@ -100,11 +142,9 @@ if (isset($_POST["action"])) {
                 $return_dict["code"] = 2;
                 $return_dict["message"] = "error";
             }
-            echo json_encode($return_dict);
             break;
         }
         case "delete": {
-            $return_dict = array();
             $result = $wxdb->delete("admin_user", array("userName"=>$_POST["username"]));
             if (false !== $result) {
                 if ($result != 0) {
@@ -125,13 +165,13 @@ if (isset($_POST["action"])) {
                 $return_dict["code"] = 2;
                 $return_dict["message"] = "error";
             }
-            echo json_encode($return_dict);
             break;
         }
         default: {
-        break;
+            break;
         }
     }
+    echo json_encode($return_dict);
 }
 
 ?>
