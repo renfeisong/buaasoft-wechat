@@ -104,6 +104,7 @@ class wxdb {
             $this->print_error('Cannot connect to database.');
         } else if ($this->dbh) {
             $this->set_charset($this->dbh);
+            $this->query("set time_zone = '+08:00'");
             $this->select($this->dbname, $this->dbh);
             return true;
         }
