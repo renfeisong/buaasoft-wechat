@@ -72,9 +72,22 @@ function queries_count() {
 
 function listQueries() {
     global $wxdb; /* @var $wxdb wxdb */
+    $n = 0;
+    echo "<!-- Queries executed for this page \n";
     foreach ($wxdb->queryHistory as $q) {
-        echo $q . "\n";
+        echo '(' . ++$n . ') ' . $q . "\n";
     }
+    echo '-->';
+}
+
+function timesConfigGets() {
+    global $timesConfigGets;
+    echo $timesConfigGets;
+}
+
+function timesConfigSets() {
+    global $timesConfigSets;
+    echo $timesConfigSets;
 }
 
 /**
@@ -146,4 +159,12 @@ function cmp_modules(BaseModule $a, BaseModule $b) {
 function get_module_priority(BaseModule $module) {
     $priority = get_global_value('priority_' . get_class($module));
     return $priority == null ? 10 : $priority;
+}
+
+function load_configurations() {
+    global $wxdb, $configurations; /* @var $wxdb wxdb */
+    $configs = $wxdb->get_results("select * from configuration", ARRAY_A);
+    foreach ($configs as $config) {
+        $configurations[$config['scope']][$config['key']] = $config['value'];
+    }
 }

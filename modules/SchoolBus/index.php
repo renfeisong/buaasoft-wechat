@@ -131,7 +131,7 @@ SQL;
      * @return string
      */
     public function raw_output(UserInput $input) {
-        $link = ROOT_URL . "/modules/SchoolBus/list.php";
+        $link = ROOT_URL . "modules/SchoolBus/list.php";
         $reply = '现在是'.date('n月j日G:i');
         foreach($this->get_route() as $key=>$value) {
             $reply .= "\n\n".$value['from']."到".$value['to'].":\n".$this->get_school_bus($value);

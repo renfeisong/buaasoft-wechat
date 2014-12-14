@@ -101,6 +101,7 @@ pre {
     margin-left: 195px;
     padding: 25px;
     background: #ffffff;
+    position: relative;
 }
 
 /* sidebar */
@@ -168,6 +169,7 @@ pre {
     text-align: center;
     display: block;
     line-height: 20px;
+    color: #fff;
 }
 
 .login .content {
