@@ -89,45 +89,39 @@ ob_start();
 </head>
 <body>
 
-    <header id="masthead" class="site-header">
-        <div class="inner">
-            <h1 class="site-title"><a class="site-title-link" href="<?php echo ROOT_URL . 'admin/' ?>">AdminCenter</a></h1>
-            <a href="logout.php" class="log-out" title="Log Out"><i class="fa fa-sign-out"></i> 登出</a>
-        </div>
-    </header>
-    <div id="main" class="site-main">
-        <div class="content-area">
-            <div id="primary" class="site-content">
-                <?php
-                    if (isset($page)) {
-                        if (current_user_can_manage($page)) {
-                            include_settings($_GET['page']);
-                        } else {
-                            admin_unauthorized_error();
-                        }
-                    } else {
-                        include_welcome_page();
-                    }
-                 ?>
-            </div>
-        </div>
-        <div id="secondary" class="site-sidebar">
-            <ul class="site-navigation">
-                <?php list_global_setting_items() ?>
-                <li class="heading">Modules</li>
-                <?php list_module_setting_items() ?>
-            </ul>
+<header id="masthead" class="site-header">
+    <div class="inner">
+        <h1 class="site-title"><a class="site-title-link" href="<?php echo ROOT_URL . 'admin/' ?>">AdminCenter</a></h1>
+        <a href="logout.php" class="log-out" title="Log Out"><i class="fa fa-sign-out"></i> 登出</a>
+    </div>
+</header>
+<div id="main" class="site-main">
+    <div class="content-area">
+        <div id="primary" class="site-content">
+            <?php
+            if (isset($page)) {
+                if (current_user_can_manage($page)) {
+                    include_settings($_GET['page']);
+                } else {
+                    admin_unauthorized_error();
+                }
+            } else {
+                include_welcome_page();
+            }
+            ?>
         </div>
     </div>
-    <footer id="colophon" class="site-footer">
-        <?php echo queries_count() ?> queries processed in <?php echo timer_stop(6) * 1000 ?> μs.
-    </footer>
-    <?php if (defined(WX_DEBUG)): ?>
-    <!--
-        Queries executed for this page:
-        <?php listQueries() ?>
-    -->
-    <?php endif; ?>
+    <div id="secondary" class="site-sidebar">
+        <ul class="site-navigation">
+            <?php list_global_setting_items() ?>
+            <li class="heading">Modules</li>
+            <?php list_module_setting_items() ?>
+        </ul>
+    </div>
+</div>
+<footer id="colophon" class="site-footer">
+    <?php echo queries_count() ?> queries processed in <?php echo timer_stop(6) * 1000 ?> μs. G/S = <?php timesConfigGets() ?>/<?php timesConfigSets() ?>.
+</footer>
 <script>
     toastr.options = {
         "closeButton": true,
@@ -145,23 +139,23 @@ ob_start();
     };
 </script>
 
-    <?php if ($show_success_msg): ?>
-        <script>
-            toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Your settings have been saved.'; ?>', 'Success');
-        </script>
-    <?php endif; ?>
+<?php if ($show_success_msg): ?>
+    <script>
+        toastr.success('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Your settings have been saved.'; ?>', 'Success');
+    </script>
+<?php endif; ?>
 
-    <?php if ($show_failure_msg): ?>
-        <script>
-            toastr.error('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'An error occured.'; ?>', 'Error');
-        </script>
-    <?php endif; ?>
+<?php if ($show_failure_msg): ?>
+    <script>
+        toastr.error('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'An error occured.'; ?>', 'Error');
+    </script>
+<?php endif; ?>
 
-    <?php if ($show_notice_msg): ?>
-        <script>
-            toastr.info('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Something happened.'; ?>', 'Notice');
-        </script>
-    <?php endif; ?>
+<?php if ($show_notice_msg): ?>
+    <script>
+        toastr.info('<?php if (isset($show_message_content)) echo $show_message_content; else echo 'Something happened.'; ?>', 'Notice');
+    </script>
+<?php endif; ?>
 
 <script>
     $(document).ready(function() {
@@ -171,17 +165,23 @@ ob_start();
         });
 
         $('select').select2();
-        window.addEventListener('resize', onWindowResize);
-        onWindowResize();
-    });
 
-    function onWindowResize() {
-        $('.site-sidebar')[0].style.minHeight = ($(window).height() - 46 - 38) + 'px';
-        $('.site-content')[0].style.minHeight = ($(window).height() - 46 - 38) + 'px';
-    }
+        var maxVal = function(a, b) {
+            return a > b ? a : b;
+        };
+
+        var resizeSiteContent = function() {
+            $('.site-content')[0].style.minHeight = maxVal($('.site-sidebar').height(), $(window).height() - 84) + 'px';
+        };
+        resizeSiteContent();
+        $(window).on('resize', resizeSiteContent);
+    });
 </script>
 
 </body>
 </html>
-
+<?php
+if (defined(WX_DEBUG))
+    listQueries();
+?>
 <?php ob_end_flush(); ?>

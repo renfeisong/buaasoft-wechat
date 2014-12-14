@@ -28,6 +28,7 @@ class wxdb {
     public $debug = false;
     public $queryHistory = array();
 
+    protected $schemas = null; // Caching object
     protected $result;
     protected $reconnect_retries = 5;
     protected $dbuser;
@@ -386,9 +387,10 @@ class wxdb {
     }
 
     public function schema_exists($schema_name) {
-        $sql = $this->prepare("SHOW TABLES LIKE '%s'", $schema_name);
-        $this->query($sql);
-        return 1 == $this->num_rows;
+        if (empty($this->schemas)) {
+            $this->schemas = $this->get_col('show tables');
+        }
+        return in_array($schema_name, $this->schemas);
     }
 
     public function print_error($error) {

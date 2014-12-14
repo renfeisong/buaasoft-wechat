@@ -12,9 +12,11 @@ if (defined('WX_DEBUG')) {
     ini_set('display_errors', 'On');
 }
 
+// Functions
 require_once ABSPATH . 'includes/functions.php';
 require_once ABSPATH . 'includes/module.php';
 
+// Classes
 require_once ABSPATH . 'includes/InputType.php';
 require_once ABSPATH . 'includes/UserInput.php';
 require_once ABSPATH . 'includes/BaseModule.php';
@@ -51,13 +53,17 @@ $public_pages = array(
 $wxdb = null;
 $time_start = 0.0;
 $time_end = 0.0;
-$userChecked = false; // Flag to guarantee that user request is logged only once
-$adminUser = null; // Current admin user, for caching purpose
+$userChecked = false; // Flag to guarantee that user activity for each request is logged only once
+$adminUser = null; // Current admin user cache object
+$configurations = array(); // Global configuration cache object
+$timesConfigGets = 0;
+$timesConfigSets = 0;
 
 date_default_timezone_set('Asia/Shanghai');
 timer_start();
 
 if (system_ready()) {
     require_db();
+    load_configurations();
     load_modules(get_modules());
 }

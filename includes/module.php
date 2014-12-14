@@ -89,36 +89,12 @@ function do_actions($tag, $args) {
     }
 }
 
-function _set_value($scope, $key, $value) {
-    if ($scope == null || $scope == '') {
-        return false;
-    }
-    global $wxdb; /* @var $wxdb wxdb */
-    $wxdb->replace('configuration', array(
-        'scope' => $scope,
-        'key' => $key,
-        'value' => serialize($value)
-    ));
-
-    return $wxdb->last_error == 0;
-}
-
 function set_value($object, $key, $value) {
     return _set_value(get_class($object), $key, $value);
 }
 
 function set_global_value($key, $value) {
     return _set_value('global', $key, $value);
-}
-
-function _get_value($scope, $key) {
-    global $wxdb; /* @var $wxdb wxdb */
-    $row = $wxdb->get_row($wxdb->prepare("SELECT * FROM `configuration` WHERE `scope` = '%s' AND `key` = '%s'", $scope, $key), ARRAY_A);
-
-    if ($row)
-        return unserialize($row['value']);
-    else
-        return null;
 }
 
 function get_value($object, $key) {
@@ -135,4 +111,37 @@ function get_global_value($key) {
 
 function set_option($key, $value) {
     return _set_value($_GET['page'], $key, $value);
+}
+
+function _set_value($scope, $key, $value) {
+    if ($scope == null || $scope == '') {
+        return false;
+    }
+
+    global $wxdb, $configurations, $timesConfigSets; /* @var $wxdb wxdb */
+
+    // Discard unneeded set operations
+    if ($configurations[$scope][$key] == serialize($value))
+        return true;
+
+    // Execute set operation
+    ++$timesConfigSets;
+    $wxdb->replace('configuration', array(
+        'scope' => $scope,
+        'key' => $key,
+        'value' => serialize($value)
+    ));
+    $configurations[$scope][$key] = serialize($value);
+    return $wxdb->last_error == 0;
+}
+
+function _get_value($scope, $key) {
+    global $configurations, $timesConfigGets;
+    ++$timesConfigGets;
+    $raw = @$configurations[$scope][$key];
+    if (!empty($raw)) {
+        return unserialize($raw);
+    } else {
+        return null;
+    }
 }

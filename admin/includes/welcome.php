@@ -1,4 +1,4 @@
-<h1>欢迎访问软件学院微信后台管理系统 <small style="color:#666;font-size: 70%;">2.0.0-rc1 (rev#215)</small></h1>
+<h1>欢迎访问软件学院微信后台管理系统 <small style="color:#666;font-size: 70%;">2.0.0-rc1 (rev#217)</small></h1>
 <p style="line-height: 1.8">
     当前登陆用户：<?php echo current_user_name() ?><br>
     系统状态：<span style="color: #1b926c"><i class="fa fa-check-circle"></i> 良好</span><br>
