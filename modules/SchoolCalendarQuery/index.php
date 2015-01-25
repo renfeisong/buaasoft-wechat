@@ -8,7 +8,7 @@
  */
 class SchoolCalendarQuery extends BaseModule {
 
-    private $first_day = "2014-9-15";
+    private $first_day = "2015-3-9";
 
     /**
      * persistence the first day str
@@ -34,7 +34,10 @@ class SchoolCalendarQuery extends BaseModule {
         $formatter = new OutputFormatter($input->openid, $input->accountId);
         $date_str = date("Y年m月d日", time());
         $teaching_week = $this->get_teaching_week($this->first_day);
-        return $formatter->textOutput("今天是{$date_str}，第{$teaching_week}教学周");
+        if (time() < strtotime('2015-3-9'))
+            return $formatter->textOutput("现在是假期。开学日期：2015年3月9日。");
+        else
+            return $formatter->textOutput("今天是{$date_str}，第{$teaching_week}教学周");
     }
 
     public function display_name() {
@@ -67,7 +70,4 @@ class SchoolCalendarQuery extends BaseModule {
         $teaching_week = (int)(($first_day_id + $cur_day - $first_day) / 7 + 1);
         return $teaching_week;
     }
-
 }
-
-?>

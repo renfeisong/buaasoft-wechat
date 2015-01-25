@@ -81,14 +81,14 @@
                     $("#stuidlabel").html("请输入学号").css("color", "#ff6666");
                 }
                 if (identity == "") {
-                    $("#identitylabel").html("请输入身份证号").css("color", "#ff6666");
+                    $("#identitylabel").html("请输入姓名").css("color", "#ff6666");
                 }
                 if(stuid != "" && identity != "") {
                     $.post("ajax.php", {
                         stuid: stuid,
                         identity: identity,
                         openid: b,
-                        from: 'main'
+                        from: 'alt'
                     }, function(data){
                         if (data == "0") {
                             $("#main-form").hide();
@@ -109,7 +109,7 @@
         <h3 class="form-signin-heading">绑定账号</h3>
         <label id="stuidlabel">学号</label>
         <input type="text" class="form-control input-block-level" id="stuid">
-        <label id="identitylabel">身份证号</label>
+        <label id="identitylabel">姓名</label>
         <input type="text" class="form-control input-block-level" id="identity">
         <div class="control-group">
             <div class="control">
@@ -118,7 +118,7 @@
             </div>
         </div>
     </form>
-    <div class="alert alert-success" id="succeed"><strong>恭喜，绑定成功！</strong>建议您返回并点击自定义菜单的其他－个人设定，验证手机和邮箱是否正确。</div>
+    <div class="alert alert-success" id="succeed">恭喜，绑定成功！</div>
 </div>
 </body>
 </html>

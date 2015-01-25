@@ -25,9 +25,11 @@ class Bound extends BaseModule {
 
     public function raw_output(UserInput $input) {
         $formatter = new OutputFormatter($input->openid, $input->accountId);
-        $newBoundURL = ROOT_URL.'modules/Bound/bound.php?openid='.$input->openid;
+        $url1 = ROOT_URL . 'modules/Bound/bound.php?openid=' . $input->openid;
+        $url2 = ROOT_URL . 'modules/Bound/bound-alt.php?openid=' . $input->openid;
         $output = 	"你好！欢迎关注北京航空航天大学软件学院微信公众账号，需要先绑定才能使用：\n\n".
-                    "<a href=\"".$newBoundURL."\">在校生统一绑定通道</a>";
+            "<a href=\"" . $url1 . "\">在校本科生绑定通道</a>\n\n".
+            "<a href=\"" . $url2 . "\">在校研究生绑定通道</a>";
         return $formatter->textOutput($output);
     }
 
